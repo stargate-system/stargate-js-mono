@@ -1,0 +1,15 @@
+.ipComponentContainer {
+    display: flex;
+    flex-direction: column;
+
+    .ipContainer {
+        padding: 1rem;
+        display: flex;
+        align-items: baseline;
+    }
+
+    .validationMessage {
+        text-align: center;
+        color: var(--global-color-error);
+    }
+}

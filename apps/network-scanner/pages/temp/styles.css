@@ -1,0 +1,75 @@
+html {
+    @media only screen and (max-width: 1000px){
+        font-size: 32px;
+    }
+}
+
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: stretch;
+    max-width: 30rem;
+    margin: 0 auto;
+
+    .startContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding-top: 5rem;
+
+        .startButton {
+            font-size: 1.7rem;
+            margin: 1rem;
+        }
+
+        .ipContainer {
+            padding: 1rem;
+            display: flex;
+            align-items: baseline;
+
+            .ipField {
+                font-size: 1.5rem;
+                max-width: 5rem;
+                margin: 0.5rem;
+                text-align: center;
+            }
+        }
+    }
+
+    .scanRunningContainer {
+        display: flex;
+        flex-direction: column;
+
+        .foundContainer {
+            display: flex;
+            align-items: baseline;
+
+            .header {
+                text-align: center;
+            }
+
+            .list {
+                display: flex;
+                flex-direction: column;
+                justify-content: stretch;
+            }
+        }
+
+        .scanFailedContainer {
+            text-align: center;
+        }
+    }
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}

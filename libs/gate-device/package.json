@@ -1,0 +1,15 @@
+{
+  "name": "gatedevice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Library for device-end",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michał Marchel",
+  "license": "ISC",
+  "dependencies": {
+    "gatecore": "file:../gate-core"
+  }
+}

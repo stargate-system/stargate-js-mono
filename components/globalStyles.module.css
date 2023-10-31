@@ -1,0 +1,7 @@
+.globalStyles {
+    --global-color-error: red;
+
+    .inputError {
+        border: 2px solid var(--global-color-error);
+    }
+}

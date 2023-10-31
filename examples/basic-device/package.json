@@ -1,0 +1,15 @@
+{
+  "name": "basicdevice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Basic device example",
+  "main": "BasicDevice.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michał Marchel",
+  "license": "ISC",
+  "dependencies": {
+    "gatedevice": "file:../../libs/gate-device"
+  }
+}
