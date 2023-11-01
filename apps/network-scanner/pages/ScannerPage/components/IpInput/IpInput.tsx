@@ -1,15 +1,34 @@
 import styles from './IpInput.module.css';
-import {useEffect, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import ByteInput from "@/pages/ScannerPage/components/ByteInput/ByteInput";
 
-const IpInput = () => {
-    const [byte1, setByte1] = useState('192');
+interface IpInputProps {
+    byte1: string,
+    setByte1: Dispatch<SetStateAction<string>>,
+    byte2: string,
+    setByte2: Dispatch<SetStateAction<string>>,
+    byte3: string,
+    setByte3: Dispatch<SetStateAction<string>>,
+    setIpValid: Dispatch<SetStateAction<boolean>>,
+    scanInProgress: boolean
+}
+
+const IpInput = (props: IpInputProps) => {
+    const {
+        byte1,
+        setByte1,
+        byte2,
+        setByte2,
+        byte3,
+        setByte3,
+        setIpValid,
+        scanInProgress
+    } = props
+
     const [byte1Valid, setByte1Valid] = useState(true);
     const [byte1Disabled, setByte1Disabled] = useState(false);
-    const [byte2, setByte2] = useState('168');
     const [byte2Valid, setByte2Valid] = useState(true);
     const [byte2Disabled, setByte2Disabled] = useState(true);
-    const [byte3, setByte3] = useState('');
     const [byte3Valid, setByte3Valid] = useState(true);
     const [byte3Disabled, setByte3Disabled] = useState(false);
     const [validationMessage, setValidationMessage] = useState('');
@@ -57,16 +76,23 @@ const IpInput = () => {
         }
     }
 
-    useEffect(() => {
+    const setBytesAvailability = () => {
         if (byte1Valid && byte2Valid && byte3Valid) {
             setByte1Disabled(false);
             setByte2Disabled(byte1 === '192');
             setByte3Disabled(false);
+            setIpValid(true);
         } else {
             setByte1Disabled(byte1Valid);
             setByte2Disabled(byte2Valid);
             setByte3Disabled(byte3Valid);
+            setIpValid(false);
         }
+    }
+
+    useEffect(() => {
+        setBytesAvailability();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [byte1Valid, byte2Valid, byte3Valid]);
 
     useEffect(() => {
@@ -75,6 +101,17 @@ const IpInput = () => {
         setByte3Valid(true);
         setValidationMessage('');
     }, [byte1, byte2, byte3]);
+
+    useEffect(() => {
+        if (scanInProgress) {
+            setByte1Disabled(true);
+            setByte2Disabled(true);
+            setByte3Disabled(true);
+        } else {
+            setBytesAvailability();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [scanInProgress]);
 
     return (
         <div className={styles.ipComponentContainer}>
