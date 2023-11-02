@@ -2,7 +2,9 @@ import styles from './ScanerPage.module.css';
 import IpInput from "@/pages/ScannerPage/components/IpInput/IpInput";
 import StartButton from "@/pages/ScannerPage/components/StartButton/StartButton";
 import {useState} from "react";
-import scanService from "@/pages/ScannerPage/service/scanService";
+import scanService, {scanResult} from "@/pages/ScannerPage/service/scanService";
+import scanConfig from "@/pages/ScannerPage/service/scanConfig";
+import DetectedList from "@/pages/ScannerPage/components/DetectedList/DetectedList";
 
 const ScannerPage = () => {
     const [byte1, setByte1] = useState('192');
@@ -12,22 +14,50 @@ const ScannerPage = () => {
     const [scanInProgress, setScanInProgress] = useState(false);
     const [progressValue, setProgressValue] = useState(0);
     const [scanMessage, setScanMessage] = useState('');
+    const [detectedNetworks, setDetectedNetworks] = useState<Array<string>>([]);
+    const [detectedDevices, setDetectedDevices] = useState<Array<string>>([]);
 
     const onNetworkDetected = (ipPattern: string) => {
-        console.log('>>> Found ' + ipPattern);
+        if (detectedNetworks.length <= scanConfig.MAX_NETWORKS) {
+            detectedNetworks.push(ipPattern);
+            setDetectedNetworks([...detectedNetworks]);
+        } else {
+            scanService.finishScan(scanResult.FAILED_NETWORKS);
+        }
     }
 
     const onDeviceDetected = (ip: string) => {
-
+        detectedDevices.push(ip);
+        setDetectedDevices([...detectedDevices]);
     }
 
-    const onScanFinished = () => {
+    const onScanFinished = (result: scanResult) => {
         setScanInProgress(false);
+        setDetectedNetworks([]);
+        setDetectedDevices([]);
+        switch (result) {
+            case scanResult.SUCCESS:
+                // TODO implement
+                setScanMessage('Done');
+                break;
+            case scanResult.FAILED_NETWORKS:
+                setScanMessage('Scanner was unable to automatically select networks to scan. Please check if given IP range is correct or provide 3rd number to narrow down scan range');
+                break;
+            case scanResult.FAILED_DEVICES:
+                setScanMessage('Scanner was unable to find any devices. Please check if given IP range is correct and devices are ready to accept connection');
+                break;
+            case scanResult.FAILED_TIMEOUT:
+                setScanMessage('Scanner timed out. Please check if given IP range is correct and devices are ready to accept connection');
+                break;
+            case scanResult.ABORTED:
+                setScanMessage('');
+                break;
+        }
     }
 
     const onStartButtonClick = () => {
         if (scanInProgress) {
-            scanService.abortScan();
+            scanService.finishScan(scanResult.ABORTED);
         } else {
             setScanInProgress(true);
             scanService.startScan(
@@ -63,7 +93,9 @@ const ScannerPage = () => {
                     progressValue={progressValue}
                 />
             </div>
-            <p hidden={!scanInProgress}>{scanMessage}</p>
+            <p className={styles.scanMessage}>{scanMessage}</p>
+            {!!detectedNetworks.length && <DetectedList label="Detected networks:" content={detectedNetworks}/>}
+            {!!detectedDevices.length && <DetectedList label="Detected devices:" content={detectedDevices}/>}
         </div>
     )
 }

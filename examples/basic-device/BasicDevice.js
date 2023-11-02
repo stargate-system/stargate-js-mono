@@ -1,4 +1,4 @@
-import DeviceGate from 'devicegate';
+import DeviceGate from 'gatedevice';
 const {GateFactory, Directions, ValueTypes, logger} = DeviceGate;
 const testOut = GateFactory.createValue(Directions.output, ValueTypes.number, 'test out');
 const connection = GateFactory.createConnection();

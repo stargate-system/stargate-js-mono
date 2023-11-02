@@ -12,4 +12,8 @@
         align-items: stretch;
         padding-top: 5rem;
     }
+
+    .scanMessage {
+        text-align: center;
+    }
 }

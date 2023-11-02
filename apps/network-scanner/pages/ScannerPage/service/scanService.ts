@@ -1,8 +1,17 @@
 import {Dispatch, SetStateAction} from "react";
 import scanConfig from "@/pages/ScannerPage/service/scanConfig";
 
+const PROGRESS_MAX_COUNT = 300;
+export enum scanResult {
+    SUCCESS,
+    FAILED_NETWORKS,
+    FAILED_DEVICES,
+    FAILED_TIMEOUT,
+    ABORTED
+}
+
 let scanRunning = false;
-let scanTimeout: NodeJS.Timeout;
+let scanTimeout: NodeJS.Timeout | undefined;
 let networkDetectedCallback: Function;
 let deviceDetectedCallback: Function;
 let scanFinishedCallback: Function;
@@ -11,9 +20,10 @@ let progressValueSetter: Dispatch<SetStateAction<number>>;
 let progressValue = 0;
 let progressInterval: NodeJS.Timeout | undefined;
 let aliveSockets: Array<WebSocket> = [];
-const PROGRESS_TOTAL = 300;
-
+let openSockets: Array<WebSocket> = [];
+let foundNetworks: Array<string> = [];
 let releaseCreateSocketLatch: Function | undefined;
+let releaseDeviceScanLatch: Function | undefined;
 
 const startScan = (byte1: string,
                    byte2: string,
@@ -31,31 +41,50 @@ const startScan = (byte1: string,
     scanRunning = true;
     if (byte3.length) {
         const ipPattern = byte1 + '.' + byte2 + '.' + byte3 + '.x';
-        scanMessageSetter('Scanning ' + ipPattern);
-        scanIpPattern(ipPattern);
+        scanForDevices(ipPattern, true);
     } else {
-        scanMessageSetter('Looking for networks...');
         scanForNetworks(byte1 + '.' + byte2 + '.x.' + scanConfig.NETWORK_PROBE_LSB);
     }
     startProgress();
-    scanTimeout = setTimeout(() => abortScan(), scanConfig.SCAN_TIMEOUT);
+    setScanTimeout();
 }
 
-const abortScan = () => {
-    scanRunning = false;
+const setScanTimeout = () => {
     if (scanTimeout) {
         clearTimeout(scanTimeout);
     }
-    aliveSockets.forEach((socket) => socket.close());
-    stopProgress();
-    scanFinishedCallback();
+    scanTimeout = setTimeout(() => {
+        scanTimeout = undefined;
+        finishScan(scanResult.FAILED_TIMEOUT)
+    }, scanConfig.SCAN_TIMEOUT);
 }
 
-const scanIpPattern = (ipPattern: string) => {
-
+const finishScan = (reason: scanResult) => {
+    scanRunning = false;
+    if (scanTimeout) {
+        clearTimeout(scanTimeout);
+        scanTimeout = undefined;
+    }
+    if (releaseDeviceScanLatch) {
+        releaseDeviceScanLatch();
+        releaseDeviceScanLatch = undefined;
+    }
+    if (releaseCreateSocketLatch) {
+        releaseCreateSocketLatch();
+        releaseCreateSocketLatch = undefined;
+    }
+    aliveSockets.forEach((socket) => {
+        cleanSocketCallbacks(socket);
+        socket.close()
+    });
+    aliveSockets = [];
+    stopProgress();
+    scanFinishedCallback(reason);
 }
 
 const scanForNetworks = async (ipPattern: string) => {
+    scanMessageSetter('Looking for networks...');
+    foundNetworks = [];
     const ips = generateAllFromPattern(ipPattern);
     while(scanRunning && ips.length) {
         const ip = ips.shift();
@@ -68,7 +97,9 @@ const scanForNetworks = async (ipPattern: string) => {
                 }, scanConfig.SOCKET_TIMEOUT);
 
                 socket.onerror = () => {
-                    networkDetectedCallback(ip);
+                    const foundPattern = ip.replace(new RegExp(scanConfig.NETWORK_PROBE_LSB + '$'), 'x');
+                    foundNetworks.push(foundPattern);
+                    networkDetectedCallback(foundPattern);
                     clearTimeout(timeout);
                 }
 
@@ -85,12 +116,90 @@ const scanForNetworks = async (ipPattern: string) => {
                         onCloseOriginalFunction();
                     }
                     if (!aliveSockets.length) {
-                        abortScan();
+                        handleNetworksScanFinished();
                     }
                 }
             }
         }
     }
+}
+
+const handleNetworksScanFinished = async () => {
+    if (foundNetworks.length) {
+        while (foundNetworks.length && scanRunning) {
+            const ipPattern = foundNetworks.shift();
+            if (ipPattern) {
+                startProgress();
+                setScanTimeout();
+                await scanForDevices(ipPattern);
+            }
+        }
+        if (scanRunning) {
+            finishScan(scanResult.FAILED_DEVICES);
+        }
+    } else {
+        finishScan(scanResult.FAILED_NETWORKS);
+    }
+}
+
+const scanForDevices = async (ipPattern: string, failOnNoDevices: boolean = false) => {
+    scanMessageSetter('Scanning ' + ipPattern);
+    if (openSockets.length) {
+        openSockets.forEach((socket) => socket.close());
+        openSockets = [];
+    }
+    const ips = generateAllFromPattern(ipPattern);
+    while(scanRunning && ips.length) {
+        const ip = ips.shift();
+        if (ip) {
+            const socket = await createSocket(ip);
+            if (socket) {
+                const timeout = setTimeout(() => {
+                    if (socket.readyState !== WebSocket.CLOSED) {
+                        socket.close();
+                    }
+                }, scanConfig.SOCKET_TIMEOUT);
+
+                socket.onopen = () => {
+                    openSockets.push(socket);
+                    deviceDetectedCallback(ip);
+                    clearTimeout(timeout);
+                }
+
+                const onCloseOriginalFunction = socket.onclose;
+                socket.onclose = () => {
+                    if (onCloseOriginalFunction) {
+                        // @ts-ignore
+                        onCloseOriginalFunction();
+                    }
+                    if (aliveSockets.length === openSockets.length) {
+                        handleDeviceScanFinished(failOnNoDevices);
+                    }
+                }
+            }
+        }
+    }
+    const deviceScanLatch = new Promise((resolve) => releaseDeviceScanLatch = resolve);
+    await deviceScanLatch;
+}
+
+const handleDeviceScanFinished = (failOnNoDevices: boolean) => {
+    if (openSockets.length > 0) {
+        openSockets.forEach((socket) => cleanSocketCallbacks(socket));
+        aliveSockets = [];
+        finishScan(scanResult.SUCCESS);
+    } else if (failOnNoDevices) {
+        finishScan(scanResult.FAILED_DEVICES);
+    }
+    if (releaseDeviceScanLatch) {
+        releaseDeviceScanLatch();
+    }
+}
+
+const cleanSocketCallbacks = (socket: WebSocket) => {
+    socket.onopen = () => {};
+    socket.onclose = () => {};
+    socket.onerror = () => {};
 }
 
 const generateAllFromPattern = (ipPattern: string) => {
@@ -126,9 +235,9 @@ const createSocket = async (ip: string): Promise<WebSocket | undefined> => {
 }
 
 const incrementProgress = () => {
-    const value = progressValue < PROGRESS_TOTAL ? progressValue + 1 : progressValue;
+    const value = progressValue < PROGRESS_MAX_COUNT ? progressValue + 1 : progressValue;
     progressValue = value;
-    const percentComplete = 100 * value / PROGRESS_TOTAL;
+    const percentComplete = 100 * value / PROGRESS_MAX_COUNT;
     progressValueSetter(percentComplete);
 }
 
@@ -137,7 +246,7 @@ const startProgress = () => {
     progressValueSetter(progressValue);
     if (progressInterval === undefined) {
         const estimatedFinish = scanConfig.SOCKET_TIMEOUT * 2;
-        progressInterval = setInterval(incrementProgress, Math.ceil(estimatedFinish / PROGRESS_TOTAL));
+        progressInterval = setInterval(incrementProgress, Math.ceil(estimatedFinish / PROGRESS_MAX_COUNT));
     }
 }
 
@@ -150,7 +259,7 @@ const stopProgress = () => {
 
 const scanService = {
     startScan,
-    abortScan
+    finishScan
 };
 
 export default scanService;
