@@ -11,6 +11,6 @@
   "author": "Michał Marchel",
   "license": "ISC",
   "dependencies": {
-    "gatedevice": "file:../../libs/gate-device"
+    "gatedevice": "file:../../libs/GateDevice"
   }
 }

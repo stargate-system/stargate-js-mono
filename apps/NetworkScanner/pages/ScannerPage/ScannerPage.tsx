@@ -2,8 +2,8 @@ import styles from './ScanerPage.module.css';
 import IpInput from "@/pages/ScannerPage/components/IpInput/IpInput";
 import StartButton from "@/pages/ScannerPage/components/StartButton/StartButton";
 import {useState} from "react";
-import scanService, {scanResult} from "@/pages/ScannerPage/service/scanService";
-import scanConfig from "@/pages/ScannerPage/service/scanConfig";
+import scanService, {scanResult} from "@/service/scanService";
+import scanConfig from "@/service/scanConfig";
 import DetectedList from "@/pages/ScannerPage/components/DetectedList/DetectedList";
 
 const ScannerPage = () => {

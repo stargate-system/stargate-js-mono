@@ -1,5 +1,5 @@
 import {Dispatch, SetStateAction} from "react";
-import scanConfig from "@/pages/ScannerPage/service/scanConfig";
+import scanConfig from "@/service/scanConfig";
 
 const PROGRESS_MAX_COUNT = 300;
 export enum scanResult {

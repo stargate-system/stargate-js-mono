@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "description": "Monorepo for js code",
   "workspaces": [
-	"./libs/gate-core",
- 	"./libs/gate-device",
-  	"./apps/network-scanner",
-  	"./examples/basic-device"
+	"./libs/GateCore",
+	"./libs/GateDevice",
+  	"./apps/NetworkScanner",
+  	"./examples/BasicDevice"
   ],
   "scripts": {
-    "build:scanner": "npm -w ./apps/network-scanner run build",
-    "dev:scanner": "npm -w ./apps/network-scanner run dev",
-    "device:basic": "node ./examples/basic-device"
+    "build:scanner": "npm -w apps/NetworkScanner run build",
+    "build:core": "npm -w libs/GateCore run build",
+    "dev:scanner": "npm -w apps/NetworkScanner run dev",
+    "device:basic": "node examples/BasicDevice"
   },
   "dependencies": {
     "react": "^18",

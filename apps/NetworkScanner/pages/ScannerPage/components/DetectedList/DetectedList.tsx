@@ -13,7 +13,7 @@ const DetectedList = (props: DetectedListProps) => {
             <span className={styles.labelContainer}>{label}</span>
             <div className={styles.contentContainer}>
                 {
-                    content.map((value) => <span key={value}>{value}</span>)
+                    !!content && content.map((value) => <span key={value}>{value}</span>)
                 }
             </div>
         </div>
