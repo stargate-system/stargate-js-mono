@@ -6,7 +6,7 @@ export class FunctionalHandler {
     private readonly sendFunction: (message: string) => void;
     private readonly pendingQueries = new Registry<(value: string) => void>();
     private readonly queryListeners = new Registry<(respond: (response: string) => void) => void>();
-    private readonly commandListeners = new Registry<(command: string) => void>();
+    private readonly commandListeners = new Registry<(params?: Array<string>) => void>();
     private readonly queryTimeout: number;
 
     constructor(sendFunction: (message: string) => void, queryTimeout?: number) {
@@ -45,12 +45,12 @@ export class FunctionalHandler {
         this.queryListeners.remove(keyword);
     }
 
-    addCommandListener(onCommand: (command: string) => void) {
-        return this.commandListeners.add(onCommand);
+    addCommandListener(command: string, onCommand: (params?: Array<string>) => void) {
+        return this.commandListeners.add(onCommand, command);
     }
 
-    removeInfoListener(key: string) {
-        this.commandListeners.remove(key);
+    removeInfoListener(command: string) {
+        this.commandListeners.remove(command);
     }
 
     sendCommand(keyword: string) {
@@ -68,7 +68,7 @@ export class FunctionalHandler {
 
     private handleQueryResponse(queryResponse: string) {
         const separatorIndex = queryResponse.indexOf(Markers.mainSeparator);
-        const keyword = queryResponse.substring(2, separatorIndex ?? queryResponse.length);
+        const keyword = separatorIndex !== -1 ? queryResponse.substring(2, separatorIndex) : queryResponse.substring(2);
         const listener = this.pendingQueries.getByKey(keyword);
         if (listener) {
             listener(queryResponse.substring(separatorIndex + 1));
@@ -77,9 +77,17 @@ export class FunctionalHandler {
     }
 
     private handleCommand(commandMessage: string) {
-        this.commandListeners.getValues().forEach((listener) => {
-            listener(commandMessage.substring(2));
-        })
+        const separatorIndex = commandMessage.indexOf(Markers.mainSeparator);
+        const keyword = separatorIndex !== -1 ? commandMessage.substring(2, separatorIndex) : commandMessage.substring(2);
+        const listener = this.commandListeners.getByKey(keyword);
+        if (listener) {
+            if (separatorIndex !== -1) {
+                const params = MessageMapper.parseArray(commandMessage.substring(separatorIndex + 1));
+                listener(params);
+            } else {
+                listener();
+            }
+        }
     }
 
     onFunctionalMessage(message: string) {

@@ -9,7 +9,35 @@ const {
     answerPrefix
 } = Markers;
 
-const serialize = (messageMap: Object) => {
+const serializeArray = (array: Array<string>) => {
+    let messages = '';
+    let lengths = '';
+    array.forEach((message) => {
+        lengths += message.length + auxSeparator;
+        messages += message;
+    });
+    return lengths.slice(0, -1) + mainSeparator + messages;
+}
+
+const parseArray = (message: string) => {
+    const separator = message.indexOf(mainSeparator);
+    const lengths = message.slice(0, separator).split(auxSeparator).map((val) => Number.parseInt(val));
+    const messagesString = message.slice(separator + 1);
+    if (lengths.reduce((a, b) => a + b) !== message.length) {
+        throw new Error('Messages length inconsistent with declared');
+    }
+    const messagesArray: Array<string> = [];
+    let currentIndex = 0;
+    let nextIndex;
+    lengths.forEach((length) => {
+        nextIndex = currentIndex + length;
+        messagesArray.push(messagesString.substring(currentIndex, nextIndex));
+        currentIndex = nextIndex;
+    });
+    return messagesArray;
+}
+
+const serializeValueMessage = (messageMap: Object) => {
     let ids = '';
     let lengths = '';
     let messages = '';
@@ -22,27 +50,16 @@ const serialize = (messageMap: Object) => {
         }
         lengths += message.length + auxSeparator;
         messages += message;
-    })
-    return ids.slice(0, -1) + mainSeparator + lengths.slice(0, -1) + mainSeparator + messages;
+    });
+    const serializedValues = serializeArray(Object.values(messageMap));
+    return ids.slice(0, -1) + mainSeparator + serializedValues;
 }
 
-const parse = (message: string): Array<[string, string]> => {
+const parseValueMessage = (message: string): Array<[string, string]> => {
     const firstSeparator = message.indexOf(mainSeparator);
-    const secondSeparator = message.indexOf(mainSeparator, firstSeparator + 1);
     const ids = message.slice(0, firstSeparator).split(auxSeparator);
-    const lengths = message.slice(firstSeparator + 1, secondSeparator).split(auxSeparator).map((val) => Number.parseInt(val));
-    const messagesString = message.slice(secondSeparator + 1);
-    if (lengths.reduce((a, b) => a + b) !== messagesString.length) {
-        throw new Error('Messages length inconsistent with declared');
-    }
-    const messages: Array<string> = [];
-    let currentIndex = 0;
-    let nextIndex;
-    lengths.forEach((length) => {
-        nextIndex = currentIndex + length;
-        messages.push(messagesString.substring(currentIndex, nextIndex));
-        currentIndex = nextIndex;
-    });
+    const serializedValues = message.slice(firstSeparator + 1);
+    const messages = parseArray(serializedValues);
     if (ids.length !== messages.length) {
         throw new Error('Ids count not match messages count');
     }
@@ -57,8 +74,12 @@ const functionalMessage = (msg: string) => {
     return functionalMessagePrefix + msg;
 }
 
-const command = (msg: string) => {
-    return functionalMessage(commandPrefix + msg);
+const command = (keyword: string, params?: Array<string>) => {
+    let message = commandPrefix + keyword;
+    if (params !== undefined) {
+        message += mainSeparator + serializeArray(params);
+    }
+    return functionalMessage(message);
 }
 
 const query = (msg: string) => {
@@ -70,8 +91,10 @@ const answer = (query: string, msg: string) => {
 }
 
 export default {
-    serialize,
-    parse,
+    serializeArray,
+    parseArray,
+    serializeValueMessage,
+    parseValueMessage,
     functionalMessage,
     command,
     query,

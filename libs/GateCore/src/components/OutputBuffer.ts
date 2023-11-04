@@ -1,4 +1,4 @@
-import MessageMapper from "./MessageMapper.js";
+import MessageMapper from "../messaging/MessageMapper.js";
 import {GateValue} from "../values/GateValue";
 
 export class OutputBuffer {
@@ -24,7 +24,7 @@ export class OutputBuffer {
             this.bufferTimeout = undefined;
         }
         if (this.hasContent()) {
-            this.sendFunction(MessageMapper.serialize(this.buffer));
+            this.sendFunction(MessageMapper.serializeValueMessage(this.buffer));
             this.clear();
         }
     }

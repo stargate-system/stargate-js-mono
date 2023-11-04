@@ -2,12 +2,12 @@ import {FunctionalHandler} from "./FunctionalHandler.js";
 import {InputHandler} from "./InputHandler.js";
 
 export class SocketHandler {
-    private readonly _sendFunction: (message: string) => void;
+    private readonly _sendMessage: (message: string) => void;
     private readonly inputHandler: InputHandler;
     private readonly _functionalHandler: FunctionalHandler;
 
     constructor(sendFunction: (message: string) => void, onValueMessage: (message: string) => void) {
-        this._sendFunction = sendFunction;
+        this._sendMessage = sendFunction;
         this._functionalHandler = new FunctionalHandler(sendFunction);
         this.inputHandler = new InputHandler(
             onValueMessage,
@@ -15,8 +15,8 @@ export class SocketHandler {
         );
     }
 
-    get sendFunction() {
-        return (msg: string) => this._sendFunction(msg);
+    get sendMessage() {
+        return (msg: string) => this._sendMessage(msg);
     }
 
     handleMessage(msg: string) {

@@ -29,17 +29,22 @@ export class GateNumber extends GateValue<number> {
         super.value = this.getWithinRange(checkedValue);
     }
 
-    setMinimum(minimum: number) {
+    setMinimum(minimum: number | undefined) {
         this._range[0] = minimum;
-        if ((super.value !== undefined) && (super.value < minimum)) {
+        if ((minimum !== undefined) && (super.value !== undefined) && (super.value < minimum)) {
             super.value = minimum;
         }
     }
-    setMaximum(maximum: number) {
+    setMaximum(maximum: number | undefined) {
         this._range[1] = maximum;
-        if ((super.value !== undefined) && (super.value > maximum)) {
+        if ((maximum !== undefined) && (super.value !== undefined) && (super.value > maximum)) {
             super.value = maximum;
         }
+    }
+
+    setRange(range: [number | undefined, number | undefined]) {
+        this.setMinimum(range[0]);
+        this.setMaximum(range[1]);
     }
 
     toManifest() {

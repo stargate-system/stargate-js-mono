@@ -18,7 +18,6 @@ export class GateValue<T> {
         }
     }
 
-
     get id(): string {
         return this._id;
     }
@@ -35,7 +34,11 @@ export class GateValue<T> {
     }
 
     set remoteValue(value: T | undefined) {
-        this._value = value;
+        if (this.direction === Directions.input) {
+            this.value = value;
+        } else {
+            this._value = value;
+        }
         if (this.onRemoteUpdate) {
             this.onRemoteUpdate(this);
         }

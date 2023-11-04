@@ -1,8 +1,8 @@
 export class Registry<T> {
-    private registry: Object = {};
+    private readonly registry = new Map<string, T>();
     private generatedKey = 0;
 
-    generateKey(): string {
+    private generateKey(): string {
         const generated = this.generatedKey++;
         return generated.toString();
     }
@@ -14,32 +14,26 @@ export class Registry<T> {
         } else {
             usedKey = this.generateKey();
         }
-        // @ts-ignore
-        if (this.registry[usedKey] !== undefined) {
+        if (this.registry.has(usedKey)) {
             throw new Error('Key already in use');
         }
-        // @ts-ignore
-        this.registry[usedKey] = value;
+        this.registry.set(usedKey, value);
         return usedKey;
     }
 
     remove(key: string) {
-        this.registry = Object.fromEntries(
-            Object.entries(this.registry)
-                .filter((entry) => entry[0] !== key)
-        );
+        this.registry.delete(key);
     }
 
-    getByKey(key: string): T {
-        // @ts-ignore
-        return this.registry[key];
+    getByKey(key: string): T | undefined {
+        return this.registry.get(key);
     }
 
     getValues(): Array<T> {
-        return Object.values(this.registry);
+        return [...this.registry.values()];
     }
 
-    isEmpty() {
-        return !Object.keys(this.registry).length;
+    isEmpty(): boolean {
+        return !this.registry.size;
     }
 }
