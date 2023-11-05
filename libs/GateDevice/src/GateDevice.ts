@@ -1,14 +1,14 @@
 import logger from "./logger/logger.js";
-import {startConnection} from "./connection/Connection.js";
-import {Registry} from "gate-core/dist/src/components/Registry";
-import {Connection, GateValue, OutputBuffer} from "gate-core";
+import {startConnection} from "./connection/ServerConnection.js";
+import {Registry} from "gate-core";
+import {Connection, GateValue, ValueOutputBuffer} from "gate-core";
 
 interface DeviceState {
     isStarted: boolean,
     manifest: Object | undefined,
-    connection: Connection | undefined,
+    connection: Connection,
     values: Registry<GateValue<any>>,
-    outputBuffer: OutputBuffer
+    outputBuffer: ValueOutputBuffer
 }
 
 let deviceName = "New Device";
@@ -21,7 +21,7 @@ const setDeviceName = (name: string) => {
     }
 }
 
-const startDevice = (): DeviceState | undefined => {
+const startDevice = (): Connection | undefined => {
     if (state.isStarted) {
         logger.logWarning("Attempting to start already running device");
         return;
@@ -34,22 +34,15 @@ const startDevice = (): DeviceState | undefined => {
         ]
     }
     startConnection();
-    return state;
+    return state.connection;
 }
-
-// const sendFunction = (message: string) => {
-//     if (state.connection?.socketHandler?.sendMessage) {
-//         state.connection.socketHandler.sendMessage(message);
-//     }
-// }
 
 export const state: DeviceState = {
     isStarted: false,
     manifest: undefined,
-    connection: undefined,
+    connection: new Connection(),
     values: new Registry<GateValue<any>>(),
-    // outputBuffer: new OutputBuffer(sendFunction)
-    outputBuffer: new OutputBuffer(() => {})
+    outputBuffer: new ValueOutputBuffer()
 };
 
 export default {

@@ -1,10 +1,23 @@
 import config from "../../config.js";
 import {initServerless} from "./serverless/Serverless.js";
-import {Directions} from 'gate-core';
+import {ConnectionState, Directions} from 'gate-core';
 import {state} from "../GateDevice";
 import logger from "../logger/logger";
 
 export const startConnection = () => {
+    state.connection.addStateChangeListener(() => {
+        switch (state.connection.state) {
+            case ConnectionState.closed:
+                state.outputBuffer.setSendFunction(undefined);
+                break;
+            case ConnectionState.ready:
+                if (state.connection.handler?.sendValueMessage) {
+                    state.outputBuffer.setSendFunction(state.connection.handler.sendValueMessage);
+                }
+                break;
+        }
+    });
+
     if (config.serverless) {
         initServerless(onValueMessage);
     } else {

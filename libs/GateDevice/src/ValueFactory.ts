@@ -49,3 +49,5 @@ const ValueFactory = {
     createInteger,
     createFloat
 }
+
+export default ValueFactory;

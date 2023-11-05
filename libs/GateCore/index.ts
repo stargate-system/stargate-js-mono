@@ -4,9 +4,10 @@ import {GateBoolean} from "./src/values/GateBoolean";
 import {GateNumber} from "./src/values/GateNumber";
 import {GateString} from "./src/values/GateString";
 import {GateValue} from "./src/values/GateValue";
-import {OutputBuffer} from "./src/components/OutputBuffer";
+import {ValueOutputBuffer} from "./src/components/ValueOutputBuffer";
 import {ConnectionState} from "./src/connection/ConnectionState";
 import {Connection} from "./src/connection/Connection";
+import {Registry} from "./src/components/Registry";
 import Keywords from "./src/messaging/api/Keywords";
 
 export {
@@ -16,8 +17,9 @@ export {
     GateNumber,
     GateString,
     GateValue,
-    OutputBuffer,
+    ValueOutputBuffer,
     ConnectionState,
     Connection,
+    Registry,
     Keywords
 }
