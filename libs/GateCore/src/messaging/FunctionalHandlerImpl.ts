@@ -1,7 +1,7 @@
 import {Registry} from "../components/Registry.js";
 import MessageMapper from "./MessageMapper.js";
-import Markers from "./Markers";
-import {FunctionalHandler} from "./api/FunctionalHandler";
+import Markers from "./Markers.js";
+import {FunctionalHandler} from "./api/FunctionalHandler.js";
 
 export class FunctionalHandlerImpl implements FunctionalHandler{
     private readonly sendFunction: (message: string) => void;

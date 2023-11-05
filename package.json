@@ -13,7 +13,7 @@
     "build:core": "npm -w libs/GateCore run build",
     "build:device": "npm -w libs/GateDevice run build",
     "dev:scanner": "npm -w apps/NetworkScanner run dev",
-    "device:basic": "node examples/BasicDevice"
+    "device:basic": "npm -w ./examples/BasicDevice run start"
   },
   "dependencies": {
     "react": "^18",

@@ -1,8 +1,8 @@
 import {InputHandler} from "./InputHandler.js";
-import MessageMapper from "./MessageMapper";
-import {FunctionalHandler} from "./api/FunctionalHandler";
-import MessagingFactory from "./api/MessagingFactory";
-import {MessageHandler} from "./api/MessageHandler";
+import MessageMapper from "./MessageMapper.js";
+import {FunctionalHandler} from "./api/FunctionalHandler.js";
+import MessagingFactory from "./api/MessagingFactory.js";
+import {MessageHandler} from "./api/MessageHandler.js";
 
 export class MessageHandlerImpl implements MessageHandler{
     private readonly _sendValueMessage: (message: string) => void;

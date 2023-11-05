@@ -1,4 +1,4 @@
-import {FunctionalHandler} from "./FunctionalHandler";
+import {FunctionalHandler} from "./FunctionalHandler.js";
 
 export interface MessageHandler {
     sendValueMessage: (messageMap: Map<string, string>) => void,

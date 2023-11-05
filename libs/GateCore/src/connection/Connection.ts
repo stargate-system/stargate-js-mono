@@ -1,7 +1,7 @@
-import {ConnectionState} from "./ConnectionState";
-import {Registry} from "../components/Registry";
-import {MessageHandler} from "../messaging/api/MessageHandler";
-import MessagingFactory from "../messaging/api/MessagingFactory";
+import {ConnectionState} from "./ConnectionState.js";
+import {Registry} from "../components/Registry.js";
+import {MessageHandler} from "../messaging/api/MessageHandler.js";
+import MessagingFactory from "../messaging/api/MessagingFactory.js";
 
 export class Connection {
     private _state: ConnectionState;

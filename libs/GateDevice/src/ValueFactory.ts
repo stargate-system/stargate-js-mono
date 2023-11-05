@@ -1,6 +1,10 @@
-import {Directions, GateBoolean, GateNumber, GateString, GateValue, ValueTypes} from "gate-core";
-import {state} from "./GateDevice";
-import logger from "./logger/logger";
+import {
+    ConfigurableValueFactory,
+    Directions,
+    GateValue
+} from "gate-core";
+import {state} from "./GateDevice.js";
+import logger from "./logger/logger.js";
 
 const initializeValue = (value: GateValue<any>, direction: Directions, name?: string) => {
     if (state.isStarted) {
@@ -13,41 +17,6 @@ const initializeValue = (value: GateValue<any>, direction: Directions, name?: st
     }
 }
 
-const createBoolean = (direction: Directions, name?: string): GateBoolean => {
-    const gateValue = new GateBoolean();
-    initializeValue(gateValue, direction, name);
-    return gateValue;
-}
-
-const createString = (direction: Directions, name?: string): GateString => {
-    const gateValue = new GateString();
-    initializeValue(gateValue, direction, name);
-    return gateValue;
-}
-
-const createInteger = (direction: Directions, name?: string, range?: [number | undefined, number | undefined]): GateNumber => {
-    const gateValue = new GateNumber(ValueTypes.integer);
-    if (range !== undefined) {
-        gateValue.setRange(range);
-    }
-    initializeValue(gateValue, direction, name);
-    return gateValue;
-}
-
-const createFloat = (direction: Directions, name?: string, range?: [number | undefined, number | undefined]): GateNumber => {
-    const gateValue = new GateNumber(ValueTypes.float);
-    if (range !== undefined) {
-        gateValue.setRange(range);
-    }
-    initializeValue(gateValue, direction, name);
-    return gateValue;
-}
-
-const ValueFactory = {
-    createBoolean,
-    createString,
-    createInteger,
-    createFloat
-}
+const ValueFactory = new ConfigurableValueFactory(initializeValue);
 
 export default ValueFactory;

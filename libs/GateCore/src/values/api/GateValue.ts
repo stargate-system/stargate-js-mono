@@ -1,4 +1,4 @@
-import {Directions} from "./Directions";
+import {Directions} from "./Directions.js";
 
 export class GateValue<T> {
     private static nextId = 1;

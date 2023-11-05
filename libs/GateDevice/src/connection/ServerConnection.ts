@@ -1,8 +1,8 @@
 import config from "../../config.js";
 import {initServerless} from "./serverless/Serverless.js";
 import {ConnectionState, Directions} from 'gate-core';
-import {state} from "../GateDevice";
-import logger from "../logger/logger";
+import {state} from "../GateDevice.js";
+import logger from "../logger/logger.js";
 
 export const startConnection = () => {
     state.connection.addStateChangeListener(() => {

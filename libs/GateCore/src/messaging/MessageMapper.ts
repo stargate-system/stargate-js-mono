@@ -1,4 +1,4 @@
-import Markers from "./Markers";
+import Markers from "./Markers.js";
 
 const {
     mainSeparator,

@@ -2,6 +2,7 @@ import logger from "./logger/logger.js";
 import {startConnection} from "./connection/ServerConnection.js";
 import {Registry} from "gate-core";
 import {Connection, GateValue, ValueOutputBuffer} from "gate-core";
+import config from "../config.js";
 
 interface DeviceState {
     isStarted: boolean,
@@ -42,7 +43,7 @@ export const state: DeviceState = {
     manifest: undefined,
     connection: new Connection(),
     values: new Registry<GateValue<any>>(),
-    outputBuffer: new ValueOutputBuffer()
+    outputBuffer: new ValueOutputBuffer(config)
 };
 
 export default {

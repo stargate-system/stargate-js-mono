@@ -1,5 +1,5 @@
-import Markers from "./Markers";
-import MessageMapper from "./MessageMapper";
+import Markers from "./Markers.js";
+import MessageMapper from "./MessageMapper.js";
 
 export class InputHandler {
     private readonly handleValueMessage: (changes: Array<[string, string]>) => void;

@@ -1,15 +1,14 @@
-import {GateValue} from "../values/GateValue";
+import {GateValue} from "../values/api/GateValue.js";
 
 export class ValueOutputBuffer {
     private _buffer: Map<string, string>;
-    private readonly _bufferDelay: number;
+    private readonly _config: {outputBufferDelay: number};
     private _bufferTimeout: NodeJS.Timeout | undefined;
     private _sendFunction: ((messageMap: Map<string, string>) => void) | undefined;
 
-    constructor(sendFunction?: (messageMap: Map<string, string>) => void, bufferDelay?: number) {
+    constructor(config?: {outputBufferDelay: number}) {
         this._buffer = new Map<string, string>();
-        this._sendFunction = sendFunction;
-        this._bufferDelay = bufferDelay ?? 0;
+        this._config = config?.outputBufferDelay !== undefined ? config : {outputBufferDelay: 0};
     }
 
     add(gateValue: GateValue<any>) {
@@ -53,7 +52,7 @@ export class ValueOutputBuffer {
             this._bufferTimeout = setTimeout(() => {
                 this._bufferTimeout = undefined;
                 this.flush();
-            }, this._bufferDelay);
+            }, this._config.outputBufferDelay);
         }
     }
 }

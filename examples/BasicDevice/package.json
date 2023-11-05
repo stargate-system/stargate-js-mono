@@ -6,11 +6,11 @@
   "description": "Basic device example",
   "main": "BasicDevice.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node BasicDevice.js"
   },
   "author": "Michał Marchel",
   "license": "ISC",
   "dependencies": {
-    "gatedevice": "file:../../libs/GateDevice"
+    "gate-device": "^1.0.0"
   }
 }

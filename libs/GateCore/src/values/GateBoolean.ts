@@ -1,4 +1,4 @@
-import {GateValue} from "./GateValue.js";
+import {GateValue} from "./api/GateValue.js";
 import {ValueTypes} from "./ValueTypes.js";
 
 export class GateBoolean extends GateValue<boolean> {
