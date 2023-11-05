@@ -6,13 +6,13 @@ import {MessageHandler} from "./api/MessageHandler.js";
 
 export class MessageHandlerImpl implements MessageHandler{
     private readonly _sendValueMessage: (message: string) => void;
-    private readonly inputHandler: InputHandler;
+    private readonly _inputHandler: InputHandler;
     private readonly _functionalHandler: FunctionalHandler;
 
     constructor(sendFunction: (message: string) => void, onValueMessage: (changes: Array<[string, string]>) => void) {
         this._sendValueMessage = sendFunction;
         this._functionalHandler = MessagingFactory.getFunctionalHandler(sendFunction);
-        this.inputHandler = new InputHandler(
+        this._inputHandler = new InputHandler(
             onValueMessage,
             (msg) => this._functionalHandler.handleFunctionalMessage(msg)
         );
@@ -24,7 +24,7 @@ export class MessageHandlerImpl implements MessageHandler{
     }
 
     handleMessage(msg: string) {
-        this.inputHandler.handleMessage(msg);
+        this._inputHandler.handleMessage(msg);
     }
 
     getFunctionalHandler() {

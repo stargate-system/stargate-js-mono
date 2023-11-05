@@ -47,8 +47,8 @@ export class Connection {
         this._state = ConnectionState.connected;
         this._close = closeFunction;
         this._handler = MessagingFactory.getMessageHandler(sendFunction, onValueMessage);
-        onMessageSetter(this._handler.handleMessage);
-        onCloseSetter(this._handleClose);
+        onMessageSetter(this._handler.handleMessage.bind(this._handler));
+        onCloseSetter(this._handleClose.bind(this));
     }
 
     get state(): ConnectionState {

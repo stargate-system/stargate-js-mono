@@ -23,7 +23,7 @@ const parseArray = (message: string) => {
     const separator = message.indexOf(mainSeparator);
     const lengths = message.slice(0, separator).split(auxSeparator).map((val) => Number.parseInt(val));
     const messagesString = message.slice(separator + 1);
-    if (lengths.reduce((a, b) => a + b) !== message.length) {
+    if (lengths.reduce((a, b) => a + b) !== messagesString.length) {
         throw new Error('Messages length inconsistent with declared');
     }
     const messagesArray: Array<string> = [];
@@ -37,21 +37,19 @@ const parseArray = (message: string) => {
     return messagesArray;
 }
 
-const serializeValueMessage = (messageMap: Object) => {
+const serializeValueMessage = (messageMap: Map<string, string>) => {
     let ids = '';
     let lengths = '';
     let messages = '';
-    Object.keys(messageMap).forEach((id) => {
+    [...messageMap.keys()].forEach((id) => {
         ids += id + auxSeparator;
     });
-    Object.values(messageMap).forEach((message) => {
-        if (typeof message !== 'string') {
-            throw new Error('Attempt to serialize non-string message');
-        }
+    const values = [...messageMap.values()];
+    values.forEach((message) => {
         lengths += message.length + auxSeparator;
         messages += message;
     });
-    const serializedValues = serializeArray(Object.values(messageMap));
+    const serializedValues = serializeArray(values);
     return ids.slice(0, -1) + mainSeparator + serializedValues;
 }
 

@@ -12,7 +12,7 @@ export const startConnection = () => {
                 break;
             case ConnectionState.ready:
                 if (state.connection.handler?.sendValueMessage) {
-                    state.outputBuffer.setSendFunction(state.connection.handler.sendValueMessage);
+                    state.outputBuffer.setSendFunction(state.connection.handler.sendValueMessage.bind(state.connection.handler));
                 }
                 break;
         }

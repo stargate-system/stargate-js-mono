@@ -21,7 +21,7 @@ export class GateNumber extends GateValue<number> {
         return value;
     }
 
-    set value(value: number) {
+    setValue(value: number) {
         let checkedValue = value;
         if (this._type === ValueTypes.integer) {
             checkedValue = Number.isInteger(value) ? value : Math.round(value);

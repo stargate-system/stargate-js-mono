@@ -11,11 +11,10 @@ export class InputHandler {
     }
 
     handleMessage(message: string) {
-        const msg = message.toString();
-        if (msg.charAt(0) === Markers.functionalMessagePrefix) {
-            this.handleFunctionalMessage(msg);
+        if (message.charAt(0) === Markers.functionalMessagePrefix) {
+            this.handleFunctionalMessage(message);
         } else {
-            this.handleValueMessage(MessageMapper.parseValueMessage(msg));
+            this.handleValueMessage(MessageMapper.parseValueMessage(message));
         }
     }
 }

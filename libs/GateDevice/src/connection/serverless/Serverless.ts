@@ -47,11 +47,13 @@ const handleConnection = (socket: WebSocketInterface, onValueMessage: (changes: 
     if (state.connection.state !== ConnectionState.closed) {
         socket.close();
     } else {
-        const onMessageSetter = (messageHandler: (msg: string) => void) => socket.on('message', messageHandler);
+        const onMessageSetter = (messageHandler: (msg: string) => void) => socket.on('message', (ev: any) => {
+            messageHandler(ev.toString());
+        });
         const onCloseSetter = (closeHandler: () => void) => socket.onclose = closeHandler;
         state.connection.setConnected(
-            socket.send,
-            socket.close,
+            (msg: string) => socket.send(msg),
+            () => socket.close(),
             onMessageSetter,
             onCloseSetter,
             onValueMessage);
