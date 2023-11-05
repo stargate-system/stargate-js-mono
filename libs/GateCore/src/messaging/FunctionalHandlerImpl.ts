@@ -1,8 +1,9 @@
 import {Registry} from "../components/Registry.js";
 import MessageMapper from "./MessageMapper.js";
-import {Markers} from "./ApiCommons";
+import Markers from "./Markers";
+import {FunctionalHandler} from "./api/FunctionalHandler";
 
-export class FunctionalHandler {
+export class FunctionalHandlerImpl implements FunctionalHandler{
     private readonly sendFunction: (message: string) => void;
     private readonly pendingQueries = new Registry<(value: string) => void>();
     private readonly queryListeners = new Registry<(respond: (response: string) => void) => void>();
@@ -46,15 +47,15 @@ export class FunctionalHandler {
     }
 
     addCommandListener(command: string, onCommand: (params?: Array<string>) => void) {
-        return this.commandListeners.add(onCommand, command);
+        this.commandListeners.add(onCommand, command);
     }
 
-    removeInfoListener(command: string) {
+    removeCommandListener(command: string) {
         this.commandListeners.remove(command);
     }
 
-    sendCommand(keyword: string) {
-        this.sendFunction(MessageMapper.command(keyword));
+    sendCommand(keyword: string, params?: Array<string>) {
+        this.sendFunction(MessageMapper.command(keyword, params));
     }
 
      private handleQueryRequest(queryMessage: string) {
@@ -90,7 +91,7 @@ export class FunctionalHandler {
         }
     }
 
-    onFunctionalMessage(message: string) {
+    handleFunctionalMessage(message: string) {
         switch (message.toString().charAt(1)) {
             case Markers.queryPrefix:
                 this.handleQueryRequest(message);

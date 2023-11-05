@@ -1,10 +1,11 @@
-import {Markers} from "./ApiCommons";
+import Markers from "./Markers";
+import MessageMapper from "./MessageMapper";
 
 export class InputHandler {
-    private readonly handleValueMessage: (message: string) => void;
+    private readonly handleValueMessage: (changes: Array<[string, string]>) => void;
     private readonly handleFunctionalMessage: (message: string) => void;
 
-    constructor(onValueMessage: (message: string) => void, onFunctionalMessage: (message: string) => void) {
+    constructor(onValueMessage: (changes: Array<[string, string]>) => void, onFunctionalMessage: (message: string) => void) {
         this.handleValueMessage = onValueMessage;
         this.handleFunctionalMessage = onFunctionalMessage;
     }
@@ -14,7 +15,7 @@ export class InputHandler {
         if (msg.charAt(0) === Markers.functionalMessagePrefix) {
             this.handleFunctionalMessage(msg);
         } else {
-            this.handleValueMessage(msg);
+            this.handleValueMessage(MessageMapper.parseValueMessage(msg));
         }
     }
 }

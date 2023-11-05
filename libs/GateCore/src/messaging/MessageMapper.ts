@@ -1,4 +1,4 @@
-import {Markers} from "./ApiCommons";
+import Markers from "./Markers";
 
 const {
     mainSeparator,

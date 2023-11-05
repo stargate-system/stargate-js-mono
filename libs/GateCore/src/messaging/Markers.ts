@@ -1,4 +1,4 @@
-export const Markers = {
+const Markers = {
     mainSeparator: '|',
     auxSeparator: ',',
     functionalMessagePrefix: '*',
@@ -6,8 +6,5 @@ export const Markers = {
     queryPrefix: '?',
     answerPrefix: '>'
 }
-export const Commands = {
-    ready: 'ready',
-    allStates: 'all',
-    manifest: 'manifest'
-}
+
+export default Markers;

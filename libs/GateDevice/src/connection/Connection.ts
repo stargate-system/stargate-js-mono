@@ -1,58 +1,18 @@
 import config from "../../config.js";
 import {initServerless} from "./serverless/Serverless.js";
-import {Directions, MessageMapper, SocketHandler} from 'gate-core';
+import {Directions} from 'gate-core';
 import {state} from "../GateDevice";
 import logger from "../logger/logger";
 
-export interface Connection {
-    status: ConnectionStatus,
-    socketHandler: SocketHandler | undefined,
-    onStatusChange: (() => void) | undefined
-}
-export const startConnection = (): Connection => {
+export const startConnection = () => {
     if (config.serverless) {
-        initServerless(connection);
+        initServerless(onValueMessage);
     } else {
         throw new Error('Not implemented');
     }
-    return connection;
 }
 
-export enum ConnectionStatus {
-    closed = 'closed',
-    connected = 'connected',
-    ready = 'ready'
-}
-
-export const closeConnection = () => {
-    connection.status = ConnectionStatus.closed;
-    connection.socketHandler = undefined;
-    if (connection.onStatusChange) {
-        connection.onStatusChange();
-    }
-}
-
-export const initConnection = (sendFunction: (message: string) => void) => {
-    connection.socketHandler = new SocketHandler(sendFunction, onValueMessage);
-    const onMessage = (msg: string) => {
-        connection.socketHandler?.handleMessage(msg);
-    }
-    connection.status = ConnectionStatus.connected;
-    if (connection.onStatusChange) {
-        connection.onStatusChange();
-    }
-    return onMessage;
-}
-
-export const connectionReady = () => {
-    connection.status = ConnectionStatus.ready;
-    if (connection.onStatusChange) {
-        connection.onStatusChange();
-    }
-}
-
-const onValueMessage = (message: string) => {
-    const changes = MessageMapper.parseValueMessage(message);
+const onValueMessage = (changes: Array<[string, string]>) => {
     changes.forEach((change) => {
         const targetValue = state.values.getByKey(change[0]);
         if (targetValue !== undefined) {
@@ -67,8 +27,3 @@ const onValueMessage = (message: string) => {
     })
 }
 
-const connection: Connection = {
-    status: ConnectionStatus.closed,
-    socketHandler: undefined,
-    onStatusChange: undefined
-}

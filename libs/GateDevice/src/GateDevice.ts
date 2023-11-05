@@ -1,7 +1,7 @@
 import logger from "./logger/logger.js";
-import {Connection, startConnection} from "./connection/Connection.js";
+import {startConnection} from "./connection/Connection.js";
 import {Registry} from "gate-core/dist/src/components/Registry";
-import {GateValue, OutputBuffer} from "gate-core";
+import {Connection, GateValue, OutputBuffer} from "gate-core";
 
 interface DeviceState {
     isStarted: boolean,
@@ -30,25 +30,26 @@ const startDevice = (): DeviceState | undefined => {
     state.manifest = {
         deviceName,
         values: [
-            ...state.values.getValues().map((value) => value.toManifest())
+            ...state.values.getValues().map((value: GateValue<any>) => value.toManifest())
         ]
     }
-    state.connection = startConnection();
+    startConnection();
     return state;
 }
 
-const sendFunction = (message: string) => {
-    if (state.connection?.socketHandler?.sendMessage) {
-        state.connection.socketHandler.sendMessage(message);
-    }
-}
+// const sendFunction = (message: string) => {
+//     if (state.connection?.socketHandler?.sendMessage) {
+//         state.connection.socketHandler.sendMessage(message);
+//     }
+// }
 
 export const state: DeviceState = {
     isStarted: false,
     manifest: undefined,
     connection: undefined,
     values: new Registry<GateValue<any>>(),
-    outputBuffer: new OutputBuffer(sendFunction)
+    // outputBuffer: new OutputBuffer(sendFunction)
+    outputBuffer: new OutputBuffer(() => {})
 };
 
 export default {
