@@ -31,10 +31,16 @@ export class GateValue<T> {
         return this._value;
     }
 
+    protected _isValueChanged = (newValue: T | undefined): boolean => {
+        return this._value !== newValue;
+    }
+
     protected _setLocalValue = (value: T | undefined) => {
-        this._value = value;
-        if (this.onLocalUpdate) {
-            this.onLocalUpdate(this);
+        if (this._isValueChanged(value)) {
+            this._value = value;
+            if (this.onLocalUpdate) {
+                this.onLocalUpdate(this);
+            }
         }
     }
 
@@ -43,13 +49,15 @@ export class GateValue<T> {
     }
 
     protected _setRemoteValue = (value: T | undefined) => {
-        if (this.direction === Directions.input) {
-            this.setValue(value);
-        } else {
-            this._value = value;
-        }
-        if (this.onRemoteUpdate) {
-            this.onRemoteUpdate(this);
+        if (this._isValueChanged(value)) {
+            if (this.direction === Directions.input) {
+                this.setValue(value);
+            } else {
+                this._value = value;
+            }
+            if (this.onRemoteUpdate) {
+                this.onRemoteUpdate(this);
+            }
         }
     }
 

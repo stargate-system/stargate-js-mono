@@ -1,4 +1,4 @@
-import {Connection, Keywords} from "gate-core";
+import {Connection, ConnectionState, Keywords} from "gate-core";
 
 export class ServerlessConnector {
     private readonly _connection: Connection;
@@ -23,7 +23,7 @@ export class ServerlessConnector {
         this.performHandshake();
     }
 
-    private async performHandshake() {
+    private performHandshake = async () => {
         const functionalHandler = this._connection.handler?.getFunctionalHandler();
         if (functionalHandler) {
             const manifestString = await functionalHandler
@@ -32,6 +32,7 @@ export class ServerlessConnector {
             if (manifestString !== undefined) {
                 this._manifest = JSON.parse(manifestString);
                 functionalHandler.sendCommand(Keywords.ready);
+                this._connection.setState(ConnectionState.ready);
             }
         } else {
             throw new Error('On performing handshake: no functionalHandler');

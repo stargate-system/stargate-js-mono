@@ -10,7 +10,7 @@ export class GateNumber extends GateValue<number> {
         this._type = type
     }
 
-    private getWithinRange = (value: number): number => {
+    private _getWithinRange = (value: number): number => {
         if ((this._range[0] !== undefined) && (value < this._range[0])) {
             return this._range[0];
         }
@@ -20,13 +20,21 @@ export class GateNumber extends GateValue<number> {
         return value;
     }
 
+    get minimum(): number | undefined {
+        return this._range[0];
+    }
+
+    get maximum(): number | undefined {
+        return this._range[1];
+    }
+
     setValue = (value: number | undefined) => {
         if (value !== undefined) {
             let checkedValue = value;
             if (this._type === ValueTypes.integer) {
                 checkedValue = Number.isInteger(value) ? value : Math.round(value);
             }
-            this._setLocalValue(this.getWithinRange(checkedValue));
+            this._setLocalValue(this._getWithinRange(checkedValue));
         }
     }
 
@@ -66,7 +74,7 @@ export class GateNumber extends GateValue<number> {
     fromRemote = (textValue: string) => {
         const checkedValue = this._type === ValueTypes.integer ? Number.parseInt(textValue) : Number.parseFloat(textValue);
         if (!Number.isNaN(checkedValue)) {
-            this._setRemoteValue(this.getWithinRange(checkedValue));
+            this._setRemoteValue(this._getWithinRange(checkedValue));
         }
     }
 }
