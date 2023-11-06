@@ -1,12 +1,12 @@
 import logger from "./logger/logger.js";
 import {startConnection} from "./connection/ServerConnection.js";
-import {Registry} from "gate-core";
+import {Manifest, Registry} from "gate-core";
 import {Connection, GateValue, ValueOutputBuffer} from "gate-core";
 import config from "../config.js";
 
 interface DeviceState {
     isStarted: boolean,
-    manifest: Object | undefined,
+    manifest: Manifest | undefined,
     connection: Connection,
     values: Registry<GateValue<any>>,
     outputBuffer: ValueOutputBuffer

@@ -1,3 +1,3 @@
-import {ServerlessConnector} from "./src/DeviceConnector/ServerlessConnector";
+import {ServerlessConnector} from "./src/connectors/DeviceConnector/ServerlessConnector";
 
 export {ServerlessConnector}

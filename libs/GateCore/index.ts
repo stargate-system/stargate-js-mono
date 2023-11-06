@@ -6,7 +6,8 @@ import {ConnectionState} from "./src/commonComponents/Connection/ConnectionState
 import {Connection} from "./src/commonComponents/Connection/Connection.js";
 import {Registry} from "./src/commonComponents/Registry.js";
 import Keywords from "./src/messaging/api/Keywords.js";
-import {ValueMessage} from "./src/commonTypes/ValueMessage";
+import {ValueMessage} from "./src/commonTypes/ValueMessage.js";
+import {Manifest} from "./src/commonTypes/Manifest.js";
 
 export {
     Directions,
@@ -17,5 +18,6 @@ export {
     Connection,
     Registry,
     ValueMessage,
-    Keywords
+    Keywords,
+    Manifest
 }
