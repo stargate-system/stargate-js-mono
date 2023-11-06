@@ -15,12 +15,12 @@ export class MessageHandlerImpl implements MessageHandler{
         this._handleValueMessage = onValueMessage;
     }
 
-    sendValueMessage(messageMap: Map<string, string>) {
+    sendValueMessage = (messageMap: Map<string, string>) => {
         const message = MessageMapper.serializeValueMessage(messageMap);
         this._sendValueMessage(message);
     }
 
-    handleIncomingMessage(message: string) {
+    handleIncomingMessage = (message: string) => {
         if (message.charAt(0) === Markers.functionalMessagePrefix) {
             this._functionalHandler.handleFunctionalMessage(message);
         } else {
@@ -28,7 +28,7 @@ export class MessageHandlerImpl implements MessageHandler{
         }
     }
 
-    getFunctionalHandler() {
+    getFunctionalHandler = () => {
         return this._functionalHandler;
     }
 }

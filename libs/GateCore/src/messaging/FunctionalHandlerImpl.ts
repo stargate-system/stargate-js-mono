@@ -4,83 +4,83 @@ import Markers from "./Markers.js";
 import {FunctionalHandler} from "./api/FunctionalHandler.js";
 
 export class FunctionalHandlerImpl implements FunctionalHandler{
-    private readonly sendFunction: (message: string) => void;
-    private readonly pendingQueries = new Registry<(value: string) => void>();
-    private readonly queryListeners = new Registry<(respond: (response: string) => void) => void>();
-    private readonly commandListeners = new Registry<(params?: Array<string>) => void>();
-    private readonly queryTimeout: number;
+    private readonly _sendFunction: (message: string) => void;
+    private readonly _pendingQueries = new Registry<(value: string) => void>();
+    private readonly _queryListeners = new Registry<(respond: (response: string) => void) => void>();
+    private readonly _commandListeners = new Registry<(params?: Array<string>) => void>();
+    private readonly _queryTimeout: number;
 
     constructor(sendFunction: (message: string) => void, queryTimeout?: number) {
-        this.sendFunction = sendFunction;
-        this.queryTimeout = queryTimeout ?? 5000;
+        this._sendFunction = sendFunction;
+        this._queryTimeout = queryTimeout ?? 5000;
     }
 
-    createQuery(keyword: string): Promise<string> {
-        if (!this.pendingQueries.getByKey(keyword)) {
+    createQuery = (keyword: string): Promise<string> => {
+        if (!this._pendingQueries.getByKey(keyword)) {
             let resolveFunction: (value: string) => void;
             const result = new Promise<string>((resolve, reject) => {
                 const timeout = setTimeout(() => {
-                    this.pendingQueries.remove(keyword);
+                    this._pendingQueries.remove(keyword);
                     reject('Timeout');
-                }, this.queryTimeout);
+                }, this._queryTimeout);
                 resolveFunction = (value: string) => {
                     clearTimeout(timeout);
                     resolve(value);
                 }
             });
             // @ts-ignore
-            this.pendingQueries.add(resolveFunction, keyword);
+            this._pendingQueries.add(resolveFunction, keyword);
             const query = MessageMapper.query(keyword);
-            this.sendFunction(query);
+            this._sendFunction(query);
             return result;
         } else {
             throw new Error(`Query for ${keyword} already pending`);
         }
     }
 
-    addQueryListener(keyword: string, onQuery: (respond: (response: string) => void) => void) {
-        this.queryListeners.add(onQuery, keyword);
+    addQueryListener = (keyword: string, onQuery: (respond: (response: string) => void) => void) => {
+        this._queryListeners.add(onQuery, keyword);
     }
 
-    removeQueryListener(keyword: string) {
-        this.queryListeners.remove(keyword);
+    removeQueryListener = (keyword: string) => {
+        this._queryListeners.remove(keyword);
     }
 
-    addCommandListener(command: string, onCommand: (params?: Array<string>) => void) {
-        this.commandListeners.add(onCommand, command);
+    addCommandListener = (command: string, onCommand: (params?: Array<string>) => void) => {
+        this._commandListeners.add(onCommand, command);
     }
 
-    removeCommandListener(command: string) {
-        this.commandListeners.remove(command);
+    removeCommandListener = (command: string) => {
+        this._commandListeners.remove(command);
     }
 
-    sendCommand(keyword: string, params?: Array<string>) {
-        this.sendFunction(MessageMapper.command(keyword, params));
+    sendCommand = (keyword: string, params?: Array<string>) => {
+        this._sendFunction(MessageMapper.command(keyword, params));
     }
 
-     private handleQueryRequest(queryMessage: string) {
+     private handleQueryRequest = (queryMessage: string) => {
         const keyword = queryMessage.substring(2);
-        const listener = this.queryListeners.getByKey(keyword);
+        const listener = this._queryListeners.getByKey(keyword);
         if (listener) {
-            const respond = (msg: string) => this.sendFunction(MessageMapper.answer(queryMessage, msg));
+            const respond = (msg: string) => this._sendFunction(MessageMapper.answer(queryMessage, msg));
             listener(respond);
         }
     }
 
-    private handleQueryResponse(queryResponse: string) {
+    private handleQueryResponse = (queryResponse: string) => {
         const separatorIndex = queryResponse.indexOf(Markers.mainSeparator);
         const keyword = separatorIndex !== -1 ? queryResponse.substring(2, separatorIndex) : queryResponse.substring(2);
-        const listener = this.pendingQueries.getByKey(keyword);
+        const listener = this._pendingQueries.getByKey(keyword);
         if (listener) {
             listener(queryResponse.substring(separatorIndex + 1));
-            this.pendingQueries.remove(keyword);
+            this._pendingQueries.remove(keyword);
         }
     }
 
-    private handleCommand(commandMessage: string) {
+    private handleCommand = (commandMessage: string) => {
         const separatorIndex = commandMessage.indexOf(Markers.mainSeparator);
         const keyword = separatorIndex !== -1 ? commandMessage.substring(2, separatorIndex) : commandMessage.substring(2);
-        const listener = this.commandListeners.getByKey(keyword);
+        const listener = this._commandListeners.getByKey(keyword);
         if (listener) {
             if (separatorIndex !== -1) {
                 const params = MessageMapper.parseArray(commandMessage.substring(separatorIndex + 1));
@@ -91,7 +91,7 @@ export class FunctionalHandlerImpl implements FunctionalHandler{
         }
     }
 
-    handleFunctionalMessage(message: string) {
+    handleFunctionalMessage = (message: string) => {
         switch (message.toString().charAt(1)) {
             case Markers.queryPrefix:
                 this.handleQueryRequest(message);

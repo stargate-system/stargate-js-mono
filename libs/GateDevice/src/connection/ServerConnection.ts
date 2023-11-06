@@ -12,7 +12,7 @@ export const startConnection = () => {
                 break;
             case ConnectionState.ready:
                 if (state.connection.handler?.sendValueMessage) {
-                    state.outputBuffer.setSendFunction(state.connection.handler.sendValueMessage.bind(state.connection.handler));
+                    state.outputBuffer.setSendFunction(state.connection.handler.sendValueMessage);
                 }
                 break;
         }
@@ -32,7 +32,7 @@ const onValueMessage = (changes: Array<[string, string]>) => {
             if (targetValue.direction === Directions.output) {
                 logger.logWarning('Attempting to remotely change output value: ' + targetValue.valueName)
             } else {
-                targetValue.remoteValue = change[1];
+                targetValue.fromRemote(change[1]);
             }
         } else {
             logger.logWarning('Unknown value with id: ' + change[0]);

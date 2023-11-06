@@ -4,17 +4,12 @@ import {MessageHandler} from "../messaging/api/MessageHandler.js";
 import MessagingFactory from "../messaging/api/MessagingFactory.js";
 
 export class Connection {
-    private _state: ConnectionState;
-    private readonly _stateChangeListeners: Registry<(connection: Connection) => void>
+    private _state: ConnectionState = ConnectionState.closed;
+    private readonly _stateChangeListeners= new Registry<(connection: Connection) => void>();
     private _close: (() => void) | undefined;
     private _handler: MessageHandler | undefined;
 
-    constructor() {
-        this._state = ConnectionState.closed;
-        this._stateChangeListeners = new Registry<(connection: Connection) => void>();
-    }
-
-    private _handleClose() {
+    private _handleClose = () => {
         this._close = undefined;
         this._handler = undefined;
         if (this._state !== ConnectionState.closed) {
@@ -22,15 +17,15 @@ export class Connection {
         }
     }
 
-    addStateChangeListener(callback: (connection: Connection) => void): string {
+    addStateChangeListener = (callback: (connection: Connection) => void): string => {
         return this._stateChangeListeners.add(callback);
     }
 
-    removeStateChangeListener(key: string) {
+    removeStateChangeListener = (key: string) => {
         this._stateChangeListeners.remove(key);
     }
 
-    close() {
+    close = () => {
         if (this._state !== ConnectionState.closed) {
             if (this._close) {
                 this._close();
@@ -39,16 +34,16 @@ export class Connection {
         }
     }
 
-    setConnected(sendFunction: (message: string) => void,
+    setConnected = (sendFunction: (message: string) => void,
                  closeFunction: () => void,
                  onMessageSetter: (messageHandler: (message: string) => void) => void,
                  onCloseSetter: (closeHandler: () => void) => void,
-                 onValueMessage: (changes: Array<[string, string]>) => void) {
+                 onValueMessage: (changes: Array<[string, string]>) => void) => {
         this._state = ConnectionState.connected;
         this._close = closeFunction;
         this._handler = MessagingFactory.getMessageHandler(sendFunction, onValueMessage);
-        onMessageSetter(this._handler.handleIncomingMessage.bind(this._handler));
-        onCloseSetter(this._handleClose.bind(this));
+        onMessageSetter(this._handler.handleIncomingMessage);
+        onCloseSetter(this._handleClose);
     }
 
     get state(): ConnectionState {
@@ -59,7 +54,7 @@ export class Connection {
         return this._handler;
     }
 
-    setState(value: ConnectionState) {
+    setState = (value: ConnectionState) => {
         this._state = value;
         this._stateChangeListeners.getValues().forEach((callback) => callback(this));
     }

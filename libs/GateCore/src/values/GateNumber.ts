@@ -3,11 +3,10 @@ import {ValueTypes} from "./ValueTypes.js";
 
 export class GateNumber extends GateValue<number> {
     private readonly _range: [number | undefined, number | undefined] = [undefined, undefined];
-    private readonly _type: ValueTypes;
 
     constructor(type: ValueTypes.integer | ValueTypes.float, id?: string) {
         super(id);
-        super.value = 0;
+        this.setValue(0);
         this._type = type
     }
 
@@ -21,24 +20,26 @@ export class GateNumber extends GateValue<number> {
         return value;
     }
 
-    setValue(value: number) {
-        let checkedValue = value;
-        if (this._type === ValueTypes.integer) {
-            checkedValue = Number.isInteger(value) ? value : Math.round(value);
+    setValue = (value: number | undefined) => {
+        if (value !== undefined) {
+            let checkedValue = value;
+            if (this._type === ValueTypes.integer) {
+                checkedValue = Number.isInteger(value) ? value : Math.round(value);
+            }
+            this._setLocalValue(this.getWithinRange(checkedValue));
         }
-        super.value = this.getWithinRange(checkedValue);
     }
 
     setMinimum(minimum: number | undefined) {
         this._range[0] = minimum;
         if ((minimum !== undefined) && (super.value !== undefined) && (super.value < minimum)) {
-            super.value = minimum;
+            super.setValue(minimum);
         }
     }
     setMaximum(maximum: number | undefined) {
         this._range[1] = maximum;
         if ((maximum !== undefined) && (super.value !== undefined) && (super.value > maximum)) {
-            super.value = maximum;
+            super.setValue(maximum);
         }
     }
 
@@ -49,25 +50,23 @@ export class GateNumber extends GateValue<number> {
 
     toManifest() {
         const manifest = super.toManifest();
-        // @ts-ignore
-        manifest.type = ValueTypes.number;
         if (this._range.length) {
             // @ts-ignore
-            manifest.settings = {
+            manifest.options = {
                 range: this._range
             }
         }
         return manifest;
     }
 
-    toString(): string {
-        return super.value !== undefined ? super.value.toString() : '';
+    toString = (): string => {
+        return this.value !== undefined ? this.value.toString() : '0';
     }
 
-    fromRemote(textValue: string) {
+    fromRemote = (textValue: string) => {
         const checkedValue = this._type === ValueTypes.integer ? Number.parseInt(textValue) : Number.parseFloat(textValue);
         if (!Number.isNaN(checkedValue)) {
-            this.remoteValue = this.getWithinRange(checkedValue);
+            this._setRemoteValue(this.getWithinRange(checkedValue));
         }
     }
 }

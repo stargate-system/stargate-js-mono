@@ -4,21 +4,15 @@ import {ValueTypes} from "./ValueTypes.js";
 export class GateBoolean extends GateValue<boolean> {
     constructor(id?: string) {
         super(id);
-        super.value = false;
+        this.setValue(false);
+        this._type = ValueTypes.boolean;
     }
 
-    toManifest() {
-        const manifest = super.toManifest();
-        // @ts-ignore
-        manifest.type = ValueTypes.boolean;
-        return manifest;
-    }
-
-    toString() {
+    toString = () => {
         return super.value ? '1' : '0';
     }
 
-    fromRemote(textValue: string) {
-        this.remoteValue = !(textValue === '0');
+    fromRemote = (textValue: string) => {
+        this._setRemoteValue(!(textValue === '0'));
     }
 }

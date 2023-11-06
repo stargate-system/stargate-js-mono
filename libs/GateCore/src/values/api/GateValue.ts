@@ -4,6 +4,7 @@ export class GateValue<T> {
     private static nextId = 1;
     private readonly _id: string;
     private _value: T | undefined;
+    protected _type: string | undefined;
     valueName: string | undefined;
     direction: Directions | undefined;
     onLocalUpdate: ((value: GateValue<T>) => void) | undefined;
@@ -22,20 +23,28 @@ export class GateValue<T> {
         return this._id;
     }
 
+    get type(): string | undefined {
+        return this._type;
+    }
+
     get value(): T | undefined {
         return this._value;
     }
 
-    set value(value: T | undefined) {
+    protected _setLocalValue = (value: T | undefined) => {
         this._value = value;
         if (this.onLocalUpdate) {
             this.onLocalUpdate(this);
         }
     }
 
-    set remoteValue(value: T | undefined) {
+    setValue = (value: T | undefined) => {
+        this._setLocalValue(value);
+    }
+
+    protected _setRemoteValue = (value: T | undefined) => {
         if (this.direction === Directions.input) {
-            this.value = value;
+            this.setValue(value);
         } else {
             this._value = value;
         }
@@ -44,17 +53,21 @@ export class GateValue<T> {
         }
     }
 
-    toString(): string {
+    toString = (): string => {
         throw new Error('Not implemented');
     }
 
-    fromRemote(textValue: string) {
+    fromRemote = (textValue: string): void => {
         throw new Error('Not implemented');
     }
 
     toManifest() {
         const manifest: Object = {
             id: this._id,
+        }
+        if (this._type !== undefined) {
+            // @ts-ignore
+            manifest.type = this._type;
         }
         if (this.valueName !== undefined) {
             // @ts-ignore
@@ -65,5 +78,5 @@ export class GateValue<T> {
             manifest.direction = this.direction;
         }
         return manifest;
-    }
+    };
 }

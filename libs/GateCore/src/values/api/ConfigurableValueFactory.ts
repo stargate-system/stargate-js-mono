@@ -12,19 +12,19 @@ export class ConfigurableValueFactory {
         this._initializeValueFunction = initializeValueFunction;
     }
 
-    createBoolean(direction: Directions, name?: string): GateBoolean {
+    createBoolean = (direction: Directions, name?: string): GateBoolean => {
         const gateValue = new GateBoolean();
         this._initializeValueFunction(gateValue, direction, name);
         return gateValue;
     }
 
-    createString(direction: Directions, name?: string): GateString {
+    createString = (direction: Directions, name?: string): GateString => {
         const gateValue = new GateString();
         this._initializeValueFunction(gateValue, direction, name);
         return gateValue;
     }
 
-    createInteger(direction: Directions, name?: string, range?: [number | undefined, number | undefined]): GateNumber {
+    createInteger = (direction: Directions, name?: string, range?: [number | undefined, number | undefined]): GateNumber => {
         const gateValue = new GateNumber(ValueTypes.integer);
         if (range !== undefined) {
             gateValue.setRange(range);
@@ -33,7 +33,7 @@ export class ConfigurableValueFactory {
         return gateValue;
     }
 
-    createFloat(direction: Directions, name?: string, range?: [number | undefined, number | undefined]): GateNumber {
+    createFloat = (direction: Directions, name?: string, range?: [number | undefined, number | undefined]): GateNumber => {
         const gateValue = new GateNumber(ValueTypes.float);
         if (range !== undefined) {
             gateValue.setRange(range);
