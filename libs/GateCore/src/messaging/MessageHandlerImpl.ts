@@ -3,20 +3,21 @@ import {FunctionalHandler} from "./api/FunctionalHandler.js";
 import MessagingFactory from "./api/MessagingFactory.js";
 import {MessageHandler} from "./api/MessageHandler.js";
 import Markers from "./Markers.js";
+import {ValueMessage} from "./api/ValueMessage";
 
 export class MessageHandlerImpl implements MessageHandler{
     private readonly _sendValueMessage: (message: string) => void;
     private readonly _functionalHandler: FunctionalHandler;
-    private readonly _handleValueMessage: (changes: Array<[string, string]>) => void;
+    private readonly _handleValueMessage: (changes: ValueMessage) => void;
 
-    constructor(sendFunction: (message: string) => void, onValueMessage: (changes: Array<[string, string]>) => void) {
+    constructor(sendFunction: (message: string) => void, onValueMessage: (changes: ValueMessage) => void) {
         this._sendValueMessage = sendFunction;
         this._functionalHandler = MessagingFactory.getFunctionalHandler(sendFunction);
         this._handleValueMessage = onValueMessage;
     }
 
-    sendValueMessage = (messageMap: Map<string, string>) => {
-        const message = MessageMapper.serializeValueMessage(messageMap);
+    sendValueMessage = (valueMessage: ValueMessage) => {
+        const message = MessageMapper.serializeValueMessage(valueMessage);
         this._sendValueMessage(message);
     }
 

@@ -2,6 +2,7 @@ import {ConnectionState} from "./ConnectionState.js";
 import {Registry} from "../components/Registry.js";
 import {MessageHandler} from "../messaging/api/MessageHandler.js";
 import MessagingFactory from "../messaging/api/MessagingFactory.js";
+import {ValueMessage} from "../messaging/api/ValueMessage";
 
 export class Connection {
     private _state: ConnectionState = ConnectionState.closed;
@@ -38,7 +39,7 @@ export class Connection {
                  closeFunction: () => void,
                  onMessageSetter: (messageHandler: (message: string) => void) => void,
                  onCloseSetter: (closeHandler: () => void) => void,
-                 onValueMessage: (changes: Array<[string, string]>) => void) => {
+                 onValueMessage: (changes: ValueMessage) => void) => {
         this._state = ConnectionState.connected;
         this._close = closeFunction;
         this._handler = MessagingFactory.getMessageHandler(sendFunction, onValueMessage);

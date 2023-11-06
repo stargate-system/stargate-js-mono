@@ -1,4 +1,5 @@
 import Markers from "./Markers.js";
+import {ValueMessage} from "./api/ValueMessage";
 
 const {
     mainSeparator,
@@ -37,23 +38,18 @@ const parseArray = (message: string) => {
     return messagesArray;
 }
 
-const serializeValueMessage = (messageMap: Map<string, string>) => {
+const serializeValueMessage = (valueMessage: ValueMessage) => {
     let ids = '';
-    let lengths = '';
-    let messages = '';
-    [...messageMap.keys()].forEach((id) => {
-        ids += id + auxSeparator;
-    });
-    const values = [...messageMap.values()];
-    values.forEach((message) => {
-        lengths += message.length + auxSeparator;
-        messages += message;
+    const values: Array<string> = [];
+    valueMessage.forEach((entry) => {
+        ids += entry[0] + auxSeparator;
+        values.push(entry[1]);
     });
     const serializedValues = serializeArray(values);
     return ids.slice(0, -1) + mainSeparator + serializedValues;
 }
 
-const parseValueMessage = (message: string): Array<[string, string]> => {
+const parseValueMessage = (message: string): ValueMessage => {
     const firstSeparator = message.indexOf(mainSeparator);
     const ids = message.slice(0, firstSeparator).split(auxSeparator);
     const serializedValues = message.slice(firstSeparator + 1);
@@ -61,7 +57,7 @@ const parseValueMessage = (message: string): Array<[string, string]> => {
     if (ids.length !== messages.length) {
         throw new Error('Ids count not match messages count');
     }
-    const result: Array<[string, string]> = [];
+    const result: ValueMessage = [];
     ids.forEach((id, index) => {
         result.push([id, messages[index]]);
     });

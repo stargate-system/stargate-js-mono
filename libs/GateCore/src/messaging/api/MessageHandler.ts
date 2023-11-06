@@ -1,7 +1,8 @@
 import {FunctionalHandler} from "./FunctionalHandler.js";
+import {ValueMessage} from "./ValueMessage";
 
 export interface MessageHandler {
-    sendValueMessage: (messageMap: Map<string, string>) => void,
+    sendValueMessage: (message: ValueMessage) => void,
     handleIncomingMessage: (msg: string) => void,
     getFunctionalHandler: () => FunctionalHandler
 }

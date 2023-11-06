@@ -1,7 +1,7 @@
 // @ts-ignore
 import {WebSocketServer} from 'ws';
 import config from "../../../config.js";
-import {ConnectionState, Keywords} from 'gate-core'
+import {ConnectionState, Keywords, ValueMessage} from 'gate-core'
 import {state} from "../../GateDevice.js";
 
 interface WebSocketInterface {
@@ -11,7 +11,7 @@ interface WebSocketInterface {
     send: (message: string) => void
 }
 
-export const initServerless = (onValueMessage: (changes: Array<[string, string]>) => void) => {
+export const initServerless = (onValueMessage: (changes: ValueMessage) => void) => {
     const server = new WebSocketServer({port: config.port});
     server.on('connection', (socket: WebSocketInterface) => handleConnection(socket, onValueMessage));
 };
@@ -43,7 +43,7 @@ const clearHandshakeListeners = (connectionStateListenerKey: string) => {
     }
 };
 
-const handleConnection = (socket: WebSocketInterface, onValueMessage: (changes: Array<[string, string]>) => void) => {
+const handleConnection = (socket: WebSocketInterface, onValueMessage: (changes: ValueMessage) => void) => {
     if (state.connection.state !== ConnectionState.closed) {
         socket.close();
     } else {

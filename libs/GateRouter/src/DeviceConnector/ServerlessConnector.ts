@@ -1,9 +1,9 @@
-import {Connection, ConnectionState, Keywords} from "gate-core";
+import {Connection, ConnectionState, Keywords, ValueMessage} from "gate-core";
 
 export class ServerlessConnector {
     private readonly _connection: Connection;
     private _manifest: Object | undefined;
-    onValueMessage: (change: Array<[string, string]>) => void;
+    onValueMessage: (change: ValueMessage) => void;
 
     constructor(socket: WebSocket) {
         this._connection = new Connection();
@@ -18,7 +18,7 @@ export class ServerlessConnector {
             socket.close.bind(socket),
             onMessageSetter,
             onCloseSetter,
-            (change: Array<[string, string]>) => this.onValueMessage(change)
+            (change: ValueMessage) => this.onValueMessage(change)
         )
         this.performHandshake();
     }

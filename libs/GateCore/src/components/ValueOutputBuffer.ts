@@ -1,10 +1,11 @@
 import {GateValue} from "../values/api/GateValue.js";
+import {ValueMessage} from "../messaging/api/ValueMessage";
 
 export class ValueOutputBuffer {
     private _buffer: Map<string, string> = new Map<string, string>();
     private readonly _config: {outputBufferDelay: number};
     private _bufferTimeout: NodeJS.Timeout | undefined;
-    private _sendFunction: ((messageMap: Map<string, string>) => void) | undefined;
+    private _sendFunction: ((valueMessage: ValueMessage) => void) | undefined;
 
     constructor(config?: {outputBufferDelay: number}) {
         this._config = config?.outputBufferDelay !== undefined ? config : {outputBufferDelay: 0};
@@ -24,7 +25,7 @@ export class ValueOutputBuffer {
             this._bufferTimeout = undefined;
         }
         if (this._sendFunction && this.hasContent()) {
-            this._sendFunction(this._buffer);
+            this._sendFunction([...this._buffer.entries()]);
             this.clear();
         }
     }
@@ -41,7 +42,7 @@ export class ValueOutputBuffer {
         return !!this._buffer.size;
     }
 
-    setSendFunction = (sendFunction: ((messageMap: Map<string, string>) => void) | undefined) => {
+    setSendFunction = (sendFunction: ((valueMessage: ValueMessage) => void) | undefined) => {
         this._sendFunction = sendFunction;
         this.flush();
     }

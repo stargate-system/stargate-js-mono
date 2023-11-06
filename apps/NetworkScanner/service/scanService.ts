@@ -1,5 +1,7 @@
 import {Dispatch, SetStateAction} from "react";
 import scanConfig from "@/service/scanConfig";
+import {ServerlessConnector} from "gate-router";
+import {ConnectionState} from "gate-core";
 
 const PROGRESS_MAX_COUNT = 300;
 export enum scanResult {
@@ -188,12 +190,27 @@ const handleDeviceScanFinished = (failOnNoDevices: boolean) => {
         openSockets.forEach((socket) => cleanSocketCallbacks(socket));
         aliveSockets = [];
         finishScan(scanResult.SUCCESS);
+        tempCode();
     } else if (failOnNoDevices) {
         finishScan(scanResult.FAILED_DEVICES);
     }
     if (releaseDeviceScanLatch) {
         releaseDeviceScanLatch();
     }
+}
+
+// TODO remove
+const tempCode = () => {
+    openSockets.forEach((socket) => {
+        const connector = new ServerlessConnector(socket);
+        connector.connection.addStateChangeListener((connection) => {
+            console.log('>>> Connection state: ' + connection.state);
+            if (connection.state === ConnectionState.ready) {
+                console.log('manifest:', connector.manifest);
+            }
+        });
+        connector.onValueMessage = (msg) => console.log('message:', msg);
+    });
 }
 
 const cleanSocketCallbacks = (socket: WebSocket) => {

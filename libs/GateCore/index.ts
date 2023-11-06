@@ -6,6 +6,7 @@ import {ConnectionState} from "./src/connection/ConnectionState.js";
 import {Connection} from "./src/connection/Connection.js";
 import {Registry} from "./src/components/Registry.js";
 import Keywords from "./src/messaging/api/Keywords.js";
+import {ValueMessage} from "./src/messaging/api/ValueMessage";
 
 export {
     Directions,
@@ -15,5 +16,6 @@ export {
     ConnectionState,
     Connection,
     Registry,
+    ValueMessage,
     Keywords
 }
