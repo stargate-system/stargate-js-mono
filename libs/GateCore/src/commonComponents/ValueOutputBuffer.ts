@@ -1,5 +1,5 @@
 import {GateValue} from "../values/api/GateValue.js";
-import {ValueMessage} from "../messaging/api/ValueMessage";
+import {ValueMessage} from "../commonTypes/ValueMessage";
 
 export class ValueOutputBuffer {
     private _buffer: Map<string, string> = new Map<string, string>();

@@ -3,7 +3,7 @@ import {FunctionalHandler} from "./api/FunctionalHandler.js";
 import MessagingFactory from "./api/MessagingFactory.js";
 import {MessageHandler} from "./api/MessageHandler.js";
 import Markers from "./Markers.js";
-import {ValueMessage} from "./api/ValueMessage";
+import {ValueMessage} from "../commonTypes/ValueMessage";
 
 export class MessageHandlerImpl implements MessageHandler{
     private readonly _sendValueMessage: (message: string) => void;
