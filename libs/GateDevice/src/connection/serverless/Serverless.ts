@@ -2,7 +2,7 @@
 import {WebSocketServer} from 'ws';
 import config from "../../../config.js";
 import {ConnectionState, Keywords, ValueMessage} from 'gate-core'
-import {state} from "../../GateDevice.js";
+import {state} from "../../api/GateDevice.js";
 
 interface WebSocketInterface {
     close: () => void,

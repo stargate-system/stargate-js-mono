@@ -1,8 +1,8 @@
 import config from "../../config.js";
 import {initServerless} from "./serverless/Serverless.js";
 import {ConnectionState, Directions, ValueMessage} from 'gate-core';
-import {state} from "../GateDevice.js";
-import logger from "../logger/logger.js";
+import {state} from "../api/GateDevice.js";
+import logger from "../DeviceLogger.js";
 
 export const startConnection = () => {
     state.connection.addStateChangeListener(() => {
@@ -30,12 +30,12 @@ const onValueMessage = (changes: ValueMessage) => {
         const targetValue = state.values.getByKey(change[0]);
         if (targetValue !== undefined) {
             if (targetValue.direction === Directions.output) {
-                logger.logWarning('Attempting to remotely change output value: ' + targetValue.valueName)
+                logger.warning('Attempting to remotely change output value: ' + targetValue.valueName)
             } else {
                 targetValue.fromRemote(change[1]);
             }
         } else {
-            logger.logWarning('Unknown value with id: ' + change[0]);
+            logger.warning('Unknown value with id: ' + change[0]);
         }
     })
 }

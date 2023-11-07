@@ -1,4 +1,4 @@
-import {GateValue} from "../values/api/GateValue.js";
+import {AbstractValue} from "../../values/api/AbstractValue.js";
 import {ValueMessage} from "../commonTypes/ValueMessage";
 
 export class ValueOutputBuffer {
@@ -11,7 +11,7 @@ export class ValueOutputBuffer {
         this._config = config?.outputBufferDelay !== undefined ? config : {outputBufferDelay: 0};
     }
 
-    add = (gateValue: GateValue<any>) => {
+    add = (gateValue: AbstractValue<any>) => {
         // @ts-ignore
         this._buffer.set(gateValue.id, gateValue.toString());
         if (this._sendFunction) {

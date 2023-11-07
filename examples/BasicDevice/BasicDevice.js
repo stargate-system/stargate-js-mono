@@ -1,4 +1,5 @@
-import {Directions, GateDevice, ValueFactory, logger, ConnectionState} from 'gate-device';
+import {Directions, ConnectionState, GateDevice} from 'gate-device';
+const {logger, ValueFactory} = GateDevice;
 
 const testOut = ValueFactory.createInteger(Directions.output, 'test out', [0, 3]);
 GateDevice.setDeviceName('Test device');
@@ -16,10 +17,11 @@ const alterValue = () => {
     counter += incrementValue;
     // logger.logInfo('Set to: ' + counter);
     testOut.setValue(counter);
+    logger.info('Set to: ' + testOut.value);
 }
 
 connection.addStateChangeListener(() => {
-    logger.logInfo('Connection state: ' + connection.state);
+    logger.info('Connection state: ' + connection.state);
     switch (connection.state) {
         case ConnectionState.ready:
             interval = setInterval(() => {
@@ -30,5 +32,5 @@ connection.addStateChangeListener(() => {
             clearInterval(interval);
     }
 });
-logger.logInfo('Waiting for connection...');
+logger.info('Waiting for connection...');
 

@@ -1,7 +1,7 @@
-import {GateValue} from "./api/GateValue.js";
+import {AbstractValue} from "./api/AbstractValue.js";
 import {ValueTypes} from "./ValueTypes.js";
 
-export class GateNumber extends GateValue<number> {
+export class GateNumber extends AbstractValue<number> {
     private readonly _range: [number | undefined, number | undefined] = [undefined, undefined];
 
     constructor(type: ValueTypes.integer | ValueTypes.float, id?: string) {

@@ -1,5 +1,5 @@
 import Markers from "./Markers.js";
-import {ValueMessage} from "../commonTypes/ValueMessage";
+import {ValueMessage} from "../api/commonTypes/ValueMessage";
 
 const {
     mainSeparator,

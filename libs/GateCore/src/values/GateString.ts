@@ -1,7 +1,7 @@
-import {GateValue} from "./api/GateValue.js";
+import {AbstractValue} from "./api/AbstractValue.js";
 import {ValueTypes} from "./ValueTypes.js";
 
-export class GateString extends GateValue<string> {
+export class GateString extends AbstractValue<string> {
     constructor(id?: string) {
         super(id);
         this.setValue('');

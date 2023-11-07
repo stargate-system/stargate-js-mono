@@ -1,14 +1,15 @@
-import logger from "./logger/logger.js";
-import {startConnection} from "./connection/ServerConnection.js";
+import logger from "../DeviceLogger.js";
+import {startConnection} from "../connection/ServerConnection.js";
 import {Manifest, Registry} from "gate-core";
-import {Connection, GateValue, ValueOutputBuffer} from "gate-core";
-import config from "../config.js";
+import {Connection, AbstractValue, ValueOutputBuffer} from "gate-core";
+import config from "../../config.js";
+import ValueFactory from "../ValueFactory.js";
 
 interface DeviceState {
     isStarted: boolean,
     manifest: Manifest | undefined,
     connection: Connection,
-    values: Registry<GateValue<any>>,
+    values: Registry<AbstractValue<any>>,
     outputBuffer: ValueOutputBuffer
 }
 
@@ -18,20 +19,20 @@ const setDeviceName = (name: string) => {
     if (!state.isStarted) {
         deviceName = name;
     } else {
-        logger.logWarning('Attempting to change device name after device started');
+        logger.warning('Attempting to change device name after device started');
     }
 }
 
 const startDevice = (): Connection | undefined => {
     if (state.isStarted) {
-        logger.logWarning("Attempting to start already running device");
+        logger.warning("Attempting to start already running device");
         return;
     }
     state.isStarted = true;
     state.manifest = {
         deviceName,
         values: [
-            ...state.values.getValues().map((value: GateValue<any>) => value.toManifest())
+            ...state.values.getValues().map((value: AbstractValue<any>) => value.toManifest())
         ]
     }
     startConnection();
@@ -42,11 +43,14 @@ export const state: DeviceState = {
     isStarted: false,
     manifest: undefined,
     connection: new Connection(),
-    values: new Registry<GateValue<any>>(),
+    values: new Registry<AbstractValue<any>>(),
     outputBuffer: new ValueOutputBuffer(config)
 };
 
 export default {
     setDeviceName,
-    startDevice
+    startDevice,
+    logger,
+    config,
+    ValueFactory
 }

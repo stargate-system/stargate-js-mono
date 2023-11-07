@@ -1,20 +1,21 @@
 import {Directions} from "./Directions.js";
+import {ValueManifest} from "./ValueManifest";
 
-export class GateValue<T> {
+export class AbstractValue<T> {
     private static nextId = 1;
     private readonly _id: string;
     private _value: T | undefined;
     protected _type: string | undefined;
     valueName: string | undefined;
     direction: Directions | undefined;
-    onLocalUpdate: ((value: GateValue<T>) => void) | undefined;
-    onRemoteUpdate: ((value: GateValue<T>) => void) | undefined;
+    onLocalUpdate: ((value: AbstractValue<T>) => void) | undefined;
+    onRemoteUpdate: ((value: AbstractValue<T>) => void) | undefined;
 
     constructor(id?: string) {
         if (id !== undefined) {
             this._id = id;
         } else {
-            const generatedId = GateValue.nextId++;
+            const generatedId = AbstractValue.nextId++;
             this._id = generatedId.toString();
         }
     }
@@ -69,8 +70,8 @@ export class GateValue<T> {
         throw new Error('Not implemented');
     }
 
-    toManifest() {
-        const manifest: Object = {
+    toManifest(): ValueManifest {
+        const manifest: ValueManifest = {
             id: this._id,
         }
         if (this._type !== undefined) {

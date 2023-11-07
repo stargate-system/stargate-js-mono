@@ -1,4 +1,4 @@
-import {Registry} from "../commonComponents/Registry.js";
+import {Registry} from "../api/commonComponents/Registry.js";
 import MessageMapper from "./MessageMapper.js";
 import Markers from "./Markers.js";
 import {FunctionalHandler} from "./api/FunctionalHandler.js";
