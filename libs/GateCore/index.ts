@@ -11,6 +11,7 @@ import {Manifest} from "./src/api/commonTypes/Manifest.js";
 import {ValueManifest} from "./src/values/api/ValueManifest.js";
 import {Logger} from "./src/api/commonTypes/Logger.js";
 import LogPrefix from "./src/api/commonConstants/LogPrefix.js";
+import {SystemConnector} from "./src/api/commonTypes/SystemConnector";
 
 export {
     Directions,
@@ -25,5 +26,6 @@ export {
     Manifest,
     ValueManifest,
     Logger,
-    LogPrefix
+    LogPrefix,
+    SystemConnector
 }

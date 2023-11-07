@@ -1,17 +1,17 @@
 import {SocketWrapper, ConnectionState, Keywords, Manifest, ValueMessage} from "gate-core";
-import {DeviceConnector} from "../../api/DeviceConnector";
+import {DeviceConnector} from "gate-router";
 
-export class ServerlessConnector implements DeviceConnector{
+export class ServerlessDeviceConnector implements DeviceConnector{
     private static _nextId = 1;
     private readonly _id: string;
     private readonly _connection: SocketWrapper;
     private _manifest: Manifest | undefined;
     onValueMessage: (change: ValueMessage) => void = () => {};
-    onDisconnect: () => void = () => {};
+    onStateChange: (state: ConnectionState) => void = () => {};
 
     constructor(socket: WebSocket) {
-        this._id = ServerlessConnector._nextId.toString();
-        ServerlessConnector._nextId++;
+        this._id = ServerlessDeviceConnector._nextId.toString();
+        ServerlessDeviceConnector._nextId++;
         this._connection = new SocketWrapper();
         // @ts-ignore
         const onMessageSetter = (messageHandler: (msg: string) => void) => socket.onmessage = (event) => {
@@ -26,9 +26,7 @@ export class ServerlessConnector implements DeviceConnector{
             (change: ValueMessage) => this.onValueMessage(change)
         )
         this._connection.addStateChangeListener((state) => {
-            if (state === ConnectionState.closed) {
-                this.onDisconnect();
-            }
+            this.onStateChange(state);
         })
         this.performHandshake();
     }

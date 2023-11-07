@@ -1,7 +1,7 @@
-import {Registry, ValueMessage} from "gate-core";
-import {DeviceConnector} from "./api/DeviceConnector";
-import {ControllerConnector} from "./api/ControllerConnector";
-import {EventName} from "./api/EventName";
+import {ConnectionState, Registry, ValueMessage} from "gate-core";
+import {DeviceConnector} from "./DeviceConnector.js";
+import {ControllerConnector} from "./ControllerConnector.js";
+import {EventName} from "./EventName.js";
 
 const deviceRegistry = new Registry<DeviceConnector>();
 const controllerRegistry = new Registry<ControllerConnector>();
@@ -16,9 +16,11 @@ const addDevice = (device: DeviceConnector) => {
     }
     controllerRegistry.getValues()
         .forEach((controller) => controller.handleDeviceEvent(EventName.connected, device));
-    device.onDisconnect = () => {
-        deviceRegistry.remove(device.id);
-        deviceDisconnected(device);
+    device.onStateChange = (state) => {
+        if (state === ConnectionState.closed) {
+            deviceRegistry.remove(device.id);
+            deviceDisconnected(device);
+        }
     };
     device.onValueMessage = (valueMessage: ValueMessage) => routeDeviceMessage(valueMessage, device);
 }
