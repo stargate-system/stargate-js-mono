@@ -6,7 +6,7 @@ import {ValueMessage} from "../../commonTypes/ValueMessage";
 
 export class Connection {
     private _state: ConnectionState = ConnectionState.closed;
-    private readonly _stateChangeListeners= new Registry<(connection: Connection) => void>();
+    private readonly _stateChangeListeners= new Registry<(state: ConnectionState) => void>();
     private _close: (() => void) | undefined;
     private _handler: MessageHandler | undefined;
 
@@ -18,7 +18,7 @@ export class Connection {
         }
     }
 
-    addStateChangeListener = (callback: (connection: Connection) => void): string => {
+    addStateChangeListener = (callback: (state: ConnectionState) => void): string => {
         return this._stateChangeListeners.add(callback);
     }
 
@@ -57,6 +57,6 @@ export class Connection {
 
     setState = (value: ConnectionState) => {
         this._state = value;
-        this._stateChangeListeners.getValues().forEach((callback) => callback(this));
+        this._stateChangeListeners.getValues().forEach((callback) => callback(this._state));
     }
 }

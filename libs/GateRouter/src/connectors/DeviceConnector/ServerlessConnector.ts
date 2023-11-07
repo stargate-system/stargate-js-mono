@@ -1,13 +1,18 @@
-import {Connection, ConnectionState, Keywords, ValueMessage} from "gate-core";
+import {Connection, ConnectionState, Keywords, Manifest, ValueMessage} from "gate-core";
+import {DeviceConnector} from "../../api/DeviceConnector";
 
-export class ServerlessConnector {
+export class ServerlessConnector implements DeviceConnector{
+    private static _nextId = 1;
+    private readonly _id: string;
     private readonly _connection: Connection;
-    private _manifest: Object | undefined;
-    onValueMessage: (change: ValueMessage) => void;
+    private _manifest: Manifest | undefined;
+    onValueMessage: (change: ValueMessage) => void = () => {};
+    onDisconnect: () => void = () => {};
 
     constructor(socket: WebSocket) {
+        this._id = ServerlessConnector._nextId.toString();
+        ServerlessConnector._nextId++;
         this._connection = new Connection();
-        this.onValueMessage = () => {};
         // @ts-ignore
         const onMessageSetter = (messageHandler: (msg: string) => void) => socket.onmessage = (event) => {
             messageHandler(event.data);
@@ -20,6 +25,11 @@ export class ServerlessConnector {
             onCloseSetter,
             (change: ValueMessage) => this.onValueMessage(change)
         )
+        this._connection.addStateChangeListener((state) => {
+            if (state === ConnectionState.closed) {
+                this.onDisconnect();
+            }
+        })
         this.performHandshake();
     }
 
@@ -31,6 +41,11 @@ export class ServerlessConnector {
                 .catch(() => this._connection.close());
             if (manifestString !== undefined) {
                 this._manifest = JSON.parse(manifestString);
+                if (this._manifest) {
+                    this._manifest.id = this._id;
+                } else {
+                    throw new Error('On performing handshake: received invalid manifest - ' + manifestString);
+                }
                 functionalHandler.sendCommand(Keywords.ready);
                 this._connection.setState(ConnectionState.ready);
             }
@@ -44,7 +59,15 @@ export class ServerlessConnector {
         return this._connection;
     }
 
-    get manifest(): Object | undefined {
+    get manifest(): Manifest | undefined {
         return this._manifest;
     }
+
+    handleValueMessage(valueMessage: ValueMessage): void {
+        this._connection.handler?.sendValueMessage(valueMessage);
+    }
+
+    get id(): string {
+        return this._id;
+    };
 }

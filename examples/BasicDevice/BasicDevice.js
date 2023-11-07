@@ -15,18 +15,15 @@ const alterValue = () => {
         incrementValue = 1;
     }
     counter += incrementValue;
-    // logger.logInfo('Set to: ' + counter);
+    logger.info('Set to: ' + counter);
     testOut.setValue(counter);
-    logger.info('Set to: ' + testOut.value);
 }
 
-connection.addStateChangeListener(() => {
-    logger.info('Connection state: ' + connection.state);
-    switch (connection.state) {
+connection.addStateChangeListener((state) => {
+    logger.info('Connection state: ' + state);
+    switch (state) {
         case ConnectionState.ready:
-            interval = setInterval(() => {
-                alterValue();
-            }, 1000);
+            interval = setInterval(alterValue, 1000);
             break;
         case ConnectionState.closed:
             clearInterval(interval);

@@ -203,9 +203,9 @@ const handleDeviceScanFinished = (failOnNoDevices: boolean) => {
 const tempCode = () => {
     openSockets.forEach((socket) => {
         const connector = new ServerlessConnector(socket);
-        connector.connection.addStateChangeListener((connection) => {
-            console.log('>>> Connection state: ' + connection.state);
-            if (connection.state === ConnectionState.ready) {
+        connector.connection.addStateChangeListener((state) => {
+            console.log('>>> Connection state: ' + state);
+            if (state === ConnectionState.ready) {
                 console.log('manifest:', connector.manifest);
             }
         });
