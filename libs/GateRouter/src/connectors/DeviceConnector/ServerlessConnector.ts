@@ -1,10 +1,10 @@
-import {Connection, ConnectionState, Keywords, Manifest, ValueMessage} from "gate-core";
+import {SocketWrapper, ConnectionState, Keywords, Manifest, ValueMessage} from "gate-core";
 import {DeviceConnector} from "../../api/DeviceConnector";
 
 export class ServerlessConnector implements DeviceConnector{
     private static _nextId = 1;
     private readonly _id: string;
-    private readonly _connection: Connection;
+    private readonly _connection: SocketWrapper;
     private _manifest: Manifest | undefined;
     onValueMessage: (change: ValueMessage) => void = () => {};
     onDisconnect: () => void = () => {};
@@ -12,7 +12,7 @@ export class ServerlessConnector implements DeviceConnector{
     constructor(socket: WebSocket) {
         this._id = ServerlessConnector._nextId.toString();
         ServerlessConnector._nextId++;
-        this._connection = new Connection();
+        this._connection = new SocketWrapper();
         // @ts-ignore
         const onMessageSetter = (messageHandler: (msg: string) => void) => socket.onmessage = (event) => {
             messageHandler(event.data);
@@ -55,7 +55,7 @@ export class ServerlessConnector implements DeviceConnector{
     }
 
 
-    get connection(): Connection {
+    get connection(): SocketWrapper {
         return this._connection;
     }
 

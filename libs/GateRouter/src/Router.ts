@@ -9,7 +9,7 @@ const ADDRESS_SEPARATOR = ':';
 
 const addDevice = (device: DeviceConnector) => {
     deviceRegistry.add(device, device.id);
-    if (device.manifest.values) {
+    if (device.manifest?.values) {
         device.manifest.values.forEach((value) => {
             value.id = appendSource(device.id, value.id);
         });

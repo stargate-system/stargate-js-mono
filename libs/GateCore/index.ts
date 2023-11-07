@@ -2,8 +2,8 @@ import {Directions} from "./src/values/api/Directions.js";
 import {ConfigurableValueFactory} from "./src/values/api/ConfigurableValueFactory.js";
 import {AbstractValue} from "./src/values/api/AbstractValue.js";
 import {ValueOutputBuffer} from "./src/api/commonComponents/ValueOutputBuffer.js";
-import {ConnectionState} from "./src/api/commonComponents/Connection/ConnectionState.js";
-import {Connection} from "./src/api/commonComponents/Connection/Connection.js";
+import {ConnectionState} from "./src/api/commonConstants/ConnectionState.js";
+import {SocketWrapper} from "./src/messaging/api/SocketWrapper.js";
 import {Registry} from "./src/api/commonComponents/Registry.js";
 import Keywords from "./src/messaging/api/Keywords.js";
 import {ValueMessage} from "./src/api/commonTypes/ValueMessage.js";
@@ -18,7 +18,7 @@ export {
     AbstractValue,
     ValueOutputBuffer,
     ConnectionState,
-    Connection,
+    SocketWrapper,
     Registry,
     ValueMessage,
     Keywords,

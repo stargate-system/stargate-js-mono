@@ -1,14 +1,14 @@
 import logger from "../DeviceLogger.js";
 import {startConnection} from "../connection/ServerConnection.js";
 import {Manifest, Registry} from "gate-core";
-import {Connection, AbstractValue, ValueOutputBuffer} from "gate-core";
+import {SocketWrapper, AbstractValue, ValueOutputBuffer} from "gate-core";
 import config from "../../config.js";
 import ValueFactory from "../ValueFactory.js";
 
 interface DeviceState {
     isStarted: boolean,
     manifest: Manifest | undefined,
-    connection: Connection,
+    connection: SocketWrapper,
     values: Registry<AbstractValue<any>>,
     outputBuffer: ValueOutputBuffer
 }
@@ -23,7 +23,7 @@ const setDeviceName = (name: string) => {
     }
 }
 
-const startDevice = (): Connection | undefined => {
+const startDevice = (): SocketWrapper | undefined => {
     if (state.isStarted) {
         logger.warning("Attempting to start already running device");
         return;
@@ -42,7 +42,7 @@ const startDevice = (): Connection | undefined => {
 export const state: DeviceState = {
     isStarted: false,
     manifest: undefined,
-    connection: new Connection(),
+    connection: new SocketWrapper(),
     values: new Registry<AbstractValue<any>>(),
     outputBuffer: new ValueOutputBuffer(config)
 };

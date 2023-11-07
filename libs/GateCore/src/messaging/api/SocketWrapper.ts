@@ -1,10 +1,10 @@
-import {ConnectionState} from "./ConnectionState.js";
-import {Registry} from "../Registry.js";
-import {MessageHandler} from "../../../messaging/api/MessageHandler.js";
-import MessagingFactory from "../../../messaging/api/MessagingFactory.js";
-import {ValueMessage} from "../../commonTypes/ValueMessage.js";
+import {ConnectionState} from "../../api/commonConstants/ConnectionState.js";
+import {Registry} from "../../api/commonComponents/Registry.js";
+import {MessageHandler} from "./MessageHandler.js";
+import MessagingFactory from "./MessagingFactory.js";
+import {ValueMessage} from "../../api/commonTypes/ValueMessage.js";
 
-export class Connection {
+export class SocketWrapper {
     private _state: ConnectionState = ConnectionState.closed;
     private readonly _stateChangeListeners= new Registry<(state: ConnectionState) => void>();
     private _close: (() => void) | undefined;
