@@ -5,7 +5,8 @@ const nextConfig = {
   assetPrefix: './',
   images: {
     unoptimized: true,
-  }
+  },
+  transpilePackages: ['components']
 }
 
 module.exports = nextConfig

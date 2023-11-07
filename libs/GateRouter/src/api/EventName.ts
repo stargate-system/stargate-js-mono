@@ -1,4 +1,4 @@
-export enum RouterEvent {
+export enum EventName {
     connected = 'connected',
     disconnected = 'disconnected'
 }

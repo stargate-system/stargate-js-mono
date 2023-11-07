@@ -1,5 +1,5 @@
 import styles from './ByteInput.module.css';
-import globalStyles from '../../../../../../components/globalStyles.module.css';
+import globalStyles from '../../../../../globalStyles.module.css';
 import {ChangeEvent, Dispatch, FocusEventHandler, SetStateAction} from "react";
 
 interface ByteInputProps {
