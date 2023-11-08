@@ -1,9 +1,9 @@
 import {AbstractValue} from "./AbstractValue.js";
 import {Directions} from "./Directions.js";
-import {GateBoolean} from "../GateBoolean.js";
-import {GateString} from "../GateString.js";
-import {GateNumber} from "../GateNumber.js";
-import {ValueTypes} from "../ValueTypes.js";
+import {GateBoolean} from "./GateBoolean.js";
+import {GateString} from "./GateString.js";
+import {GateNumber} from "./GateNumber.js";
+import {ValueTypes} from "./ValueTypes.js";
 
 export class ConfigurableValueFactory {
     private readonly _initializeValueFunction: (value: AbstractValue<any>, direction: Directions, name?: string) => void;
@@ -40,5 +40,9 @@ export class ConfigurableValueFactory {
         }
         this._initializeValueFunction(gateValue, direction, name);
         return gateValue;
+    }
+
+    initializeValue = (customValue: AbstractValue<any>, direction: Directions, name?: string) => {
+        this._initializeValueFunction(customValue, direction, name);
     }
 }

@@ -1,8 +1,13 @@
 import {Directions} from "./Directions.js";
 import {ValueManifest} from "./ValueManifest";
 
-export class AbstractValue<T> {
+export abstract class AbstractValue<T> {
     private static nextId = 1;
+    protected static applyFromManifest(manifest: ValueManifest, target: AbstractValue<any>) {
+        target.valueName = manifest.valueName;
+        target.direction = manifest.direction;
+    };
+
     private readonly _id: string;
     private _value: T | undefined;
     protected _type: string | undefined;
@@ -11,7 +16,7 @@ export class AbstractValue<T> {
     onLocalUpdate: ((value: AbstractValue<T>) => void) | undefined;
     onRemoteUpdate: ((value: AbstractValue<T>) => void) | undefined;
 
-    constructor(id?: string) {
+    protected constructor(id?: string) {
         if (id !== undefined) {
             this._id = id;
         } else {
@@ -62,15 +67,11 @@ export class AbstractValue<T> {
         }
     }
 
-    toString = (): string => {
-        throw new Error('Not implemented');
-    }
+    abstract toString(): string;
 
-    fromRemote = (textValue: string): void => {
-        throw new Error('Not implemented');
-    }
+    abstract fromRemote(textValue: string): void;
 
-    toManifest(): ValueManifest {
+    protected _getBasicManifest = (): ValueManifest => {
         const manifest: ValueManifest = {
             id: this._id,
         }
@@ -87,5 +88,7 @@ export class AbstractValue<T> {
             manifest.direction = this.direction;
         }
         return manifest;
-    };
+    }
+
+    abstract toManifest(): ValueManifest
 }

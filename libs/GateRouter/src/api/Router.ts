@@ -5,7 +5,7 @@ import {EventName} from "./EventName.js";
 
 const deviceRegistry = new Registry<DeviceConnector>();
 const controllerRegistry = new Registry<ControllerConnector>();
-const ADDRESS_SEPARATOR = ':';
+const ADDRESS_SEPARATOR = '.';
 
 const addDevice = (device: DeviceConnector) => {
     deviceRegistry.add(device, device.id);
@@ -30,6 +30,9 @@ const addController = (controller: ControllerConnector) => {
         controller.id = controllerRegistry.add(controller);
         controller.onDisconnect = () => controllerDisconnected(controller);
         controller.onValueMessage = routeControllerMessage;
+        deviceRegistry.getValues().forEach((device) => {
+            controller.handleDeviceEvent(EventName.connected, device);
+        });
     }
 }
 

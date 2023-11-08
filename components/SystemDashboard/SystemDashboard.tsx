@@ -1,6 +1,10 @@
 import {useEffect, useState} from "react";
-import {Manifest, SystemConnector} from "gate-core";
+import {Manifest, SystemConnector, ValueMessage} from "gate-core";
 import {EventName} from "gate-router";
+import {ConnectedDevices} from "./systemContext";
+import DevicesDashboard from "./components/DevicesDashboard/DevicesDashboard";
+import DeviceService from "./service/DeviceService";
+import registries from "./model/registries";
 
 interface SystemDashboardProps {
     connector: SystemConnector
@@ -10,17 +14,13 @@ const SystemDashboard = (props: SystemDashboardProps) => {
     const {connector} = props;
     const [devices, setDevices] = useState<Array<Manifest>>([]);
 
-    const tempDevice = (manifest: Manifest) => {
-        return <div>
-            <span>{manifest.deviceName}</span>
-        </div>
-    }
-
     useEffect(() => {
         connector.onDeviceEvent = (event, data) => {
             switch (event) {
                 case EventName.connected:
-                    devices.push(data as Manifest);
+                    const manifest = data as Manifest;
+                    DeviceService.handleDeviceConnected(manifest);
+                    devices.push(manifest);
                     setDevices([...devices]);
                     break;
                 case EventName.disconnected:
@@ -28,12 +28,23 @@ const SystemDashboard = (props: SystemDashboardProps) => {
                     break;
             }
         }
+        connector.onValueMessage = (changes: ValueMessage) => {
+            changes.forEach((change) => {
+                const registeredValue = registries.gateValuesRegistry.getByKey(change[0]);
+                if (registeredValue) {
+                    registeredValue.gateValue.fromRemote(change[1]);
+                } else {
+                    // TODO error handling
+                }
+            });
+        }
     }, [connector]);
 
     return (
         <div>
-            <p>Test dashboard</p>
-            {devices.map((manifest) => tempDevice(manifest))}
+            <ConnectedDevices.Provider value={devices}>
+                <DevicesDashboard/>
+            </ConnectedDevices.Provider>
         </div>
     )
 }

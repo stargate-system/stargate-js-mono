@@ -1,8 +1,20 @@
-import {AbstractValue} from "./api/AbstractValue.js";
+import {AbstractValue} from "./AbstractValue.js";
 import {ValueTypes} from "./ValueTypes.js";
+import {ValueManifest} from "./ValueManifest.js";
 
 export class GateNumber extends AbstractValue<number> {
     private readonly _range: [number | undefined, number | undefined] = [undefined, undefined];
+    static fromManifest(manifest: ValueManifest): GateNumber | undefined {
+        const gateNumber = new GateNumber(manifest.type as ValueTypes.integer | ValueTypes.float, manifest.id);
+        GateNumber.applyFromManifest(manifest, gateNumber);
+        // @ts-ignore
+        if (manifest.options?.range) {
+            // @ts-ignore
+            gateNumber.setRange(manifest.options.range);
+        }
+
+        return gateNumber;
+    }
 
     constructor(type: ValueTypes.integer | ValueTypes.float, id?: string) {
         super(id);
@@ -26,6 +38,10 @@ export class GateNumber extends AbstractValue<number> {
 
     get maximum(): number | undefined {
         return this._range[1];
+    }
+
+    get range(): [number | undefined, number | undefined] {
+        return this._range;
     }
 
     setValue = (value: number | undefined) => {
@@ -57,7 +73,7 @@ export class GateNumber extends AbstractValue<number> {
     }
 
     toManifest() {
-        const manifest = super.toManifest();
+        const manifest = this._getBasicManifest();
         if (this._range.length) {
             // @ts-ignore
             manifest.options = {
