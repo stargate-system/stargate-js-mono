@@ -4,7 +4,7 @@ import {ValueManifest} from "./ValueManifest.js";
 
 export class GateNumber extends AbstractValue<number> {
     private readonly _range: [number | undefined, number | undefined] = [undefined, undefined];
-    static fromManifest(manifest: ValueManifest): GateNumber | undefined {
+    static fromManifest(manifest: ValueManifest): GateNumber {
         const gateNumber = new GateNumber(manifest.type as ValueTypes.integer | ValueTypes.float, manifest.id);
         GateNumber.applyFromManifest(manifest, gateNumber);
         // @ts-ignore

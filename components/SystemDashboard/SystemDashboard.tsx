@@ -5,6 +5,7 @@ import {ConnectedDevices} from "./systemContext";
 import DevicesDashboard from "./components/DevicesDashboard/DevicesDashboard";
 import DeviceService from "./service/DeviceService";
 import registries from "./model/registries";
+import styles from './SystemDashboard.module.css';
 
 interface SystemDashboardProps {
     connector: SystemConnector
@@ -41,7 +42,7 @@ const SystemDashboard = (props: SystemDashboardProps) => {
     }, [connector]);
 
     return (
-        <div>
+        <div className={styles.systemDashboard}>
             <ConnectedDevices.Provider value={devices}>
                 <DevicesDashboard/>
             </ConnectedDevices.Provider>

@@ -5,3 +5,15 @@
         border: 2px solid var(--global-color-error);
     }
 }
+
+.darkTheme {
+    --global-color-background: #303030;
+    --global-color-component-border: #30b0ff;
+    --global-color-text: white;
+}
+
+.brightTheme {
+    --global-color-background: white;
+    --global-color-component-border: #0030b0;
+    --global-color-text: black;
+}

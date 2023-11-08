@@ -9,7 +9,7 @@ interface UnlimitedNumberInputProps {
 const UnlimitedNumberInput = (props: UnlimitedNumberInputProps) => {
     const {registeredGateNumber} = props;
     const [subscribedValueKey, setSubscribedValueKey] = useState<string>();
-    const [value, setValue] = useState<number>(registeredGateNumber.gateValue.value);
+    const [value, setValue] = useState<number | undefined>(registeredGateNumber.gateValue.value ?? 0);
     const [name, setName] = useState<string>();
 
     useEffect(() => {
@@ -21,13 +21,17 @@ const UnlimitedNumberInput = (props: UnlimitedNumberInputProps) => {
     }, [registeredGateNumber]);
 
     useEffect(() => {
-        return () => registeredGateNumber.unsubscribe(subscribedValueKey);
+        return () => {
+            if (subscribedValueKey !== undefined) {
+                registeredGateNumber.unsubscribe(subscribedValueKey);
+            }
+        };
     }, []);
 
     return (
         <div>
             <p>{name}</p>
-            <span>{value}</span>
+            {(value !== undefined) && <span>{value}</span>}
         </div>
     )
 }
