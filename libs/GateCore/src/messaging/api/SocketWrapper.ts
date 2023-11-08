@@ -1,14 +1,20 @@
 import {ConnectionState} from "../../api/commonConstants/ConnectionState.js";
 import {Registry} from "../../api/commonComponents/Registry.js";
 import {MessageHandler} from "./MessageHandler.js";
-import MessagingFactory from "./MessagingFactory.js";
+import DefaultMessagingFactory from "../DefaultMessagingFactory.js";
 import {ValueMessage} from "../../api/commonTypes/ValueMessage.js";
+import {MessagingFactory} from "./MessagingFactory";
 
 export class SocketWrapper {
+    private readonly _factory: MessagingFactory;
     private _state: ConnectionState = ConnectionState.closed;
     private readonly _stateChangeListeners= new Registry<(state: ConnectionState) => void>();
     private _close: (() => void) | undefined;
     private _handler: MessageHandler | undefined;
+
+    constructor(factory?: MessagingFactory) {
+        this._factory = factory ?? DefaultMessagingFactory
+    }
 
     private _handleClose = () => {
         this._close = undefined;
@@ -42,7 +48,7 @@ export class SocketWrapper {
                  onValueMessage: (changes: ValueMessage) => void) => {
         this._state = ConnectionState.connected;
         this._close = closeFunction;
-        this._handler = MessagingFactory.getMessageHandler(sendFunction, onValueMessage);
+        this._handler = this._factory.getMessageHandler(this._factory, sendFunction, onValueMessage);
         onMessageSetter(this._handler.handleIncomingMessage);
         onCloseSetter(this._handleClose);
     }

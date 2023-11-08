@@ -26,13 +26,17 @@ const addDevice = (device: DeviceConnector) => {
 }
 
 const addController = (controller: ControllerConnector) => {
-    controllerRegistry.add(controller, controller.id);
-    controller.onDisconnect = () => controllerDisconnected(controller);
-    controller.onValueMessage = routeControllerMessage;
+    if (controller.id === undefined) {
+        controller.id = controllerRegistry.add(controller);
+        controller.onDisconnect = () => controllerDisconnected(controller);
+        controller.onValueMessage = routeControllerMessage;
+    }
 }
 
 const controllerDisconnected = (controller: ControllerConnector) => {
-
+    if (controller.id) {
+        controllerRegistry.remove(controller.id);
+    }
 }
 
 const routeControllerMessage = (valueMessage: ValueMessage) => {

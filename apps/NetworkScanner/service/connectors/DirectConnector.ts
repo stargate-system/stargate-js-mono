@@ -20,11 +20,18 @@ const handleDeviceEvent = (event: EventName, device: DeviceConnector) => {
             data = device.id;
             break;
     }
-    systemConnector.onDeviceEvent(event, data);
+    if (systemConnector.onDeviceEvent && data !== undefined) {
+        systemConnector.onDeviceEvent(event, data);
+    }
 };
 
 const routerConnector: ControllerConnector = {
-    handleValueMessage: (valueMessage: ValueMessage) => systemConnector.onValueMessage(valueMessage),
+    id: undefined,
+    handleValueMessage: (valueMessage: ValueMessage) => {
+        if (systemConnector.onValueMessage) {
+            systemConnector.onValueMessage(valueMessage);
+        }
+    },
     handleDeviceEvent,
     onValueMessage: () => {},
     onDisconnect: () => {}

@@ -1,20 +1,8 @@
-import {MessageHandlerImpl} from "../MessageHandlerImpl.js";
-import {MessageHandler} from "./MessageHandler.js";
-import {FunctionalHandlerImpl} from "../FunctionalHandlerImpl.js";
-import {FunctionalHandler} from "./FunctionalHandler.js";
 import {ValueMessage} from "../../api/commonTypes/ValueMessage";
+import {MessageHandler} from "./MessageHandler";
+import {FunctionalHandler} from "./FunctionalHandler";
 
-const getMessageHandler = (sendFunction: (message: string) => void, onValueMessage: (changes: ValueMessage) => void): MessageHandler => {
-    return new MessageHandlerImpl(sendFunction, onValueMessage);
+export interface MessagingFactory {
+    getMessageHandler: (factory: MessagingFactory, sendFunction: (message: string) => void, onValueMessage: (changes: ValueMessage) => void) => MessageHandler,
+    getFunctionalHandler: (sendFunction: (message: string) => void, queryTimeout?: number) => FunctionalHandler
 }
-
-const getFunctionalHandler = (sendFunction: (message: string) => void, queryTimeout?: number): FunctionalHandler => {
-    return new FunctionalHandlerImpl(sendFunction, queryTimeout);
-}
-
-const MessagingFactory = {
-    getMessageHandler,
-    getFunctionalHandler
-}
-
-export default MessagingFactory;

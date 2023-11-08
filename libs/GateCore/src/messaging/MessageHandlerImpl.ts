@@ -1,18 +1,18 @@
 import MessageMapper from "./MessageMapper.js";
 import {FunctionalHandler} from "./api/FunctionalHandler.js";
-import MessagingFactory from "./api/MessagingFactory.js";
 import {MessageHandler} from "./api/MessageHandler.js";
 import Markers from "./Markers.js";
 import {ValueMessage} from "../api/commonTypes/ValueMessage";
+import {MessagingFactory} from "./api/MessagingFactory";
 
 export class MessageHandlerImpl implements MessageHandler{
     private readonly _sendValueMessage: (message: string) => void;
     private readonly _functionalHandler: FunctionalHandler;
     private readonly _handleValueMessage: (changes: ValueMessage) => void;
 
-    constructor(sendFunction: (message: string) => void, onValueMessage: (changes: ValueMessage) => void) {
+    constructor(factory: MessagingFactory, sendFunction: (message: string) => void, onValueMessage: (changes: ValueMessage) => void) {
         this._sendValueMessage = sendFunction;
-        this._functionalHandler = MessagingFactory.getFunctionalHandler(sendFunction);
+        this._functionalHandler = factory.getFunctionalHandler(sendFunction);
         this._handleValueMessage = onValueMessage;
     }
 
