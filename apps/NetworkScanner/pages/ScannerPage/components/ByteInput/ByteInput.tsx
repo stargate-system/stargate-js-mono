@@ -1,5 +1,4 @@
 import styles from './ByteInput.module.css';
-import globalStyles from '../../../../../globalStyles.module.css';
 import {ChangeEvent, Dispatch, FocusEventHandler, SetStateAction} from "react";
 
 interface ByteInputProps {
@@ -30,7 +29,7 @@ const ByteInput = (props: ByteInputProps) => {
 
     return <input type="text" inputMode="numeric" value={byteValue} onChange={getByteSetter()} disabled={disabled}
                   onBlur={onBlur} placeholder="xxx"
-                  className={byteValid ? styles.ipField : `${styles.ipField} ${globalStyles.inputError}`}/>;
+                  className={byteValid ? styles.ipField : `${styles.ipField} ${styles.inputError}`}/>;
 }
 
 export default ByteInput;

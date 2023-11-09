@@ -1,15 +1,12 @@
 .globalStyles {
     --global-color-error: red;
+    --global-color-background: #303030;
+    --global-color-component-border: #30b0ff;
+    --global-color-text: white;
 
     .inputError {
         border: 2px solid var(--global-color-error);
     }
-}
-
-.darkTheme {
-    --global-color-background: #303030;
-    --global-color-component-border: #30b0ff;
-    --global-color-text: white;
 }
 
 .brightTheme {

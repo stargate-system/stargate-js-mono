@@ -1,7 +1,7 @@
 import React, {ReactElement, useEffect, useState} from "react";
 import {Manifest, SystemConnector, ValueMessage} from "gate-core";
 import {EventName} from "gate-router";
-import {ConnectedDevices} from "./systemContext";
+import {DevicesImage} from "./systemContext";
 import DevicesDashboard from "./components/DevicesDashboard/DevicesDashboard";
 import DeviceService from "./service/DeviceService";
 import registries from "./model/registries";
@@ -46,9 +46,9 @@ const SystemDashboard = (props: SystemDashboardProps) => {
     return (
         <div className={styles.systemDashboard}>
             <SystemHeader content={headerContent}/>
-            <ConnectedDevices.Provider value={devices}>
+            <DevicesImage.Provider value={devices}>
                 <DevicesDashboard/>
-            </ConnectedDevices.Provider>
+            </DevicesImage.Provider>
         </div>
     )
 }

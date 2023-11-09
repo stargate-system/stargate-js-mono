@@ -1,12 +1,11 @@
 import Device from "../Device/Device";
 import {useContext} from "react";
-import {ConnectedDevices} from "../../systemContext";
+import {DevicesImage} from "../../systemContext";
 
 const DevicesDashboard = () => {
-    const devices = useContext(ConnectedDevices);
+    const devices = useContext(DevicesImage);
     return (
         <div>
-            <p>Test dashboard</p>
             {devices.map((manifest) => <Device manifest={manifest}/>)}
         </div>
     )

@@ -6,3 +6,7 @@
     -moz-appearance: textfield;
     -webkit-appearance: none;
 }
+
+.inputError {
+    border: 2px solid var(--global-color-error);
+}
