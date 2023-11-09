@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import React, {ReactElement, useEffect, useState} from "react";
 import {Manifest, SystemConnector, ValueMessage} from "gate-core";
 import {EventName} from "gate-router";
 import {ConnectedDevices} from "./systemContext";
@@ -6,13 +6,15 @@ import DevicesDashboard from "./components/DevicesDashboard/DevicesDashboard";
 import DeviceService from "./service/DeviceService";
 import registries from "./model/registries";
 import styles from './SystemDashboard.module.css';
+import SystemHeader from "./components/SystemHeader/SystemHeader";
 
 interface SystemDashboardProps {
-    connector: SystemConnector
+    connector: SystemConnector,
+    headerContent: ReactElement
 }
 
 const SystemDashboard = (props: SystemDashboardProps) => {
-    const {connector} = props;
+    const {connector, headerContent} = props;
     const [devices, setDevices] = useState<Array<Manifest>>([]);
 
     useEffect(() => {
@@ -43,6 +45,7 @@ const SystemDashboard = (props: SystemDashboardProps) => {
 
     return (
         <div className={styles.systemDashboard}>
+            <SystemHeader content={headerContent}/>
             <ConnectedDevices.Provider value={devices}>
                 <DevicesDashboard/>
             </ConnectedDevices.Provider>

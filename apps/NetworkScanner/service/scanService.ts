@@ -1,5 +1,9 @@
 import {Dispatch, SetStateAction} from "react";
 import scanConfig from "@/service/scanConfig";
+import {ServerlessDeviceConnector} from "@/service/connectors/ServerlessDeviceConnector";
+import {ConnectionState, SystemConnector} from "gate-core";
+import {Router} from "gate-router";
+import DirectConnector from "@/service/connectors/DirectConnector";
 
 const PROGRESS_MAX_COUNT = 300;
 export enum scanResult {
@@ -24,6 +28,7 @@ let openSockets: Array<WebSocket> = [];
 let foundNetworks: Array<string> = [];
 let releaseCreateSocketLatch: Function | undefined;
 let releaseDeviceScanLatch: Function | undefined;
+let systemConnector: SystemConnector
 
 const startScan = (byte1: string,
                    byte2: string,
@@ -47,6 +52,14 @@ const startScan = (byte1: string,
     }
     startProgress();
     setScanTimeout();
+}
+
+const getSystemConnector = () => {
+    if (systemConnector === undefined) {
+        systemConnector = DirectConnector.systemConnector;
+        Router.addController(DirectConnector.routerConnector);
+    }
+    return systemConnector;
 }
 
 const setScanTimeout = () => {
@@ -187,6 +200,7 @@ const handleDeviceScanFinished = (failOnNoDevices: boolean) => {
     if (openSockets.length > 0) {
         openSockets.forEach((socket) => cleanSocketCallbacks(socket));
         aliveSockets = [];
+        connectDevices();
         finishScan(scanResult.SUCCESS);
     } else if (failOnNoDevices) {
         finishScan(scanResult.FAILED_DEVICES);
@@ -194,6 +208,17 @@ const handleDeviceScanFinished = (failOnNoDevices: boolean) => {
     if (releaseDeviceScanLatch) {
         releaseDeviceScanLatch();
     }
+}
+
+const connectDevices = () => {
+    openSockets.forEach((socket) => {
+        const deviceConnector = new ServerlessDeviceConnector(socket);
+        deviceConnector.onStateChange = (state) => {
+            if (state === ConnectionState.ready) {
+                Router.addDevice(deviceConnector);
+            }
+        }
+    });
 }
 
 const cleanSocketCallbacks = (socket: WebSocket) => {
@@ -257,14 +282,16 @@ const stopProgress = () => {
     }
 }
 
-const getOpenSockets = (): Array<WebSocket> => {
-    return openSockets;
+const resetScan = () => {
+    openSockets.forEach((socket) => socket.close());
+    openSockets = [];
 }
 
 const scanService = {
     startScan,
     finishScan,
-    getOpenSockets
+    resetScan,
+    getSystemConnector
 };
 
 export default scanService;

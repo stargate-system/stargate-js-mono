@@ -1,17 +1,20 @@
 import styles from './ScanerPage.module.css';
 import IpInput from "@/pages/ScannerPage/components/IpInput/IpInput";
 import StartButton from "@/pages/ScannerPage/components/StartButton/StartButton";
-import {useEffect, useState} from "react";
+import {Dispatch, SetStateAction, useEffect, useState} from "react";
 import scanService, {scanResult} from "@/service/scanService";
 import scanConfig from "@/service/scanConfig";
 import DetectedList from "@/pages/ScannerPage/components/DetectedList/DetectedList";
 import {Router} from 'gate-router';
 import DirectConnector from "@/service/connectors/DirectConnector";
-import SystemDashboard from "../../../../components/SystemDashboard/SystemDashboard";
-import {ServerlessDeviceConnector} from "@/service/connectors/ServerlessDeviceConnector";
-import {ConnectionState} from "gate-core";
 
-const ScannerPage = () => {
+interface ScannerPageProps {
+    setScanSuccess: Dispatch<SetStateAction<boolean>>
+}
+
+const ScannerPage = (props: ScannerPageProps) => {
+    const {setScanSuccess} = props;
+
     const [byte1, setByte1] = useState('192');
     const [byte2, setByte2] = useState('168');
     const [byte3, setByte3] = useState('');
@@ -42,16 +45,9 @@ const ScannerPage = () => {
         setDetectedDevices([]);
         switch (result) {
             case scanResult.SUCCESS:
-                // TODO implement
                 setScanMessage('');
-                scanService.getOpenSockets().forEach((socket) => {
-                    const deviceConnector = new ServerlessDeviceConnector(socket);
-                    deviceConnector.onStateChange = (state) => {
-                        if (state === ConnectionState.ready) {
-                            Router.addDevice(deviceConnector);
-                        }
-                    }
-                });
+
+                setScanSuccess(true);
                 break;
             case scanResult.FAILED_NETWORKS:
                 setScanMessage('Scanner was unable to automatically select networks to scan. Please check if given IP range is correct or provide 3rd number to narrow down scan range');
@@ -92,7 +88,6 @@ const ScannerPage = () => {
 
     return (
         <div className={styles.mainContainer}>
-            <SystemDashboard connector={DirectConnector.systemConnector} />
             <div className={styles.startContainer}>
                 <IpInput
                     byte1={byte1}
