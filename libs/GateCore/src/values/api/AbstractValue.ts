@@ -81,7 +81,7 @@ export abstract class AbstractValue<T> {
         }
         if (this.valueName !== undefined) {
             // @ts-ignore
-            manifest.name = this.valueName;
+            manifest.valueName = this.valueName;
         }
         if (this.direction !== undefined) {
             // @ts-ignore

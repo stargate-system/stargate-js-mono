@@ -1,3 +1,5 @@
+import styles from './DeviceHeader.module.css';
+
 interface DeviceHeaderProps {
     name: string
 }
@@ -6,7 +8,7 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
     const {name} = props;
 
     return (
-        <div>
+        <div className={styles.deviceHeader}>
             {name}
         </div>
     )

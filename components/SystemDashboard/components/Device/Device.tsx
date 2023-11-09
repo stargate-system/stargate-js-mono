@@ -1,12 +1,16 @@
 import {GateNumber, Manifest, ValueTypes} from "gate-core";
 import {useCallback} from "react";
 import registries from "../../model/registries";
-import LimitedNumberInput from "../GateInput/LimitedNumberInput/LimitedNumberInput";
-import UnlimitedNumberInput from "../GateInput/UnlimitedNumberInput/UnlimitedNumberInput";
+import LimitedNumberInput from "../GateValue/GateInput/LimitedNumberInput/LimitedNumberInput";
+import UnlimitedNumberInput from "../GateValue/GateInput/UnlimitedNumberInput/UnlimitedNumberInput";
+import DeviceHeader from "./components/DeviceHeader/DeviceHeader";
+import styles from './Device.module.css';
+import GateValue from "../GateValue/GateValue";
 
 interface DeviceProps {
     manifest: Manifest
 }
+
 const Device = (props: DeviceProps) => {
     const {manifest} = props;
 
@@ -16,27 +20,18 @@ const Device = (props: DeviceProps) => {
             return values.map((valueManifest) => {
                 const registeredValue = registries.gateValuesRegistry.getByKey(valueManifest.id);
                 if (registeredValue) {
-                    switch (registeredValue.gateValue.type) {
-                        case ValueTypes.integer:
-                        case ValueTypes.float:
-                            const gateNumber = registeredValue.gateValue as GateNumber;
-                            if (gateNumber.range) {
-                                return <LimitedNumberInput registeredGateNumber={registeredValue}/>;
-                            } else {
-                                return <UnlimitedNumberInput registeredGateNumber={registeredValue}/>
-                            }
-                        case ValueTypes.boolean:
-                            // TODO
-                    }
+                    return <GateValue registeredGateValue={registeredValue}/>
                 }
             })
         }
     }, [manifest]);
 
     return (
-        <div>
-            <p>{manifest.id + ' : ' + manifest.deviceName}</p>
-            {generateValues()}
+        <div className={styles.deviceContainer}>
+            <DeviceHeader name={manifest.deviceName ?? ''}/>
+            <div className={styles.valuesContainer}>
+                {generateValues()}
+            </div>
         </div>
     )
 }
