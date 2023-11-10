@@ -9,7 +9,9 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
 
     return (
         <div className={styles.deviceHeader}>
-            {name}
+            <div className={styles.nameContainer}>
+                {name}
+            </div>
         </div>
     )
 }

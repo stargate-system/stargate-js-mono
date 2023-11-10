@@ -1,0 +1,44 @@
+.numberInputContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: stretch;
+
+    .range {
+        display: flex;
+        font-size: 0.7rem;
+        width: 25%;
+    }
+
+    .right {
+        justify-content: flex-end;
+    }
+
+    .valueContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: stretch;
+    }
+
+    .valueBar {
+        width: 100%;
+        min-height: 0.5rem;
+        background-image: linear-gradient(to right, green 40%, #aaa 40%);
+        border: 1px solid #000;
+        margin: 0.2rem 0 0 0;
+    }
+
+    .value {
+        display: flex;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .limited {
+        width: 50%;
+    }
+
+    .unlimited {
+        width: 100%;
+    }
+}

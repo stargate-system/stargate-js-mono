@@ -4,6 +4,7 @@ import registries from "../../model/registries";
 import DeviceHeader from "./components/DeviceHeader/DeviceHeader";
 import styles from './Device.module.css';
 import GateValue from "../GateValue/GateValue";
+import {handleSubscription} from "../GateValue/helper";
 
 interface DeviceProps {
     manifest: Manifest
@@ -30,21 +31,8 @@ const Device = (props: DeviceProps) => {
     useEffect(() => {
         // @ts-ignore
         const deviceState = registries.deviceStateRegistry.getByKey(manifest.id);
-        if (deviceState) {
-            setIsActive(deviceState.isActive);
-            if (deviceStateListenerKey !== undefined) {
-                deviceState.unsubscribe(deviceStateListenerKey);
-            }
-            const key = deviceState.subscribe(() => setIsActive(deviceState.isActive));
-            setDeviceStateListenerKey(key);
-        }
-        return () => {
-            // @ts-ignore
-            const deviceState = registries.deviceStateRegistry.getByKey(manifest.id);
-            if (deviceState && deviceStateListenerKey) {
-                deviceState.unsubscribe(deviceStateListenerKey);
-            }
-        }
+        // @ts-ignore
+        return handleSubscription(deviceState, deviceStateListenerKey, setDeviceStateListenerKey, () => setIsActive(deviceState.isActive))
     }, [manifest]);
 
     return (

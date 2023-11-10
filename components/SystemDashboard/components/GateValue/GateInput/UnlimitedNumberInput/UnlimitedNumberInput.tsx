@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import {GateNumber} from "gate-core";
 import {ObservableValue} from "../../../../model/ObservableValue";
+import {handleSubscription} from "../../helper";
 
 interface UnlimitedNumberInputProps {
     registeredGateNumber: ObservableValue<GateNumber>
@@ -9,22 +10,16 @@ interface UnlimitedNumberInputProps {
 const UnlimitedNumberInput = (props: UnlimitedNumberInputProps) => {
     const {registeredGateNumber} = props;
     const [subscribedValueKey, setSubscribedValueKey] = useState<string>();
-    const [value, setValue] = useState<number | undefined>(registeredGateNumber.gateValue.value ?? 0);
+    const [value, setValue] = useState<number | undefined>(registeredGateNumber.gateValue.value);
 
     useEffect(() => {
-        if (subscribedValueKey === undefined) {
-            const key = registeredGateNumber.subscribe(() => setValue(registeredGateNumber.gateValue.value));
-            setSubscribedValueKey(key);
-        }
+        return handleSubscription(
+            registeredGateNumber,
+            subscribedValueKey,
+            setSubscribedValueKey,
+            () => setValue(registeredGateNumber.gateValue.value)
+        );
     }, [registeredGateNumber]);
-
-    useEffect(() => {
-        return () => {
-            if (subscribedValueKey !== undefined) {
-                registeredGateNumber.unsubscribe(subscribedValueKey);
-            }
-        };
-    }, []);
 
     return (
         <div>

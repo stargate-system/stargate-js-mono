@@ -1,8 +1,9 @@
 import {Directions, ConnectionState, GateDevice} from 'gate-device';
 const {logger, ValueFactory} = GateDevice;
 
-const testInteger = ValueFactory.createInteger(Directions.output, 'Test integer', [0, 5]);
-// const testBool = ValueFactory.createBoolean(Directions.output, "Out of range");
+const smallInteger = ValueFactory.createInteger(Directions.output, 'Small integer', [0, 200]);
+const bigInteger = ValueFactory.createInteger(Directions.output, 'Big integer', [-5000, 50000]);
+const unlimitedInteger = ValueFactory.createInteger(Directions.output, 'Unlimited integer');
 GateDevice.setDeviceName('Test device');
 const connection = GateDevice.startDevice();
 let interval;
@@ -10,21 +11,23 @@ let incrementValue = 1;
 let counter = 0;
 
 const alterValue = () => {
-    if (counter > testInteger.maximum) {
+    if (counter > smallInteger.maximum) {
         incrementValue = -1;
-    } else if (counter < testInteger.minimum) {
+    } else if (counter < smallInteger.minimum) {
         incrementValue = 1;
     }
     counter += incrementValue;
-    logger.info('Set to: ' + counter);
-    testInteger.setValue(counter);
+    // logger.info('Set to: ' + counter);
+    smallInteger.setValue(counter);
+    bigInteger.setValue(counter * 200);
+    unlimitedInteger.setValue(counter);
 }
 
 connection.addStateChangeListener((state) => {
     logger.info('Connection state: ' + state);
     switch (state) {
         case ConnectionState.ready:
-            interval = setInterval(alterValue, 1000);
+            interval = setInterval(alterValue, 10);
             break;
         case ConnectionState.closed:
             clearInterval(interval);

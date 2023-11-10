@@ -23,10 +23,10 @@ export class GateNumber extends AbstractValue<number> {
     }
 
     private _getWithinRange = (value: number): number => {
-        if ((this._range[0] !== undefined) && (value < this._range[0])) {
+        if ((typeof this._range[0] === "number") && (value < this._range[0])) {
             return this._range[0];
         }
-        if ((this._range[1] !== undefined) && (value > this._range[1])) {
+        if ((typeof this._range[1] === "number") && (value > this._range[1])) {
             return this._range[1];
         }
         return value;
