@@ -1,9 +1,8 @@
 import {Dispatch, SetStateAction} from "react";
 import scanConfig from "@/service/scanConfig";
 import {ServerlessDeviceConnector} from "@/service/connectors/ServerlessDeviceConnector";
-import {ConnectionState, SystemConnector} from "gate-core";
+import {ConnectionState} from "gate-core";
 import {Router} from "gate-router";
-import DirectConnector from "@/service/connectors/DirectConnector";
 
 const PROGRESS_MAX_COUNT = 300;
 export enum scanResult {
@@ -28,7 +27,6 @@ let openSockets: Array<WebSocket> = [];
 let foundNetworks: Array<string> = [];
 let releaseCreateSocketLatch: Function | undefined;
 let releaseDeviceScanLatch: Function | undefined;
-let systemConnector: SystemConnector
 
 const startScan = (byte1: string,
                    byte2: string,
@@ -52,14 +50,6 @@ const startScan = (byte1: string,
     }
     startProgress();
     setScanTimeout();
-}
-
-const getSystemConnector = () => {
-    if (systemConnector === undefined) {
-        systemConnector = DirectConnector.systemConnector;
-        Router.addController(DirectConnector.routerConnector);
-    }
-    return systemConnector;
 }
 
 const setScanTimeout = () => {
@@ -290,8 +280,7 @@ const resetScan = () => {
 const scanService = {
     startScan,
     finishScan,
-    resetScan,
-    getSystemConnector
+    resetScan
 };
 
 export default scanService;

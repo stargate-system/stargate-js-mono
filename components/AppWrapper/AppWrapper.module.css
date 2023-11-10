@@ -7,4 +7,5 @@
     --component-border-radius: 0.3rem;
     --component-gradient-header: linear-gradient(var(--component-color-border), #858585, var(--component-color-border));
     --gatevalue-color-border: #6090f0;
+    --gatevalue-color-border-inactive: #858585;
 }

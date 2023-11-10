@@ -1,7 +1,7 @@
 import Device from "../Device/Device";
 import {useContext} from "react";
-import {DevicesImage} from "../../systemContext";
 import styles from './DevicesDashboard.module.css';
+import {DevicesImage} from "../../systemContext";
 
 const DevicesDashboard = () => {
     const devices = useContext(DevicesImage);

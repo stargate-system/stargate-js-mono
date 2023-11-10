@@ -1,34 +1,39 @@
-import {GateBoolean, GateNumber, GateString, Manifest, ValueTypes} from "gate-core";
+import {Manifest} from "gate-core";
 import registries from "../model/registries";
-import {RegisteredValue} from "../model/RegisteredValue";
+import GateValueService from "./GateValueService";
+import {DeviceActiveState} from "../model/DeviceActiveState";
 
 const handleDeviceConnected = (manifest: Manifest) => {
-    const values = manifest.values;
+    // @ts-ignore
+    const deviceState = registries.deviceStateRegistry.getByKey(manifest.id);
+    if (deviceState) {
+        deviceState.setIsActive(true);
+    } else {
+        addDevice(manifest, true);
+    }
+}
+
+const handleDeviceDisconnected = (id: string) => {
+    const deviceState = registries.deviceStateRegistry.getByKey(id);
+    if (deviceState) {
+        deviceState.setIsActive(false)
+    }
+}
+
+const addDevice = (device: Manifest, isActive: boolean) => {
+    registries.deviceStateRegistry.add(new DeviceActiveState(isActive), device.id);
+    const values = device.values;
     if (values) {
         values.forEach((valueManifest) => {
-            switch (valueManifest.type) {
-                case ValueTypes.boolean:
-                    const gateBoolean = GateBoolean.fromManifest(valueManifest);
-                    registries.gateValuesRegistry.add(new RegisteredValue<GateBoolean>(gateBoolean), gateBoolean.id);
-                    break;
-                case ValueTypes.string:
-                    const gateString = GateString.fromManifest(valueManifest);
-                    registries.gateValuesRegistry.add(new RegisteredValue<GateString>(gateString), gateString.id);
-                    break;
-                case ValueTypes.float:
-                case ValueTypes.integer:
-                    const gateNumber = GateNumber.fromManifest(valueManifest);
-                    registries.gateValuesRegistry.add(new RegisteredValue<GateNumber>(gateNumber), gateNumber.id);
-                    break;
-                default:
-                    // TODO handle unknown types
-            }
+            GateValueService.registerValue(valueManifest);
         });
     }
 }
 
 const DeviceService = {
-    handleDeviceConnected
+    handleDeviceConnected,
+    handleDeviceDisconnected,
+    addDevice
 }
 
 export default DeviceService;

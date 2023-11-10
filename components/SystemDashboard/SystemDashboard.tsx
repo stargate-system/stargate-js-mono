@@ -1,12 +1,14 @@
 import React, {ReactElement, useEffect, useState} from "react";
-import {Manifest, SystemConnector, ValueMessage} from "gate-core";
-import {EventName} from "gate-router";
+import {Manifest, ValueMessage} from "gate-core";
+import {EventName, SystemImage} from "gate-router";
 import {DevicesImage} from "./systemContext";
 import DevicesDashboard from "./components/DevicesDashboard/DevicesDashboard";
 import DeviceService from "./service/DeviceService";
 import registries from "./model/registries";
 import styles from './SystemDashboard.module.css';
 import SystemHeader from "./components/SystemHeader/SystemHeader";
+import {SystemConnector} from "./api/SystemConnector";
+import SystemImageService from "./service/SystemImageService";
 
 interface SystemDashboardProps {
     connector: SystemConnector,
@@ -15,22 +17,29 @@ interface SystemDashboardProps {
 
 const SystemDashboard = (props: SystemDashboardProps) => {
     const {connector, headerContent} = props;
-    const [devices, setDevices] = useState<Array<Manifest>>([]);
+    const [devicesImage, setDevicesImage] = useState<Manifest[]>([]);
 
     useEffect(() => {
-        connector.onDeviceEvent = (event, data) => {
+        connector.onJoinEvent = (systemImage: SystemImage, activeDevices: string[]) => {
+            setDevicesImage(systemImage.devices);
+            SystemImageService.initialize(systemImage, activeDevices);
+        }
+
+        connector.onDeviceEvent = (event: EventName, data: any) => {
             switch (event) {
                 case EventName.connected:
                     const manifest = data as Manifest;
+                    const newImage = devicesImage.filter((device) => device.id !== manifest.id);
+                    newImage.push(manifest);
+                    setDevicesImage(newImage);
                     DeviceService.handleDeviceConnected(manifest);
-                    devices.push(manifest);
-                    setDevices([...devices]);
                     break;
                 case EventName.disconnected:
-                    setDevices(devices.filter((manifest) => manifest.id !== (data as string)));
+                    DeviceService.handleDeviceDisconnected(data as string);
                     break;
             }
         }
+
         connector.onValueMessage = (changes: ValueMessage) => {
             changes.forEach((change) => {
                 const registeredValue = registries.gateValuesRegistry.getByKey(change[0]);
@@ -41,12 +50,18 @@ const SystemDashboard = (props: SystemDashboardProps) => {
                 }
             });
         }
+
+        connector.onStateChange = () => {
+
+        }
+
+        connector.joinSystem();
     }, [connector]);
 
     return (
         <div className={styles.systemDashboard}>
             <SystemHeader content={headerContent}/>
-            <DevicesImage.Provider value={devices}>
+            <DevicesImage.Provider value={devicesImage}>
                 <DevicesDashboard/>
             </DevicesImage.Provider>
         </div>

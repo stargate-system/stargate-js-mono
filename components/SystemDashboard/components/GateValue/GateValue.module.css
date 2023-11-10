@@ -1,14 +1,24 @@
-.gateValue {
-    border: 1px solid var(--gatevalue-color-border);
-    border-radius: var(--component-border-radius);
-    margin: 0.6rem 0.2rem 0.2rem 0.2rem;
+.gateValueContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem;
 
     .nameContainer {
-        position: relative;
-        background-color: var(--component-color-background);
-        top: -0.6rem;
-        margin: 0.5rem;
+        font-size: 0.85rem;
         padding: 0.2rem;
-        color: var(--gatevalue-color-border);
+    }
+
+    .gateValue {
+        border-radius: var(--component-border-radius);
+        padding: 0.5rem;
+    }
+
+    .active {
+        border: 1px solid var(--gatevalue-color-border);
+    }
+
+    .inactive {
+        border: 1px solid var(--gatevalue-color-border-inactive);
     }
 }

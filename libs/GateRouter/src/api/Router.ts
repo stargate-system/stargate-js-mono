@@ -1,35 +1,52 @@
-import {ConnectionState, Registry, ValueMessage} from "gate-core";
+import {ConnectionState, Manifest, Registry, ValueMessage} from "gate-core";
 import {DeviceConnector} from "./DeviceConnector.js";
 import {ControllerConnector} from "./ControllerConnector.js";
 import {EventName} from "./EventName.js";
+import MockSystemRepository from "../MockSystemRepository.js";
+import {SystemRepository} from "./SystemRepository.js";
 
-const deviceRegistry = new Registry<DeviceConnector>();
+const deviceRegistry = new Registry<ValidDevice>();
 const controllerRegistry = new Registry<ControllerConnector>();
-const ADDRESS_SEPARATOR = '.';
+const ADDRESS_SEPARATOR = ':';
 
-const addDevice = (device: DeviceConnector) => {
-    deviceRegistry.add(device, device.id);
-    if (device.manifest?.values) {
-        device.manifest.values.forEach((value) => {
-            value.id = appendSource(device.id, value.id);
+interface ValidDevice extends DeviceConnector {
+    id: string,
+    manifest: Manifest
+}
+
+const addDevice = async (device: DeviceConnector) => {
+    if (!device.manifest) {
+        throw new Error('On adding device - no manifest');
+    }
+    if (device.id === undefined) {
+        await Router.systemRepository.createDevice(device);
+    }
+    const validDevice: ValidDevice = device as ValidDevice;
+    deviceRegistry.add(validDevice, validDevice.id);
+    if (validDevice.manifest.values) {
+        validDevice.manifest.values.forEach((value) => {
+            value.id = appendSource(validDevice.id, value.id);
         });
     }
     controllerRegistry.getValues()
-        .forEach((controller) => controller.handleDeviceEvent(EventName.connected, device));
-    device.onStateChange = (state) => {
+        .forEach((controller) => controller.handleDeviceEvent(EventName.connected, validDevice));
+    validDevice.onStateChange = (state) => {
         if (state === ConnectionState.closed) {
-            deviceRegistry.remove(device.id);
-            deviceDisconnected(device);
+            deviceRegistry.remove(validDevice.id);
+            deviceDisconnected(validDevice);
         }
     };
-    device.onValueMessage = (valueMessage: ValueMessage) => routeDeviceMessage(valueMessage, device);
+    validDevice.onValueMessage = (valueMessage: ValueMessage) => routeDeviceMessage(valueMessage, validDevice);
 }
 
-const addController = (controller: ControllerConnector) => {
+const addController = async (controller: ControllerConnector) => {
     if (controller.id === undefined) {
         controller.id = controllerRegistry.add(controller);
         controller.onDisconnect = () => controllerDisconnected(controller);
         controller.onValueMessage = routeControllerMessage;
+        const systemImage = await Router.systemRepository.getSystemImage();
+        // @ts-ignore
+        controller.handleJoined(systemImage, deviceRegistry.getValues().map((device) => device.id));
         deviceRegistry.getValues().forEach((device) => {
             controller.handleDeviceEvent(EventName.connected, device);
         });
@@ -50,7 +67,7 @@ const appendSource = (source: string, target: string) => {
     return source + ADDRESS_SEPARATOR + target;
 }
 
-const routeDeviceMessage = (valueMessage: ValueMessage, source: DeviceConnector) => {
+const routeDeviceMessage = (valueMessage: ValueMessage, source: ValidDevice) => {
     valueMessage.forEach((entry) => {
         entry[0] = appendSource(source.id, entry[0]);
     });
@@ -59,14 +76,15 @@ const routeDeviceMessage = (valueMessage: ValueMessage, source: DeviceConnector)
     })
 }
 
-const deviceDisconnected = (device: DeviceConnector) => {
+const deviceDisconnected = (device: ValidDevice) => {
     controllerRegistry.getValues()
         .forEach((controller) => controller.handleDeviceEvent(EventName.disconnected, device));
 };
 
 const Router = {
     addDevice,
-    addController
+    addController,
+    systemRepository: MockSystemRepository as SystemRepository
 }
 
 export default Router;

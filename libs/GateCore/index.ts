@@ -11,7 +11,6 @@ import {Manifest} from "./src/api/commonTypes/Manifest.js";
 import {ValueManifest} from "./src/values/api/ValueManifest.js";
 import {Logger} from "./src/api/commonTypes/Logger.js";
 import LogPrefix from "./src/api/commonConstants/LogPrefix.js";
-import {SystemConnector} from "./src/api/commonTypes/SystemConnector.js";
 import {GateBoolean} from "./src/values/api/GateBoolean.js";
 import {GateNumber} from "./src/values/api/GateNumber.js";
 import {GateString} from "./src/values/api/GateString.js";
@@ -31,7 +30,6 @@ export {
     ValueManifest,
     Logger,
     LogPrefix,
-    SystemConnector,
     GateNumber,
     GateString,
     GateBoolean,

@@ -2,16 +2,13 @@ import {SocketWrapper, ConnectionState, Keywords, Manifest, ValueMessage} from "
 import {DeviceConnector} from "gate-router";
 
 export class ServerlessDeviceConnector implements DeviceConnector{
-    private static _nextId = 1;
-    private readonly _id: string;
+    id: string | undefined;
     private readonly _connection: SocketWrapper;
     private _manifest: Manifest | undefined;
     onValueMessage: (change: ValueMessage) => void = () => {};
     onStateChange: (state: ConnectionState) => void = () => {};
 
     constructor(socket: WebSocket) {
-        this._id = ServerlessDeviceConnector._nextId.toString();
-        ServerlessDeviceConnector._nextId++;
         this._connection = new SocketWrapper();
         // @ts-ignore
         const onMessageSetter = (messageHandler: (msg: string) => void) => socket.onmessage = (event) => {
@@ -39,11 +36,6 @@ export class ServerlessDeviceConnector implements DeviceConnector{
                 .catch(() => this._connection.close());
             if (manifestString !== undefined) {
                 this._manifest = JSON.parse(manifestString);
-                if (this._manifest) {
-                    this._manifest.id = this._id;
-                } else {
-                    throw new Error('On performing handshake: received invalid manifest - ' + manifestString);
-                }
                 functionalHandler.sendCommand(Keywords.ready);
                 this._connection.setState(ConnectionState.ready);
             }
@@ -64,8 +56,4 @@ export class ServerlessDeviceConnector implements DeviceConnector{
     handleValueMessage(valueMessage: ValueMessage): void {
         this._connection.handler?.sendValueMessage(valueMessage);
     }
-
-    get id(): string {
-        return this._id;
-    };
 }

@@ -1,12 +1,10 @@
 import styles from './ScanerPage.module.css';
 import IpInput from "@/pages/ScannerPage/components/IpInput/IpInput";
 import StartButton from "@/pages/ScannerPage/components/StartButton/StartButton";
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {Dispatch, SetStateAction, useState} from "react";
 import scanService, {scanResult} from "@/service/scanService";
 import scanConfig from "@/service/scanConfig";
 import DetectedList from "@/pages/ScannerPage/components/DetectedList/DetectedList";
-import {Router} from 'gate-router';
-import DirectConnector from "@/service/connectors/DirectConnector";
 
 interface ScannerPageProps {
     setScanSuccess: Dispatch<SetStateAction<boolean>>
@@ -46,7 +44,6 @@ const ScannerPage = (props: ScannerPageProps) => {
         switch (result) {
             case scanResult.SUCCESS:
                 setScanMessage('');
-
                 setScanSuccess(true);
                 break;
             case scanResult.FAILED_NETWORKS:
@@ -81,10 +78,6 @@ const ScannerPage = (props: ScannerPageProps) => {
             );
         }
     }
-
-    useEffect(() => {
-        Router.addController(DirectConnector.routerConnector);
-    }, []);
 
     return (
         <div className={styles.mainContainer}>

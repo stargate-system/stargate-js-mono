@@ -7,15 +7,20 @@
     border-right: var(--border-style);
     border-bottom: var(--border-style);
     border-radius: var(--component-border-radius);
-    box-shadow: 0 0 0.2rem #a0ffa0;
-    /*box-shadow: 0 0 0.2rem black;*/
 
     .valuesContainer {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        padding: 0.5rem;
         background-color: var(--component-color-background);
         border-radius: 0 0 var(--component-border-radius) var(--component-border-radius);
     }
+}
+
+.active {
+    box-shadow: 0 0 0.2rem #a0ffa0;
+}
+
+.inactive {
+    box-shadow: 0 0 0.2rem black;
 }

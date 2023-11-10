@@ -1,9 +1,9 @@
 import {useEffect, useState} from "react";
 import {GateNumber} from "gate-core";
-import {RegisteredValue} from "../../../../model/RegisteredValue";
+import {ObservableValue} from "../../../../model/ObservableValue";
 
 interface UnlimitedNumberInputProps {
-    registeredGateNumber: RegisteredValue<GateNumber>
+    registeredGateNumber: ObservableValue<GateNumber>
 }
 
 const UnlimitedNumberInput = (props: UnlimitedNumberInputProps) => {

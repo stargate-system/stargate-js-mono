@@ -1,10 +1,13 @@
 import {Registry} from "gate-core";
-import {RegisteredValue} from "./RegisteredValue";
+import {ObservableValue} from "./ObservableValue";
+import {DeviceActiveState} from "./DeviceActiveState";
 
-const gateValuesRegistry = new Registry<RegisteredValue<any>>();
+const gateValuesRegistry = new Registry<ObservableValue<any>>();
+const deviceStateRegistry = new Registry<DeviceActiveState>();
 
 const registries = {
-    gateValuesRegistry
+    gateValuesRegistry,
+    deviceStateRegistry
 }
 
 export default registries;

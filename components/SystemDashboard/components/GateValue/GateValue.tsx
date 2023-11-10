@@ -1,4 +1,4 @@
-import {RegisteredValue} from "../../model/RegisteredValue";
+import {ObservableValue} from "../../model/ObservableValue";
 import {useCallback, useEffect, useState} from "react";
 import {GateNumber, ValueTypes} from "gate-core";
 import LimitedNumberInput from "./GateInput/LimitedNumberInput/LimitedNumberInput";
@@ -6,11 +6,12 @@ import UnlimitedNumberInput from "./GateInput/UnlimitedNumberInput/UnlimitedNumb
 import styles from './GateValue.module.css';
 
 interface GateValueProps {
-    registeredGateValue: RegisteredValue<any>;
+    registeredGateValue: ObservableValue<any>,
+    isActive: boolean
 }
 
 const GateValue = (props: GateValueProps) => {
-    const {registeredGateValue} = props;
+    const {registeredGateValue, isActive} = props;
 
     const [name, setName] = useState<string>();
 
@@ -34,9 +35,11 @@ const GateValue = (props: GateValueProps) => {
     }, [registeredGateValue]);
 
     return (
-        <div className={styles.gateValue}>
+        <div className={styles.gateValueContainer}>
             <span className={styles.nameContainer}>{name}</span>
-            <TypeValue/>
+            <div className={`${styles.gateValue} ${isActive ? styles.active : styles.inactive}`}>
+                <TypeValue/>
+            </div>
         </div>
     );
 }
