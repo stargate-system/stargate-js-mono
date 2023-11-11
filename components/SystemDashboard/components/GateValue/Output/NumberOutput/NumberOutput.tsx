@@ -4,13 +4,13 @@ import ProgressBar from "./components/ProgressBar/ProgressBar";
 import NumberGeneric from "../../common/GenericNumber/NumberGeneric";
 import ValueDisplay from "./components/ValueDisplay/ValueDisplay";
 
-interface NumberInputProps {
+interface NumberOutputProps {
     gateNumber: GateNumber,
     value: number,
     isActive: boolean
 }
 
-const NumberOutput = (props: NumberInputProps) => {
+const NumberOutput = (props: NumberOutputProps) => {
     const {gateNumber, value, isActive} = props;
 
     const [isLimited, setIsLimited] = useState(false);
@@ -39,6 +39,7 @@ const NumberOutput = (props: NumberInputProps) => {
         isActive={isActive}
         valueBar={<ProgressBar percentFull={rangePercent} isActive={isActive}/>}
         valueDisplay={<ValueDisplay value={value} isLimited={isLimited}/>}
+        isLimited={isLimited}
     />
 }
 

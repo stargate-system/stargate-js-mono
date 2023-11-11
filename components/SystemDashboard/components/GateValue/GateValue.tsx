@@ -3,6 +3,7 @@ import {useEffect, useMemo, useState} from "react";
 import {Directions} from "gate-core";
 import styles from './GateValue.module.css';
 import GateOutput from "./Output/GateOutput";
+import GateInput from "./Input/GateInput";
 
 interface GateValueProps {
     registeredGateValue: ObservableValue<any>,
@@ -23,7 +24,7 @@ const GateValue = (props: GateValueProps) => {
             case Directions.output:
                 return <GateOutput registeredGateValue={registeredGateValue} isActive={isActive}/>
             case Directions.input:
-                // TODO
+                return <GateInput registeredGateValue={registeredGateValue} isActive={isActive}/>
         }
     };
 

@@ -1,19 +1,18 @@
 import {GateNumber} from "gate-core";
 import styles from './NumberGeneric.module.css';
-import React, {ReactNode, useEffect, useMemo, useState} from "react";
+import React, {ReactNode, useMemo} from "react";
 
 interface NumberGenericProps {
     gateNumber: GateNumber,
     value: number,
     isActive: boolean,
     valueBar: ReactNode,
-    valueDisplay: ReactNode
+    valueDisplay: ReactNode,
+    isLimited: boolean
 }
 
 const NumberGeneric = (props: NumberGenericProps) => {
-    const {gateNumber, valueBar, valueDisplay} = props;
-
-    const [isLimited, setIsLimited] = useState(false);
+    const {gateNumber, valueBar, valueDisplay, isLimited} = props;
 
     const valueContainerStyle = useMemo(() => {
         if (gateNumber) {
@@ -27,14 +26,6 @@ const NumberGeneric = (props: NumberGenericProps) => {
             }
         }
     }, [gateNumber, isLimited]);
-
-    useEffect(() => {
-        if (gateNumber &&
-            typeof gateNumber.range[0] === "number" &&
-            typeof gateNumber.range[1] === "number") {
-            setIsLimited(true);
-        }
-    }, [gateNumber]);
 
     return (
         <div className={styles.numberGenericContainer}>

@@ -9,6 +9,7 @@ import styles from './SystemDashboard.module.css';
 import SystemHeader from "./components/SystemHeader/SystemHeader";
 import {SystemConnector} from "./api/SystemConnector";
 import SystemImageService from "./service/SystemImageService";
+import ConnectionService from "./service/ConnectionService";
 
 interface SystemDashboardProps {
     connector: SystemConnector,
@@ -23,6 +24,7 @@ const SystemDashboard = (props: SystemDashboardProps) => {
         connector.onJoinEvent = (systemImage: SystemImage, activeDevices: string[]) => {
             setDevicesImage(systemImage.devices);
             SystemImageService.initialize(systemImage, activeDevices);
+            ConnectionService.connector = connector;
         }
 
         connector.onDeviceEvent = (event: EventName, data: any) => {

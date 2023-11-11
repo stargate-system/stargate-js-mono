@@ -2,6 +2,7 @@ import {ObservableValue} from "../../../model/ObservableValue";
 import {useEffect, useState} from "react";
 import {ValueTypes} from "gate-core";
 import {handleSubscription} from "../helper";
+import NumberInput from "./NumberInput/NumberInput";
 
 interface GateInputProps {
     registeredGateValue: ObservableValue<any>,
@@ -26,7 +27,7 @@ const GateInput = (props: GateInputProps) => {
     switch (registeredGateValue.gateValue.type) {
         case ValueTypes.integer:
         case ValueTypes.float:
-            // return <NumberOutput value={value} isActive={isActive} gateNumber={registeredGateValue.gateValue}/>;
+            return <NumberInput value={value} setValue={setValue} isActive={isActive} gateNumber={registeredGateValue.gateValue}/>;
         case ValueTypes.boolean:
         // TODO
     }

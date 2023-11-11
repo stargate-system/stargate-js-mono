@@ -2,7 +2,7 @@ import {ValueMessage} from "gate-core";
 import {ControllerConnector, Device, EventName, Router, SystemImage} from "gate-router";
 import {SystemConnector} from "../../../../components/SystemDashboard/api/SystemConnector";
 
-const handleValueMessage = () => {};
+const handleValueMessage = (valueMessage: ValueMessage) => routerConnector.onValueMessage(valueMessage);
 
 const systemConnector: SystemConnector = {
     onDeviceEvent: () => {},
