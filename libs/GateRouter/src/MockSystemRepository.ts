@@ -1,5 +1,5 @@
 import {SystemRepository} from "./api/SystemRepository";
-import {DeviceConnector} from "./api/DeviceConnector";
+import {DeviceConnector} from "./context/deviceContext/api/DeviceConnector";
 
 let nextId = 1;
 

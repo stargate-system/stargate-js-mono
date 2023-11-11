@@ -1,7 +1,7 @@
-import {DeviceConnector} from "./DeviceConnector.js";
-import {EventName} from "./EventName.js";
+import {DeviceConnector} from "../../deviceContext/api/DeviceConnector.js";
+import {EventName} from "../../../api/EventName.js";
 import {ValueMessage} from "gate-core";
-import {SystemImage} from "./SystemImage";
+import {SystemImage} from "../../../api/SystemImage";
 
 export interface ControllerConnector{
     id: string | undefined,
