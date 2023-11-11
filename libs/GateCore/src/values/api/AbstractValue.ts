@@ -14,7 +14,7 @@ export abstract class AbstractValue<T> {
     valueName: string | undefined;
     direction: Directions | undefined;
     onLocalUpdate: ((value: AbstractValue<T>) => void) | undefined;
-    onRemoteUpdate: ((value: AbstractValue<T>) => void) | undefined;
+    onRemoteUpdate: ((value?: T) => void) | undefined;
 
     protected constructor(id?: string) {
         if (id !== undefined) {
@@ -57,12 +57,13 @@ export abstract class AbstractValue<T> {
     protected _setRemoteValue = (value: T | undefined) => {
         if (this._isValueChanged(value)) {
             if (this.direction === Directions.input) {
+                // setting same way as locally to emit sync message for other controllers
                 this.setValue(value);
             } else {
                 this._value = value;
             }
             if (this.onRemoteUpdate) {
-                this.onRemoteUpdate(this);
+                this.onRemoteUpdate(value);
             }
         }
     }

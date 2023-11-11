@@ -56,8 +56,8 @@ export class GateNumber extends AbstractValue<number> {
 
     setMinimum(minimum: number | undefined) {
         this._range[0] = minimum;
-        if ((minimum !== undefined) && (super.value !== undefined) && (super.value < minimum)) {
-            super.setValue(minimum);
+        if ((minimum !== undefined) && (this.value !== undefined) && (this.value < minimum)) {
+            this.setValue(minimum);
         }
     }
     setMaximum(maximum: number | undefined) {

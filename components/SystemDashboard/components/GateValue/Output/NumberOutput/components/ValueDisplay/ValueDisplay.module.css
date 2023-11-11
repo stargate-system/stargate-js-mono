@@ -1,0 +1,13 @@
+.value {
+    display: flex;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.limited {
+    width: 50%;
+}
+
+.unlimited {
+    width: 100%;
+}
