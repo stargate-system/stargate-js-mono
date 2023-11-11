@@ -7,18 +7,19 @@
     .nameContainer {
         font-size: 0.85rem;
         padding: 0.2rem;
+        color: var(--gatevalue-name-color);
     }
 
     .gateValue {
-        border-radius: var(--component-border-radius);
-        padding: 0.5rem;
-    }
-
-    .active {
-        border: 1px solid var(--gatevalue-color-border);
-    }
-
-    .inactive {
-        border: 1px solid var(--gatevalue-color-border-inactive);
+        padding: 0 0.5rem;
     }
 }
+
+.active {
+    --gatevalue-name-color: #f5debf;
+}
+
+.inactive {
+    --gatevalue-name-color: #cecece;
+}
+

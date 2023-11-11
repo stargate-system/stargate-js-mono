@@ -1,11 +1,3 @@
 .globalStyles {
     --global-color-error: red;
-    --global-color-background: #303030;
-    --global-color-text: white;
-    --component-color-border: #454545;
-    --component-color-background: #202020;
-    --component-border-radius: 0.3rem;
-    --component-gradient-header: linear-gradient(var(--component-color-border), #858585, var(--component-color-border));
-    --gatevalue-color-border: #6090f0;
-    --gatevalue-color-border-inactive: #858585;
 }

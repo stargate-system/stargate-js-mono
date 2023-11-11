@@ -1,4 +1,4 @@
-.numberInputContainer {
+.numberOutputContainer {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -8,6 +8,7 @@
         display: flex;
         font-size: 0.7rem;
         width: 25%;
+        color: var(--gatevalue-name-color);
     }
 
     .right {
@@ -21,11 +22,12 @@
     }
 
     .valueBar {
+        --value-bar-color-enabled: green;
+        --value-bar-color-disabled: #666;
+
         width: 100%;
         min-height: 0.5rem;
-        background-image: linear-gradient(to right, green 40%, #aaa 40%);
         border: 1px solid #000;
-        margin: 0.2rem 0 0 0;
     }
 
     .value {

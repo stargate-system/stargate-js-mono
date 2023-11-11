@@ -2,9 +2,9 @@
     display: flex;
     align-items: center;
     justify-content: stretch;
-    background-image: var(--component-gradient-header);
+    background-image: var(--device-gradient-header);
     padding: 0.2rem;
-    border-radius: var(--component-border-radius);
+    border-radius: var(--device-border-radius);
     text-shadow: 1px 1px #333, -1px -1px #151515;
 
     .nameContainer {

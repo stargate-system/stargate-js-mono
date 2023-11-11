@@ -1,5 +1,5 @@
 import {Manifest} from "gate-core";
-import {useCallback, useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import registries from "../../model/registries";
 import DeviceHeader from "./components/DeviceHeader/DeviceHeader";
 import styles from './Device.module.css';
@@ -16,7 +16,11 @@ const Device = (props: DeviceProps) => {
     const [isActive, setIsActive] = useState(false);
     const [deviceStateListenerKey, setDeviceStateListenerKey] = useState<string>();
 
-    const generateValues = useCallback(() => {
+    const deviceContainerClass = useMemo(() => {
+        return `${styles.deviceContainer} ${isActive ? styles.active : styles.inactive}`
+    }, [isActive]);
+
+    const generateValues = () => {
         const values = manifest.values;
         if (values) {
             return values.map((valueManifest) => {
@@ -26,7 +30,7 @@ const Device = (props: DeviceProps) => {
                 }
             })
         }
-    }, [manifest]);
+    };
 
     useEffect(() => {
         // @ts-ignore
@@ -36,7 +40,7 @@ const Device = (props: DeviceProps) => {
     }, [manifest]);
 
     return (
-        <div className={`${styles.deviceContainer} ${isActive ? styles.active : styles.inactive}`}>
+        <div className={deviceContainerClass}>
             <DeviceHeader name={manifest.deviceName ?? ''}/>
             <div className={styles.valuesContainer}>
                 {generateValues()}

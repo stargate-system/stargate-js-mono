@@ -27,7 +27,7 @@ const GateOutput = (props: GateOutputProps) => {
     switch (registeredGateValue.gateValue.type) {
         case ValueTypes.integer:
         case ValueTypes.float:
-            return <NumberOutput value={value} gateNumber={registeredGateValue.gateValue}/>;
+            return <NumberOutput value={value} isActive={isActive} gateNumber={registeredGateValue.gateValue}/>;
         case ValueTypes.boolean:
         // TODO
     }
