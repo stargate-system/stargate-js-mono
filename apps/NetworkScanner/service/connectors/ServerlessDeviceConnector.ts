@@ -2,15 +2,14 @@ import {SocketWrapper, ConnectionState, Keywords, Manifest, ValueMessage} from "
 import {DeviceConnector} from "gate-router";
 
 export class ServerlessDeviceConnector implements DeviceConnector{
-    id: string | undefined;
+    id?: string;
     private readonly _connection: SocketWrapper;
-    private _manifest: Manifest | undefined;
+    manifest?: Manifest;
     onValueMessage: (change: ValueMessage) => void = () => {};
     onStateChange: (state: ConnectionState) => void = () => {};
 
     constructor(socket: WebSocket) {
         this._connection = new SocketWrapper();
-        // @ts-ignore
         const onMessageSetter = (messageHandler: (msg: string) => void) => socket.onmessage = (event) => {
             messageHandler(event.data);
         };
@@ -35,7 +34,7 @@ export class ServerlessDeviceConnector implements DeviceConnector{
                 .createQuery(Keywords.manifest)
                 .catch(() => this._connection.close());
             if (manifestString !== undefined) {
-                this._manifest = JSON.parse(manifestString);
+                this.manifest = JSON.parse(manifestString);
                 functionalHandler.sendCommand(Keywords.ready);
                 this._connection.setState(ConnectionState.ready);
             }
@@ -47,10 +46,6 @@ export class ServerlessDeviceConnector implements DeviceConnector{
 
     get connection(): SocketWrapper {
         return this._connection;
-    }
-
-    get manifest(): Manifest | undefined {
-        return this._manifest;
     }
 
     handleValueMessage(valueMessage: ValueMessage): void {

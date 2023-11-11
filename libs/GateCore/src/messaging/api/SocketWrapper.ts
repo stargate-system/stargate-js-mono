@@ -9,8 +9,8 @@ export class SocketWrapper {
     private readonly _factory: MessagingFactory;
     private _state: ConnectionState = ConnectionState.closed;
     private readonly _stateChangeListeners= new Registry<(state: ConnectionState) => void>();
-    private _close: (() => void) | undefined;
-    private _handler: MessageHandler | undefined;
+    private _close?: () => void;
+    private _handler?: MessageHandler;
 
     constructor(factory?: MessagingFactory) {
         this._factory = factory ?? DefaultMessagingFactory

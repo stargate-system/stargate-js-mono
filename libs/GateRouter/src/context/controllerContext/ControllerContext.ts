@@ -1,8 +1,9 @@
 import {Registry, ValueMessage} from "gate-core";
 import {ControllerConnector} from "./api/ControllerConnector";
-import {EventName} from "../../api/EventName";
 import Router from "../../api/Router";
 import DeviceContext from "../deviceContext/DeviceContext";
+import {EventName} from "../../api/EventName";
+import {Device} from "../deviceContext/api/Device";
 
 const controllerRegistry = new Registry<ControllerConnector>();
 
@@ -10,12 +11,9 @@ const addController = async (controller: ControllerConnector) => {
     if (controller.id === undefined) {
         controller.id = controllerRegistry.add(controller);
         controller.onDisconnect = () => controllerDisconnected(controller);
-        controller.onValueMessage = routeControllerMessage;
+        controller.onValueMessage = DeviceContext.handleValueMessage;
         const systemImage = await Router.systemRepository.getSystemImage();
-        controller.handleJoined(systemImage, DeviceContext.deviceRegistry.getValues().map((device) => device.id));
-        DeviceContext.deviceRegistry.getValues().forEach((device) => {
-            controller.handleDeviceEvent(EventName.connected, device);
-        });
+        controller.handleJoined(systemImage, DeviceContext.getActiveDeviceIds());
     }
 }
 
@@ -25,13 +23,22 @@ const controllerDisconnected = (controller: ControllerConnector) => {
     }
 }
 
-const routeControllerMessage = (valueMessage: ValueMessage) => {
+const handleDeviceEvent = (eventName: EventName, device: Device) => {
+    controllerRegistry.getValues()
+        .forEach((controller) => controller.handleDeviceEvent(eventName, device));
+}
 
+const handleValueMessage = (valueMessage: ValueMessage) => {
+    controllerRegistry.getValues().forEach((controller) => {
+        controller.handleValueMessage(valueMessage);
+    });
 }
 
 const ControllerContext = {
     controllerRegistry,
-    addController
+    addController,
+    handleDeviceEvent,
+    handleValueMessage
 }
 
 export default ControllerContext;

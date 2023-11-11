@@ -1,5 +1,6 @@
 import {SystemRepository} from "./api/SystemRepository";
-import {DeviceConnector} from "./context/deviceContext/api/DeviceConnector";
+import {Manifest} from "gate-core";
+import {ValidManifest} from "./context/deviceContext/api/ValidManifest";
 
 let nextId = 1;
 
@@ -7,11 +8,10 @@ const MockSystemRepository: SystemRepository = {
     getSystemImage: async () => {
         return {devices: []}
     },
-    createDevice: async (device: DeviceConnector) => {
-        device.id = nextId.toString();
-        // @ts-ignore
-        device.manifest?.id = device.id;
+    createDevice: async (manifest: Manifest) => {
+        manifest.id = nextId.toString();
         nextId++;
+        return manifest as ValidManifest;
     }
 }
 

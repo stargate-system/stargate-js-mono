@@ -4,6 +4,8 @@ import {EventName} from "./src/api/EventName.js";
 import Router from "./src/api/Router.js";
 import {SystemImage} from './src/api/SystemImage';
 import {SystemRepository} from "./src/api/SystemRepository";
+import {ValidManifest} from "./src/context/deviceContext/api/ValidManifest";
+import {Device} from "./src/context/deviceContext/api/Device";
 
 export {
     ControllerConnector,
@@ -11,5 +13,7 @@ export {
     EventName,
     Router,
     SystemImage,
-    SystemRepository
+    SystemRepository,
+    ValidManifest,
+    Device
 }

@@ -1,7 +1,8 @@
 import {SystemImage} from "./SystemImage";
-import {DeviceConnector} from "../context/deviceContext/api/DeviceConnector";
+import {ValidManifest} from "../context/deviceContext/api/ValidManifest";
+import {Manifest} from "gate-core";
 
 export interface SystemRepository {
     getSystemImage: () => Promise<SystemImage>
-    createDevice: (device: DeviceConnector) => Promise<void>
+    createDevice: (manifest: Manifest) => Promise<ValidManifest>
 }

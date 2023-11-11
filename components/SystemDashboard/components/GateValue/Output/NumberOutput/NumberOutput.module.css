@@ -23,7 +23,7 @@
 
     .valueBar {
         --value-bar-color-enabled: green;
-        --value-bar-color-disabled: #666;
+        --value-bar-color-disabled: #606060;
 
         width: 100%;
         min-height: 0.5rem;

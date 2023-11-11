@@ -1,5 +1,5 @@
 import {ValueMessage} from "gate-core";
-import {ControllerConnector, DeviceConnector, EventName, Router, SystemImage} from "gate-router";
+import {ControllerConnector, Device, EventName, Router, SystemImage} from "gate-router";
 import {SystemConnector} from "../../../../components/SystemDashboard/api/SystemConnector";
 
 const handleValueMessage = () => {};
@@ -13,7 +13,7 @@ const systemConnector: SystemConnector = {
     joinSystem: () => Router.addController(DirectConnector.routerConnector)
 }
 
-const handleDeviceEvent = (event: EventName, device: DeviceConnector) => {
+const handleDeviceEvent = (event: EventName, device: Device) => {
     let data;
     switch (event) {
         case EventName.connected:
