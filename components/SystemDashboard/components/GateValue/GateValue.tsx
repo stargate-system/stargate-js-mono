@@ -1,8 +1,8 @@
 import {ObservableValue} from "../../model/ObservableValue";
 import {useCallback, useEffect, useState} from "react";
-import {ValueTypes} from "gate-core";
-import NumberOutput from "./Output/NumberOutput/NumberOutput";
+import {Directions} from "gate-core";
 import styles from './GateValue.module.css';
+import GateOutput from "./Output/GateOutput";
 
 interface GateValueProps {
     registeredGateValue: ObservableValue<any>,
@@ -14,13 +14,12 @@ const GateValue = (props: GateValueProps) => {
 
     const [name, setName] = useState<string>();
 
-    const TypeValue = useCallback(() => {
-        switch (registeredGateValue.gateValue.type) {
-            case ValueTypes.integer:
-            case ValueTypes.float:
-                return <NumberOutput registeredGateNumber={registeredGateValue}/>;
-            case ValueTypes.boolean:
-            // TODO
+    const DirectionalValue = useCallback(() => {
+        switch (registeredGateValue.gateValue.direction) {
+            case Directions.output:
+                return <GateOutput registeredGateValue={registeredGateValue} isActive={isActive}/>
+            case Directions.input:
+                // TODO
         }
     }, [registeredGateValue]);
 
@@ -32,7 +31,7 @@ const GateValue = (props: GateValueProps) => {
         <div className={styles.gateValueContainer}>
             <span className={styles.nameContainer}>{name}</span>
             <div className={`${styles.gateValue} ${isActive ? styles.active : styles.inactive}`}>
-                <TypeValue/>
+                <DirectionalValue/>
             </div>
         </div>
     );
