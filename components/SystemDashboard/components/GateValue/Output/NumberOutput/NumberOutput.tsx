@@ -1,13 +1,13 @@
 import {ObservableValue} from "../../../../model/ObservableValue";
 import {GateNumber} from "gate-core";
-import styles from './NumberInput.module.css';
+import styles from './NumberOutput.module.css';
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {handleSubscription} from "../../helper";
 
 interface LimitedNumberInputProps {
     registeredGateNumber: ObservableValue<GateNumber>
 }
-const NumberInput = (props: LimitedNumberInputProps) => {
+const NumberOutput = (props: LimitedNumberInputProps) => {
     const {registeredGateNumber} = props;
 
     const [subscribedValueKey, setSubscribedValueKey] = useState<string>();
@@ -60,4 +60,4 @@ const NumberInput = (props: LimitedNumberInputProps) => {
     )
 }
 
-export default NumberInput;
+export default NumberOutput;

@@ -1,7 +1,7 @@
 import {ObservableValue} from "../../model/ObservableValue";
 import {useCallback, useEffect, useState} from "react";
 import {ValueTypes} from "gate-core";
-import NumberInput from "./GateInput/NumberInput/NumberInput";
+import NumberOutput from "./Output/NumberOutput/NumberOutput";
 import styles from './GateValue.module.css';
 
 interface GateValueProps {
@@ -18,7 +18,7 @@ const GateValue = (props: GateValueProps) => {
         switch (registeredGateValue.gateValue.type) {
             case ValueTypes.integer:
             case ValueTypes.float:
-                return <NumberInput registeredGateNumber={registeredGateValue}/>;
+                return <NumberOutput registeredGateNumber={registeredGateValue}/>;
             case ValueTypes.boolean:
             // TODO
         }
