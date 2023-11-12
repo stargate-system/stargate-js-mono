@@ -1,7 +1,7 @@
 import {GateNumber} from "gate-core";
 import {Dispatch, SetStateAction, useEffect, useState} from "react";
-import NumberGeneric from "../../common/GenericNumber/NumberGeneric";
-import ValueDisplay from "./components/ValueDisplay/ValueDisplay";
+import NumberGeneric from "../../common/NumberGeneric/NumberGeneric";
+import ValueDisplayInput from "./components/ValueDisplayInput/ValueDisplayInput";
 
 interface NumberInputProps {
     gateNumber: GateNumber,
@@ -33,7 +33,7 @@ const NumberInput = (props: NumberInputProps) => {
         value={value}
         isActive={isActive}
         valueBar={<div/>}
-        valueDisplay={<ValueDisplay value={value} setValue={setGateValue}/>}
+        valueDisplay={<ValueDisplayInput value={value} setValue={setGateValue}/>}
         isLimited={isLimited}
     />
 }

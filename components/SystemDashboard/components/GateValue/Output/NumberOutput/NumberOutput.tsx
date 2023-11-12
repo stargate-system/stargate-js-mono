@@ -1,7 +1,7 @@
 import {GateNumber} from "gate-core";
 import {useEffect, useMemo, useState} from "react";
 import ProgressBar from "./components/ProgressBar/ProgressBar";
-import NumberGeneric from "../../common/GenericNumber/NumberGeneric";
+import NumberGeneric from "../../common/NumberGeneric/NumberGeneric";
 import ValueDisplay from "./components/ValueDisplay/ValueDisplay";
 
 interface NumberOutputProps {

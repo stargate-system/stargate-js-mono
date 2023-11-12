@@ -1,14 +1,14 @@
 
-interface ValueDisplayProps {
+interface ValueDisplayInputProps {
     value: number,
     setValue: (value: number) => void
 }
 
-const ValueDisplay = (props: ValueDisplayProps) => {
+const ValueDisplayInput = (props: ValueDisplayInputProps) => {
     const {value, setValue} = props;
 
     // @ts-ignore
     return <input type='number' value={value} onInput={(ev) => setValue(ev.target.value)}/>
 }
 
-export default ValueDisplay;
+export default ValueDisplayInput;
