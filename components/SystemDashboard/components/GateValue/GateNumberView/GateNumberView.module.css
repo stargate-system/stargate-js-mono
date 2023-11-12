@@ -12,20 +12,13 @@
     .right {
         justify-content: flex-end;
     }
+
     .valueContainer {
         display: flex;
         flex-direction: row;
         justify-content: stretch;
     }
 
-    .valueBar {
-        --value-bar-color-enabled: green;
-        --value-bar-color-disabled: #606060;
-
-        width: 100%;
-        min-height: 0.5rem;
-        border: 1px solid #000;
-    }
     .value {
         display: flex;
         justify-content: center;

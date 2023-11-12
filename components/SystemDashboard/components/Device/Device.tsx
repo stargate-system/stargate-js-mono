@@ -26,7 +26,7 @@ const Device = (props: DeviceProps) => {
             return values.map((valueManifest) => {
                 const registeredValue = registries.gateValuesRegistry.getByKey(valueManifest.id);
                 if (registeredValue) {
-                    return <GateValueWrapper isActive={isActive} registeredGateValue={registeredValue}/>
+                    return <GateValueWrapper key={valueManifest.id} isActive={isActive} registeredGateValue={registeredValue}/>
                 }
             })
         }

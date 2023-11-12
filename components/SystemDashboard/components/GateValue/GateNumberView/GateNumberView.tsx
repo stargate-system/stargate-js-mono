@@ -1,7 +1,8 @@
-import {GateNumber} from "gate-core";
+import {Directions, GateNumber} from "gate-core";
 import {Dispatch, SetStateAction, useEffect, useMemo, useState} from "react";
 import styles from './GateNumberView.module.css'
 import {GateValueView} from "../GateValueWrapper";
+import ValueBar from "./components/ValueBar/ValueBar";
 
 interface GateNumberViewProps extends GateValueView{
     gateValue: GateNumber,
@@ -18,21 +19,6 @@ const GateNumberView = (props: GateValueView) => {
     const valueClass = useMemo(() => {
         return `${styles.value} ${isLimited ? styles.limited : styles.unlimited}`
     }, [isLimited]);
-
-    const valueBarStyle = () => {
-        if (gateValue && isLimited && value !== undefined) {
-            // @ts-ignore
-            const fullRange = gateValue.range[1] - gateValue.range[0];
-            // @ts-ignore
-            const percent = (100 * (value - gateValue.range[0])) / fullRange;
-            return {
-                backgroundImage: `linear-gradient(to right,
-             ${isActive ? 'var(--value-bar-color-enabled)' : 'var(--value-bar-color-disabled)'} ${percent}%,
-              #aaa ${percent}%)`
-            };
-        }
-        return undefined;
-    };
 
     const valueContainerStyle = useMemo(() => {
         if (gateValue) {
@@ -57,7 +43,17 @@ const GateNumberView = (props: GateValueView) => {
 
     return (
         <div className={styles.numberOutputContainer}>
-            {isLimited && <div className={styles.valueBar} style={valueBarStyle()}></div>}
+            {isLimited &&
+                <ValueBar
+                    gateNumber={gateValue}
+                    min={gateValue.range[0] ?? 0}
+                    max={gateValue.range[1] ?? 1}
+                    value={value}
+                    setValue={setValue}
+                    isActive={isActive}
+                    editable={gateValue.direction === Directions.input}
+                />
+            }
             <div className={styles.valueContainer} style={valueContainerStyle}>
                 {isLimited && <span className={styles.range}>{gateValue.range[0]}</span>}
                 <span className={valueClass}>{value}</span>

@@ -1,0 +1,27 @@
+.valueBarContainer {
+    width: 100%;
+    --bar-size: 0.5rem;
+    --slider-size: calc(var(--bar-size) * 2);
+    --margin-offset: calc(var(--bar-size) * 0.4);
+
+    .bar {
+        --value-bar-color-enabled: green;
+        --value-bar-color-disabled: #606060;
+
+        width: 100%;
+        height: var(--bar-size);
+        border: 1px solid #000;
+        border-radius: calc(var(--bar-size) / 2);
+    }
+
+    .slider {
+        position: relative;
+        z-index: 1;
+        background-image: radial-gradient(#b9a387 30%, #222222);
+        top: calc(var(--margin-offset) - (var(--bar-size)/2));
+        width: var(--slider-size);
+        height: var(--slider-size);
+        border-radius: calc(var(--slider-size) / 2);
+        margin: calc(-1px - var(--margin-offset) - var(--slider-size) / 2) 0 0 calc(var(--slider-size) / -2);
+    }
+}

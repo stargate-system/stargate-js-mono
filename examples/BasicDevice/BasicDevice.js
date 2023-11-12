@@ -8,7 +8,7 @@ const unlimitedInteger = ValueFactory.createInteger(Directions.output, 'Unlimite
 const increment = ValueFactory.createInteger(Directions.input, 'Increment amount', [1, 100]);
 increment.onRemoteUpdate = (value) => incrementValue = value ?? incrementValue;
 
-const intervalStep = ValueFactory.createInteger(Directions.input, 'Interval', [10, 5000]);
+const intervalStep = ValueFactory.createInteger(Directions.input, 'Interval', [1, 1000]);
 intervalStep.setValue(1000);
 intervalStep.onRemoteUpdate = () => {
     if (interval) {
