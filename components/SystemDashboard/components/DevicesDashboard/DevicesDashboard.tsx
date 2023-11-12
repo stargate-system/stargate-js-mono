@@ -5,9 +5,10 @@ import {DevicesImage} from "../../systemContext";
 
 const DevicesDashboard = () => {
     const devices = useContext(DevicesImage);
+
     return (
         <div className={styles.devicesDashboard}>
-            {devices.map((manifest) => <Device manifest={manifest}/>)}
+            {devices.map((manifest) => <Device key={manifest.id} manifest={manifest}/>)}
         </div>
     )
 }

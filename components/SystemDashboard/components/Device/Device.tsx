@@ -1,10 +1,10 @@
 import {Manifest} from "gate-core";
-import {useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import registries from "../../model/registries";
 import DeviceHeader from "./components/DeviceHeader/DeviceHeader";
 import styles from './Device.module.css';
-import GateValue from "../GateValue/GateValue";
-import {handleSubscription} from "../GateValue/helper";
+import GateValueWrapper from "../GateValue/GateValueWrapper";
+import {handleSubscription} from "../helper";
 
 interface DeviceProps {
     manifest: Manifest
@@ -20,17 +20,17 @@ const Device = (props: DeviceProps) => {
         return `${styles.deviceContainer} ${isActive ? styles.active : styles.inactive}`
     }, [isActive]);
 
-    const generateValues = () => {
+    const generateValues = useCallback((isActive: boolean) => {
         const values = manifest.values;
         if (values) {
             return values.map((valueManifest) => {
                 const registeredValue = registries.gateValuesRegistry.getByKey(valueManifest.id);
                 if (registeredValue) {
-                    return <GateValue isActive={isActive} registeredGateValue={registeredValue}/>
+                    return <GateValueWrapper isActive={isActive} registeredGateValue={registeredValue}/>
                 }
             })
         }
-    };
+    }, []);
 
     useEffect(() => {
         // @ts-ignore
@@ -43,7 +43,7 @@ const Device = (props: DeviceProps) => {
         <div className={deviceContainerClass}>
             <DeviceHeader name={manifest.deviceName ?? ''}/>
             <div className={styles.valuesContainer}>
-                {generateValues()}
+                {generateValues(isActive)}
             </div>
         </div>
     )

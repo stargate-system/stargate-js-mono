@@ -1,8 +1,0 @@
-.progressBar {
-    --value-bar-color-enabled: green;
-    --value-bar-color-disabled: #606060;
-
-    width: 100%;
-    min-height: 0.5rem;
-    border: 1px solid #000;
-}
