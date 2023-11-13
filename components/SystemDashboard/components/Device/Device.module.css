@@ -1,7 +1,7 @@
 .deviceContainer {
     --device-border-radius: 0.3rem;
-    --device-color-border: #454545;
-    --device-gradient-header: linear-gradient(var(--device-color-border), #707070 40% 60%, var(--device-color-border));
+    --device-color-border: #2c2c2c;
+    --device-gradient-header: linear-gradient(var(--device-color-border), #646464 40% 60%, var(--device-color-border));
     --device-border-style: 1px solid var(--device-color-border);
 
     display: flex;
@@ -22,7 +22,7 @@
 }
 
 .active {
-    box-shadow: 0 0 0.2rem #a0ffa0;
+    box-shadow: 0 0 0.2rem #7ac07a;
 }
 
 .inactive {

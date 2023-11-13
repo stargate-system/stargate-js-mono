@@ -69,15 +69,24 @@ const ValueBar = (props: ValueBarProps) => {
     }
 
     const barOnClick = (ev: any) => {
-        ev.preventDefault();
-        // @ts-ignore
-        console.log('>>>', valueBarRef.current?.offsetWidth, ev.nativeEvent.offsetX);
+        if (isActive) {
+            // @ts-ignore
+            const fullRange = valueBarRef.current?.offsetWidth;
+            if (fullRange) {
+                const factor = (max - min) / fullRange;
+                gateNumber.setValue(factor * ev.nativeEvent.offsetX);
+                // @ts-ignore
+                setValue(gateNumber.value);
+            }
+        }
     }
 
     const onDragStart = (ev: any) => {
         ev.dataTransfer.setDragImage(new Image(), 0, 0)
-        setDragStart(ev.clientX);
-        dragInitialValue.current = value;
+        if (isActive) {
+            setDragStart(ev.clientX);
+            dragInitialValue.current = value;
+        }
     }
 
     const onDragEnd = () => {
@@ -85,13 +94,14 @@ const ValueBar = (props: ValueBarProps) => {
     }
 
     const sliderOnDrag = (ev: any) => {
-        ev.preventDefault();
-        if((!ev.screenX && !ev.screenY) || !dragStart) return;
-        gateNumber.setValue(calcSliderValue(ev.clientX - dragStart));
-        // @ts-ignore
-        setValue(gateNumber.value);
-        // @ts-ignore
-        setSliderPosition(calcSliderPosition(calcPercent(gateNumber.value)));
+        if (isActive) {
+            if ((!ev.screenX && !ev.screenY) || !dragStart) return;
+            gateNumber.setValue(calcSliderValue(ev.clientX - dragStart));
+            // @ts-ignore
+            setValue(gateNumber.value);
+            // @ts-ignore
+            setSliderPosition(calcSliderPosition(calcPercent(gateNumber.value)));
+        }
     }
 
     useEffect(() => {
@@ -102,8 +112,22 @@ const ValueBar = (props: ValueBarProps) => {
 
     return (
         <div className={styles.valueBarContainer}>
-            <div ref={valueBarRef} onClick={barOnClick} className={styles.bar} style={backgroundImage}/>
-            {editable && <div draggable={true} onDrag={sliderOnDrag} onDragStart={onDragStart} onDragEnd={onDragEnd} className={styles.slider} style={{left: sliderPosition}} />}
+            <div
+                ref={valueBarRef}
+                onClick={barOnClick}
+                className={styles.bar}
+                style={backgroundImage}
+            />
+            {editable &&
+                <div
+                    draggable={true}
+                    onDrag={sliderOnDrag}
+                    onDragStart={onDragStart}
+                    onDragEnd={onDragEnd}
+                    className={`${styles.slider} ${isActive ? styles.sliderEnabled : styles.sliderDisabled}`}
+                    style={{left: sliderPosition}}
+                />
+            }
         </div>
     )
 }
