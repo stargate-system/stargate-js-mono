@@ -4,6 +4,7 @@
     align-items: center;
     justify-content: stretch;
     .range {
+        cursor: default;
         display: flex;
         font-size: 0.7rem;
         width: 25%;
@@ -17,17 +18,5 @@
         display: flex;
         flex-direction: row;
         justify-content: stretch;
-    }
-
-    .value {
-        display: flex;
-        justify-content: center;
-        font-size: 1.2rem;
-    }
-    .limited {
-        width: 50%;
-    }
-    .unlimited {
-        width: 100%;
     }
 }

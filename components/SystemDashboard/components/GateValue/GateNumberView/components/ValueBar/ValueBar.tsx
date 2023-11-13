@@ -55,7 +55,7 @@ const ValueBar = (props: ValueBarProps) => {
         const fullRange = valueBarRef.current?.offsetWidth;
         if (fullRange) {
             const factor = (max - min) / fullRange;
-            return factor * offsetValue + dragInitialValue.current;
+            return Math.round(100 * (factor * offsetValue + dragInitialValue.current)) / 100;
         }
     }, [min, max]);
 

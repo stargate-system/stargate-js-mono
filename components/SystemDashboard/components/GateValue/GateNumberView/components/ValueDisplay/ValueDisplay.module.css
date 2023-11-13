@@ -1,0 +1,21 @@
+.valueDisplay {
+    --value-display-font-size: 1.2rem;
+
+    display: flex;
+    justify-content: center;
+    font-size: var(--value-display-font-size);
+    background-color: var(--device-color-background);
+    font-family: inherit;
+    color: inherit;
+    text-align: center;
+}
+
+.editable {
+    border: 1px solid var(--gatevalue-name-color);
+    border-radius: var(--device-border-radius);
+    margin-top: 0.2rem;
+}
+
+.readonly {
+    border: none;
+}

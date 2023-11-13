@@ -1,5 +1,7 @@
 .systemDashboard {
+    --system-color: white;
+
     background-color: #303030;
-    color: white;
+    color: var(--system-color);
     min-height: 100vh;
 }

@@ -8,14 +8,16 @@ const unlimitedInteger = ValueFactory.createInteger(Directions.output, 'Unlimite
 const increment = ValueFactory.createInteger(Directions.input, 'Increment amount', [1, 100]);
 increment.onRemoteUpdate = (value) => incrementValue = value ?? incrementValue;
 
-const intervalStep = ValueFactory.createInteger(Directions.input, 'Interval', [1, 1000]);
-intervalStep.setValue(1000);
-intervalStep.onRemoteUpdate = () => {
+const frequency = ValueFactory.createFloat(Directions.input, 'Frequency', [1, 10]);
+frequency.setValue(4.5);
+frequency.onRemoteUpdate = () => {
     if (interval) {
         clearInterval(interval);
-        interval = setInterval(alterValue, intervalStep.value);
+        interval = setInterval(alterValue, 1000 / frequency.value);
     }
 }
+
+const unlimitedInput = ValueFactory.createFloat(Directions.input, 'Unlimited float');
 
 GateDevice.setDeviceName('Test device');
 const connection = GateDevice.startDevice();
@@ -42,7 +44,7 @@ connection.addStateChangeListener((state) => {
     logger.info('Connection state: ' + state);
     switch (state) {
         case ConnectionState.ready:
-            interval = setInterval(alterValue, intervalStep.value);
+            interval = setInterval(alterValue, 1000 / frequency.value);
             break;
         case ConnectionState.closed:
             clearInterval(interval);

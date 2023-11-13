@@ -3,6 +3,7 @@
     --device-color-border: #2c2c2c;
     --device-gradient-header: linear-gradient(var(--device-color-border), #646464 40% 60%, var(--device-color-border));
     --device-border-style: 1px solid var(--device-color-border);
+    --device-color-background: #202020;
 
     display: flex;
     flex-direction: column;
@@ -16,7 +17,7 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        background-color: #202020;
+        background-color: var(--device-color-background);
         border-radius: 0 0 var(--device-border-radius) var(--device-border-radius);
     }
 }
