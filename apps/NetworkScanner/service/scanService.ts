@@ -1,7 +1,7 @@
 import {Dispatch, SetStateAction} from "react";
 import scanConfig from "@/service/scanConfig";
 import {ServerlessDeviceConnector} from "@/service/connectors/ServerlessDeviceConnector";
-import {ConnectionState} from "gate-core";
+import {ConnectionState, CoreConfig} from "gate-core";
 import {Router} from "gate-router";
 
 const PROGRESS_MAX_COUNT = 300;
@@ -22,9 +22,10 @@ let scanMessageSetter: Dispatch<SetStateAction<string>>;
 let progressValueSetter: Dispatch<SetStateAction<number>>;
 let progressValue = 0;
 let progressInterval: NodeJS.Timeout | undefined;
-let aliveSockets: Array<WebSocket> = [];
-let openSockets: Array<WebSocket> = [];
-let foundNetworks: Array<string> = [];
+let aliveSockets: WebSocket[] = [];
+let openSockets: WebSocket[] = [];
+let connectedDevices: ServerlessDeviceConnector[] = [];
+let foundNetworks: string[] = [];
 let releaseCreateSocketLatch: Function | undefined;
 let releaseDeviceScanLatch: Function | undefined;
 
@@ -46,7 +47,7 @@ const startScan = (byte1: string,
         const ipPattern = byte1 + '.' + byte2 + '.' + byte3 + '.x';
         scanForDevices(ipPattern, true);
     } else {
-        scanForNetworks(byte1 + '.' + byte2 + '.x.' + scanConfig.NETWORK_PROBE_LSB);
+        scanForNetworks(byte1 + '.' + byte2 + '.x.' + scanConfig.networkProbeLsb);
     }
     startProgress();
     setScanTimeout();
@@ -59,7 +60,7 @@ const setScanTimeout = () => {
     scanTimeout = setTimeout(() => {
         scanTimeout = undefined;
         finishScan(scanResult.FAILED_TIMEOUT)
-    }, scanConfig.SCAN_TIMEOUT);
+    }, scanConfig.scanTimeout);
 }
 
 const finishScan = (reason: scanResult) => {
@@ -97,10 +98,10 @@ const scanForNetworks = async (ipPattern: string) => {
                 const timeout = setTimeout(() => {
                     socket.onerror = () => {};
                     socket.close();
-                }, scanConfig.SOCKET_TIMEOUT);
+                }, scanConfig.socketTimeout);
 
                 socket.onerror = () => {
-                    const foundPattern = ip.replace(new RegExp(scanConfig.NETWORK_PROBE_LSB + '$'), 'x');
+                    const foundPattern = ip.replace(new RegExp(scanConfig.networkProbeLsb + '$'), 'x');
                     foundNetworks.push(foundPattern);
                     networkDetectedCallback(foundPattern);
                     clearTimeout(timeout);
@@ -161,10 +162,17 @@ const scanForDevices = async (ipPattern: string, failOnNoDevices: boolean = fals
                     if (socket.readyState !== WebSocket.CLOSED) {
                         socket.close();
                     }
-                }, scanConfig.SOCKET_TIMEOUT);
+                }, scanConfig.socketTimeout);
 
                 socket.onopen = () => {
                     openSockets.push(socket);
+                    const deviceConnector = new ServerlessDeviceConnector(socket);
+                    deviceConnector.onStateChange = (state) => {
+                        if (state === ConnectionState.ready) {
+                            connectedDevices.push(deviceConnector);
+                            Router.addDevice(deviceConnector);
+                        }
+                    }
                     deviceDetectedCallback(ip);
                     clearTimeout(timeout);
                 }
@@ -190,7 +198,6 @@ const handleDeviceScanFinished = (failOnNoDevices: boolean) => {
     if (openSockets.length > 0) {
         openSockets.forEach((socket) => cleanSocketCallbacks(socket));
         aliveSockets = [];
-        connectDevices();
         finishScan(scanResult.SUCCESS);
     } else if (failOnNoDevices) {
         finishScan(scanResult.FAILED_DEVICES);
@@ -198,17 +205,6 @@ const handleDeviceScanFinished = (failOnNoDevices: boolean) => {
     if (releaseDeviceScanLatch) {
         releaseDeviceScanLatch();
     }
-}
-
-const connectDevices = () => {
-    openSockets.forEach((socket) => {
-        const deviceConnector = new ServerlessDeviceConnector(socket);
-        deviceConnector.onStateChange = (state) => {
-            if (state === ConnectionState.ready) {
-                Router.addDevice(deviceConnector);
-            }
-        }
-    });
 }
 
 const cleanSocketCallbacks = (socket: WebSocket) => {
@@ -227,7 +223,7 @@ const generateAllFromPattern = (ipPattern: string) => {
 
 const createSocket = async (ip: string): Promise<WebSocket | undefined> => {
     if (scanRunning) {
-        const socket = new WebSocket('ws://' + ip + ':' + scanConfig.PORT);
+        const socket = new WebSocket('ws://' + ip + ':' + CoreConfig.serverlessPort);
         await new Promise((res) => setTimeout(res, 0));
         if (socket.readyState === WebSocket.CLOSED) {
             const latch = new Promise((resolve) => releaseCreateSocketLatch = resolve);
@@ -260,7 +256,7 @@ const startProgress = () => {
     progressValue = 0;
     progressValueSetter(progressValue);
     if (progressInterval === undefined) {
-        const estimatedFinish = scanConfig.SOCKET_TIMEOUT * 2;
+        const estimatedFinish = scanConfig.socketTimeout * 2;
         progressInterval = setInterval(incrementProgress, Math.ceil(estimatedFinish / PROGRESS_MAX_COUNT));
     }
 }
@@ -275,6 +271,7 @@ const stopProgress = () => {
 const resetScan = () => {
     openSockets.forEach((socket) => socket.close());
     openSockets = [];
+    connectedDevices = [];
 }
 
 const scanService = {

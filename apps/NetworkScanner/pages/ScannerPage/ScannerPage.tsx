@@ -24,7 +24,7 @@ const ScannerPage = (props: ScannerPageProps) => {
     const [detectedDevices, setDetectedDevices] = useState<Array<string>>([]);
 
     const onNetworkDetected = (ipPattern: string) => {
-        if (detectedNetworks.length <= scanConfig.MAX_NETWORKS) {
+        if (detectedNetworks.length <= scanConfig.maxNetworks) {
             detectedNetworks.push(ipPattern);
             setDetectedNetworks([...detectedNetworks]);
         } else {

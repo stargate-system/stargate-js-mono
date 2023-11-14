@@ -1,5 +1,5 @@
-import {Manifest} from "gate-core";
+import {ValidManifest} from "../context/deviceContext/api/ValidManifest";
 
 export interface SystemImage {
-    devices: Array<Manifest>
+    devices: ValidManifest[]
 }

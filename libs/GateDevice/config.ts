@@ -1,11 +1,14 @@
+import {ConnectionType} from "./src/api/ConnectionType.js";
+
 const config = {
   logger: {
     remoteLoggingEnabled: true,
     consoleLoggingEnabled: true
   },
-  port: 10000,
+  connectionType: ConnectionType.serverless,
   outputBufferDelay: 0,
-  serverless: true
+  queryTimeout: 0,
+  handShakeTimeout: 5000
 }
 
 export default config;

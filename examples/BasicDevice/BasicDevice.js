@@ -17,10 +17,20 @@ frequency.onRemoteUpdate = () => {
     }
 }
 
-const unlimitedInput = ValueFactory.createFloat(Directions.input, 'Unlimited float');
-
 GateDevice.setDeviceName('Test device');
-const connection = GateDevice.startDevice();
+const deviceState = GateDevice.startDevice();
+
+deviceState.onStateChange = (state) => {
+    logger.info('Connection state: ' + state);
+    switch (state) {
+        case ConnectionState.ready:
+            interval = setInterval(alterValue, 1000 / frequency.value);
+            break;
+        case ConnectionState.closed:
+            clearInterval(interval);
+    }
+};
+logger.info('Waiting for connection...');
 
 let interval;
 let dir = 1;
@@ -39,16 +49,3 @@ const alterValue = () => {
     bigInteger.setValue(counter * 200);
     unlimitedInteger.setValue(counter);
 }
-
-connection.addStateChangeListener((state) => {
-    logger.info('Connection state: ' + state);
-    switch (state) {
-        case ConnectionState.ready:
-            interval = setInterval(alterValue, 1000 / frequency.value);
-            break;
-        case ConnectionState.closed:
-            clearInterval(interval);
-    }
-});
-logger.info('Waiting for connection...');
-

@@ -1,19 +1,16 @@
 import {
     ConfigurableValueFactory,
-    Directions,
     AbstractValue
 } from "gate-core";
-import {state} from "./api/GateDevice.js";
+import {device} from "./api/GateDevice.js";
 import logger from "./DeviceLogger.js";
 
-const initializeValue = (value: AbstractValue<any>, direction: Directions, name?: string) => {
-    if (state.isStarted) {
+const initializeValue = (value: AbstractValue<any>) => {
+    if (device.isStarted) {
         logger.warning('Cannot initialize value (' + value.valueName + ') after device was started');
     } else {
-        value.valueName = name;
-        state.values.add(value, value.id);
-        value.direction = direction;
-        value.onLocalUpdate = () => state.outputBuffer.add(value);
+        device.values.add(value, value.id);
+        value.onLocalUpdate = () => device.sendValue(value);
     }
 }
 

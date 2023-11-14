@@ -1,21 +1,34 @@
-import {Registry} from "../api/commonComponents/Registry.js";
-import MessageMapper from "./MessageMapper.js";
-import Markers from "./Markers.js";
-import {FunctionalHandler} from "./api/FunctionalHandler.js";
+import {Registry} from "../../api/commonComponents/Registry.js";
+import {ConnectionConfig} from "../api/ConnectionConfig.js";
+import MessageMapper from "../MessageMapper.js";
+import Markers from "../Markers.js";
+import {FunctionalHandler} from "../api/FunctionalHandler.js";
 
-export class FunctionalHandlerImpl implements FunctionalHandler{
-    private readonly _sendFunction: (message: string) => void;
+
+export class DefaultFunctionalHandler implements FunctionalHandler{
+    private _sendFunction?: (message: string) => void;
     private readonly _pendingQueries = new Registry<(value: string) => void>();
     private readonly _queryListeners = new Registry<(respond: (response: string) => void) => void>();
     private readonly _commandListeners = new Registry<(params?: Array<string>) => void>();
     private readonly _queryTimeout: number;
 
-    constructor(sendFunction: (message: string) => void, queryTimeout?: number) {
+    constructor(config?: ConnectionConfig) {
+        this._queryTimeout = config?.queryTimeout ?? 5000;
+    }
+
+    setConnected = (sendFunction: (message: string) => void) => {
         this._sendFunction = sendFunction;
-        this._queryTimeout = queryTimeout ?? 5000;
+    }
+
+    close = () => {
+        this._sendFunction = undefined;
     }
 
     createQuery = (keyword: string): Promise<string> => {
+        if (!this._sendFunction) {
+            throw new Error('Query creation failed: connection closed');
+        }
+
         if (!this._pendingQueries.getByKey(keyword)) {
             let resolveFunction: (value: string) => void;
             const result = new Promise<string>((resolve, reject) => {
@@ -55,14 +68,21 @@ export class FunctionalHandlerImpl implements FunctionalHandler{
     }
 
     sendCommand = (keyword: string, params?: Array<string>) => {
+        if (!this._sendFunction) {
+            throw new Error('Sending command failed: connection closed');
+        }
         this._sendFunction(MessageMapper.command(keyword, params));
     }
 
-     private handleQueryRequest = (queryMessage: string) => {
+    private handleQueryRequest = (queryMessage: string) => {
         const keyword = queryMessage.substring(2);
         const listener = this._queryListeners.getByKey(keyword);
         if (listener) {
-            const respond = (msg: string) => this._sendFunction(MessageMapper.answer(queryMessage, msg));
+            const respond = (msg: string) => {
+                if (this._sendFunction) {
+                    this._sendFunction(MessageMapper.answer(queryMessage, msg));
+                }
+            };
             listener(respond);
         }
     }

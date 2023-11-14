@@ -1,50 +1,93 @@
 import logger from "../DeviceLogger.js";
-import {startConnection} from "../connection/ServerConnection.js";
-import {Manifest, Registry} from "gate-core";
-import {SocketWrapper, AbstractValue, ValueOutputBuffer} from "gate-core";
+import {AbstractValue, ConnectionState, Directions, Manifest, Registry, ValueMessage} from "gate-core";
 import config from "../../config.js";
 import ValueFactory from "../ValueFactory.js";
+import {DeviceState} from "./DeviceState.js";
+import {initServerless} from "../connection/Serverless.js";
+import {ConnectionType} from "./ConnectionType.js";
 
-interface DeviceState {
+interface Device {
     isStarted: boolean,
     manifest: Manifest | undefined,
-    connection: SocketWrapper,
     values: Registry<AbstractValue<any>>,
-    outputBuffer: ValueOutputBuffer
+    sendValue: (gateValue: AbstractValue<any>) => void,
+    onValueMessage: (changes: ValueMessage) => void,
+    onStateChange: (state: ConnectionState) => void,
+    deviceState: DeviceState
 }
 
 let deviceName = "New Device";
 
 const setDeviceName = (name: string) => {
-    if (!state.isStarted) {
+    if (!device.isStarted) {
         deviceName = name;
     } else {
         logger.warning('Attempting to change device name after device started');
     }
 }
 
-const startDevice = (): SocketWrapper | undefined => {
-    if (state.isStarted) {
+const startDevice = (): DeviceState => {
+    if (device.isStarted) {
         logger.warning("Attempting to start already running device");
-        return;
+    } else {
+        device.isStarted = true;
+        device.manifest = {
+            deviceName,
+            values: [
+                ...device.values.getValues().map((value: AbstractValue<any>) => value.toManifest())
+            ]
+        }
+        startConnection();
     }
-    state.isStarted = true;
-    state.manifest = {
-        deviceName,
-        values: [
-            ...state.values.getValues().map((value: AbstractValue<any>) => value.toManifest())
-        ]
-    }
-    startConnection();
-    return state.connection;
+    return device.deviceState;
 }
 
-export const state: DeviceState = {
+const startConnection = () => {
+    switch (config.connectionType) {
+        case ConnectionType.serverless:
+            initServerless();
+            break;
+        case ConnectionType.localServer:
+            // TODO
+            break;
+        default:
+            throw new Error('On starting connection: unknown connection type ' + config.connectionType);
+    }
+}
+
+const onValueMessage = (changes: ValueMessage) => {
+    changes.forEach((change) => {
+        const targetValue = device.values.getByKey(change[0]);
+        if (targetValue !== undefined) {
+            if (targetValue.direction === Directions.output) {
+                logger.warning('Attempting to remotely change output value: ' + targetValue.valueName)
+            } else {
+                targetValue.fromRemote(change[1]);
+            }
+        } else {
+            logger.warning('Unknown value with id: ' + change[0]);
+        }
+    })
+}
+
+const onStateChange = (state: ConnectionState) => {
+    device.deviceState.state = state;
+    if (device.deviceState.onStateChange) {
+        device.deviceState.onStateChange(state);
+    }
+}
+
+export const device: Device = {
     isStarted: false,
     manifest: undefined,
-    connection: new SocketWrapper(),
     values: new Registry<AbstractValue<any>>(),
-    outputBuffer: new ValueOutputBuffer(config)
+    sendValue: () => {},
+    onValueMessage,
+    onStateChange,
+    deviceState: {
+        state: ConnectionState.closed,
+        onStateChange: undefined
+    }
 };
 
 export default {

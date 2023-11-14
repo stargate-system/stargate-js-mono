@@ -50,20 +50,11 @@ const routeDeviceMessage = (valueMessage: ValueMessage, source: Device) => {
 }
 
 const handleValueMessage = (valueMessage: ValueMessage) => {
-    const messageMap = new Map<string, Array<[string, string]>>();
     valueMessage.forEach((message) => {
         const [deviceId, valueId] = extractTarget(message[0]);
-        let deviceMessage = messageMap.get(deviceId);
-        if (!deviceMessage) {
-            deviceMessage = [];
-            messageMap.set(deviceId, deviceMessage);
-        }
-        deviceMessage.push([valueId, message[1]]);
+        const device = deviceRegistry.getByKey(deviceId);
+        device?.sendValue([valueId, message[1]]);
     });
-    [...messageMap.entries()].forEach((entry) => {
-        const device = deviceRegistry.getByKey(entry[0]);
-        device?.handleValueMessage(entry[1]);
-    })
 }
 
 const getActiveDeviceIds = (): string[] => {
