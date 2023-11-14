@@ -3,7 +3,7 @@ import {
     ConnectionState,
     DefaultConnection,
     Keywords,
-    Manifest,
+    Manifest, SocketWrapper,
     ValueMessage
 } from "gate-core";
 import {DeviceConnector} from "gate-router";
@@ -16,15 +16,19 @@ export class ServerlessDeviceConnector implements DeviceConnector{
     onStateChange?: (state: ConnectionState) => void;
 
     constructor(socket: WebSocket) {
-        this._connection = new DefaultConnection();
-        this._connection.setConnected(
-            {
-                send: socket.send.bind(socket),
-                close: socket.close.bind(socket),
-                setOnClose: (callback) => socket.onclose = callback,
-                setOnMessage: (callback) => socket.onmessage = (ev) => callback(ev.data)
+        const socketWrapper: SocketWrapper = {
+            send: socket.send.bind(socket),
+            close: socket.close.bind(socket),
+            setOnClose: (callback: () => void) => {
+                socket.onclose = callback;
+            },
+            setOnMessage: (callback: (message: string) => void) => {
+                socket.onmessage = (ev) => callback(ev.data);
             }
-        )
+        };
+
+        this._connection = new DefaultConnection();
+        this._connection.setConnected(socketWrapper)
         this._connection.addStateChangeListener((state) => {
             if (this.onStateChange) {
                 this.onStateChange(state);
@@ -50,8 +54,6 @@ export class ServerlessDeviceConnector implements DeviceConnector{
                 functionalHandler.sendCommand(Keywords.ready);
                 this._connection.setReady();
             }
-        } else {
-            throw new Error('On performing handshake: no functionalHandler');
         }
     }
 

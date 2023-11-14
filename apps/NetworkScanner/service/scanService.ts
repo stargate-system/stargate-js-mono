@@ -196,7 +196,6 @@ const scanForDevices = async (ipPattern: string, failOnNoDevices: boolean = fals
 
 const handleDeviceScanFinished = (failOnNoDevices: boolean) => {
     if (openSockets.length > 0) {
-        openSockets.forEach((socket) => cleanSocketCallbacks(socket));
         aliveSockets = [];
         finishScan(scanResult.SUCCESS);
     } else if (failOnNoDevices) {

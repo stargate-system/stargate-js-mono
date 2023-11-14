@@ -4,10 +4,14 @@ import MessageMapper from "../MessageMapper.js";
 import Markers from "../Markers.js";
 import {FunctionalHandler} from "../api/FunctionalHandler.js";
 
+interface PendingQuery {
+    resolveQuery: (value: string) => void,
+    rejectQuery: (reason: string) => void
+}
 
 export class DefaultFunctionalHandler implements FunctionalHandler{
     private _sendFunction?: (message: string) => void;
-    private readonly _pendingQueries = new Registry<(value: string) => void>();
+    private readonly _pendingQueries = new Registry<PendingQuery>();
     private readonly _queryListeners = new Registry<(respond: (response: string) => void) => void>();
     private readonly _commandListeners = new Registry<(params?: Array<string>) => void>();
     private readonly _queryTimeout: number;
@@ -22,6 +26,7 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
 
     close = () => {
         this._sendFunction = undefined;
+        this._pendingQueries.getValues().forEach((pendingQuery) => pendingQuery.rejectQuery('Connection closed'));
     }
 
     createQuery = (keyword: string): Promise<string> => {
@@ -30,19 +35,24 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
         }
 
         if (!this._pendingQueries.getByKey(keyword)) {
-            let resolveFunction: (value: string) => void;
+            let resolveQuery: (value: string) => void;
+            let rejectQuery: (reason: string) => void;
             const result = new Promise<string>((resolve, reject) => {
                 const timeout = setTimeout(() => {
                     this._pendingQueries.remove(keyword);
-                    reject('Timeout');
+                    reject('Query timeout');
                 }, this._queryTimeout);
-                resolveFunction = (value: string) => {
+                resolveQuery = (value: string) => {
                     clearTimeout(timeout);
                     resolve(value);
                 }
+                rejectQuery = (reason: string) => {
+                    clearTimeout(timeout);
+                    reject(reason);
+                }
             });
             // @ts-ignore
-            this._pendingQueries.add(resolveFunction, keyword);
+            this._pendingQueries.add({resolveQuery, rejectQuery}, keyword);
             const query = MessageMapper.query(keyword);
             this._sendFunction(query);
             return result;
@@ -90,9 +100,9 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
     private handleQueryResponse = (queryResponse: string) => {
         const separatorIndex = queryResponse.indexOf(Markers.mainSeparator);
         const keyword = separatorIndex !== -1 ? queryResponse.substring(2, separatorIndex) : queryResponse.substring(2);
-        const listener = this._pendingQueries.getByKey(keyword);
-        if (listener) {
-            listener(queryResponse.substring(separatorIndex + 1));
+        const pendingQuery = this._pendingQueries.getByKey(keyword);
+        if (pendingQuery) {
+            pendingQuery.resolveQuery(queryResponse.substring(separatorIndex + 1));
             this._pendingQueries.remove(keyword);
         }
     }
