@@ -21,12 +21,14 @@ const handleDeviceDisconnected = (id: string) => {
 }
 
 const addDevice = (device: Manifest, isActive: boolean) => {
-    registries.deviceStateRegistry.add(new DeviceActiveState(isActive), device.id);
-    const values = device.values;
-    if (values) {
-        values.forEach((valueManifest) => {
-            GateValueService.registerValue(valueManifest);
-        });
+    if (!registries.deviceStateRegistry.getByKey(device.id)) {
+        registries.deviceStateRegistry.add(new DeviceActiveState(isActive), device.id);
+        const values = device.values;
+        if (values) {
+            values.forEach((valueManifest) => {
+                GateValueService.registerValue(valueManifest);
+            });
+        }
     }
 }
 

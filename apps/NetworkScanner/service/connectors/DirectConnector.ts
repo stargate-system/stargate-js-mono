@@ -10,10 +10,12 @@ const systemConnector: SystemConnector = {
     handleValueMessage,
     onStateChange: () => {},
     onJoinEvent: () => {},
-    joinSystem: () => Router.addController(DirectConnector.routerConnector)
+    joinSystem: () => {
+        Router.addController(DirectConnector.routerConnector);
+    }
 }
 
-const handleDeviceEvent = (event: EventName, device: Device) => {
+const sendDeviceEvent = (event: EventName, device: Device) => {
     let data;
     switch (event) {
         case EventName.connected:
@@ -30,15 +32,15 @@ const handleDeviceEvent = (event: EventName, device: Device) => {
 
 const routerConnector: ControllerConnector = {
     id: undefined,
-    handleValueMessage: (valueMessage: ValueMessage) => {
+    sendValueMessage: (valueMessage: ValueMessage) => {
         if (systemConnector.onValueMessage) {
             systemConnector.onValueMessage(valueMessage);
         }
     },
-    handleDeviceEvent,
+    sendDeviceEvent,
     onValueMessage: () => {},
     onDisconnect: () => {},
-    handleJoined: (systemImage: SystemImage, connectedDevices: Array<string>) => systemConnector.onJoinEvent(systemImage, connectedDevices)
+    sendJoinData: (systemImage: SystemImage, connectedDevices: Array<string>) => systemConnector.onJoinEvent(systemImage, connectedDevices)
 };
 
 const DirectConnector = {

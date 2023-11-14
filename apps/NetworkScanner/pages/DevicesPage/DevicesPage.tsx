@@ -12,6 +12,7 @@ const DevicesPage = (props: DevicesPageProps) => {
 
     const backToScanner = () => {
         scanService.resetScan();
+        DirectConnector.routerConnector.onDisconnect();
         setScanSuccess(false);
     }
 

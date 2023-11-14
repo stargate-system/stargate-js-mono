@@ -5,6 +5,8 @@ import {Dispatch, SetStateAction, useState} from "react";
 import scanService, {scanResult} from "@/service/scanService";
 import scanConfig from "@/service/scanConfig";
 import DetectedList from "@/pages/ScannerPage/components/DetectedList/DetectedList";
+import {Router} from "gate-router";
+import getMockSystemRepository from "@/service/MockSystemRepository";
 
 interface ScannerPageProps {
     setScanSuccess: Dispatch<SetStateAction<boolean>>
@@ -65,6 +67,7 @@ const ScannerPage = (props: ScannerPageProps) => {
         if (scanInProgress) {
             scanService.finishScan(scanResult.ABORTED);
         } else {
+            Router.systemRepository = getMockSystemRepository();
             setScanInProgress(true);
             scanService.startScan(
                 byte1,

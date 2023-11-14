@@ -7,5 +7,5 @@ export interface SystemConnector {
     handleValueMessage: (message: ValueMessage) => void,
     onStateChange?: (state: ConnectionState) => void,
     onJoinEvent: (systemImage: SystemImage, connectedDevices: Array<string>) => void,
-    joinSystem: () => {}
+    joinSystem: () => void
 }

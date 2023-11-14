@@ -5,9 +5,9 @@ import {Device} from "../../deviceContext/api/Device";
 
 export interface ControllerConnector{
     id?: string,
-    handleValueMessage: (valueMessage: ValueMessage) => void,
+    sendValueMessage: (valueMessage: ValueMessage) => void,
     onValueMessage: (valueMessage: ValueMessage) => void,
     onDisconnect: () => void,
-    handleDeviceEvent: (event: EventName, device: Device) => void,
-    handleJoined: (systemImage: SystemImage, connectedDevices: string[]) => void
+    sendDeviceEvent: (event: EventName, device: Device) => void,
+    sendJoinData: (systemImage: SystemImage, connectedDevices: string[]) => void
 }

@@ -1,9 +1,9 @@
-import {SystemRepository} from "./api/SystemRepository";
+import {SystemRepository} from "gate-router/dist/src/api/SystemRepository";
 import {Manifest} from "gate-core";
-import {ValidManifest} from "./context/deviceContext/api/ValidManifest";
+import {ValidManifest} from "gate-router/dist/src/context/deviceContext/api/ValidManifest";
 
 let nextId = 1;
-const devices: ValidManifest[] = [];
+let devices: ValidManifest[] = [];
 
 const MockSystemRepository: SystemRepository = {
     getSystemImage: async () => {
@@ -18,4 +18,10 @@ const MockSystemRepository: SystemRepository = {
     }
 }
 
-export default MockSystemRepository;
+const getMockSystemRepository = () => {
+    nextId = 1;
+    devices = [];
+    return MockSystemRepository;
+}
+
+export default getMockSystemRepository;
