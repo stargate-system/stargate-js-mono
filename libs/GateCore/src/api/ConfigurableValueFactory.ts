@@ -1,9 +1,9 @@
-import {GateValue} from "../components/GateValue.js";
-import {Directions} from "../constants/Directions.js";
-import {GateBoolean} from "../components/GateBoolean.js";
-import {GateString} from "../components/GateString.js";
-import {GateNumber} from "../components/GateNumber.js";
-import {ValueTypes} from "../constants/ValueTypes.js";
+import {GateValue} from "../components/values/components/GateValue.js";
+import {Directions} from "../components/values/constants/Directions.js";
+import {GateBoolean} from "../components/values/components/GateBoolean.js";
+import {GateString} from "../components/values/components/GateString.js";
+import {GateNumber} from "../components/values/components/GateNumber.js";
+import {ValueTypes} from "../components/values/constants/ValueTypes.js";
 
 export class ConfigurableValueFactory {
     private readonly _initializeValueFunction: (value: GateValue<any>) => void;

@@ -1,6 +1,6 @@
 import CoreConfig from "./src/api/CoreConfig.js";
 import {Directions} from "./src/components/values/constants/Directions.js";
-import {ConfigurableValueFactory} from "./src/components/values/api/ConfigurableValueFactory.js";
+import {ConfigurableValueFactory} from "./src/api/ConfigurableValueFactory.js";
 import {GateValue} from "./src/components/values/components/GateValue.js";
 import {ConnectionState} from "./src/constants/ConnectionState.js";
 import {Registry} from "./src/components/Registry.js";
@@ -15,7 +15,7 @@ import {GateNumber} from "./src/components/values/components/GateNumber.js";
 import {GateString} from "./src/components/values/components/GateString.js";
 import {ValueTypes} from "./src/components/values/constants/ValueTypes.js";
 import {Connection} from "./src/components/connection/interfaces/Connection.js";
-import {ConnectionConfig} from "./src/components/connection/api/ConnectionConfig.js";
+import {ConnectionConfig} from "./src/api/ConnectionConfig.js";
 import {DefaultConnection} from "./src/components/connection/components/DefaultConnection.js";
 import {SocketWrapper} from "./src/components/connection/interfaces/SocketWrapper.js";
 

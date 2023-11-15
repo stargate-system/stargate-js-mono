@@ -6,6 +6,7 @@ import {SystemImage} from './src/interfaces/SystemImage';
 import {SystemRepository} from "./src/interfaces/SystemRepository";
 import {ValidManifest} from "./src/components/deviceContext/api/ValidManifest";
 import {Device} from "./src/components/deviceContext/api/Device";
+import Markers from "./src/constants/Markers";
 
 export {
     ControllerConnector,
@@ -15,5 +16,6 @@ export {
     SystemImage,
     SystemRepository,
     ValidManifest,
-    Device
+    Device,
+    Markers
 }

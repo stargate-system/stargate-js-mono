@@ -1,4 +1,4 @@
-import {SystemConnector} from "../api/SystemConnector";
+import {SystemConnector} from "gate-viewmodel/api/SystemConnector";
 
 
 const ConnectionService: {connector?: SystemConnector} = {}

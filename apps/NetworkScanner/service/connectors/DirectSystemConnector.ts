@@ -1,6 +1,6 @@
 import {GateValue, ValueMessage} from "gate-core";
 import {ControllerConnector, Device, EventName, Router, SystemImage} from "gate-router";
-import {SystemConnector} from "../../../../components/SystemDashboard/api/SystemConnector";
+import {SystemConnector} from "gate-viewmodel/api/SystemConnector";
 
 const sendValue = (gateValue: GateValue<any>) => {
     routerConnector.onValueMessage([[gateValue.id, gateValue.toString()]]);

@@ -1,5 +1,5 @@
 import {PropsWithChildren} from "react";
-import {SystemConnector} from "../SystemDashboard/api/SystemConnector";
+import {SystemConnector} from "gate-viewmodel/api/SystemConnector";
 
 interface ReactGateViewModelProps extends PropsWithChildren{
     connector: SystemConnector

@@ -7,7 +7,7 @@ import DeviceService from "./service/DeviceService";
 import registries from "./model/registries";
 import styles from './SystemDashboard.module.css';
 import SystemHeader from "./components/SystemHeader/SystemHeader";
-import {SystemConnector} from "./api/SystemConnector";
+import {SystemConnector} from "gate-viewmodel/api/SystemConnector";
 import SystemImageService from "./service/SystemImageService";
 import ConnectionService from "./service/ConnectionService";
 
