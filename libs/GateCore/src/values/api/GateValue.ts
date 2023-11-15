@@ -1,9 +1,9 @@
 import {Directions} from "./Directions.js";
 import {ValueManifest} from "./ValueManifest";
 
-export abstract class AbstractValue<T> {
+export abstract class GateValue<T> {
     private static nextId = 1;
-    protected static applyFromManifest(manifest: ValueManifest, target: AbstractValue<any>) {
+    protected static applyFromManifest(manifest: ValueManifest, target: GateValue<any>) {
         target.valueName = manifest.valueName;
         target.direction = manifest.direction;
     };
@@ -13,14 +13,14 @@ export abstract class AbstractValue<T> {
     protected _type: string | undefined;
     valueName: string | undefined;
     direction: Directions | undefined;
-    onLocalUpdate: ((value: AbstractValue<T>) => void) | undefined;
+    onLocalUpdate: ((value: GateValue<T>) => void) | undefined;
     onRemoteUpdate: ((value?: T) => void) | undefined;
 
     protected constructor(id?: string) {
         if (id !== undefined) {
             this._id = id;
         } else {
-            const generatedId = AbstractValue.nextId++;
+            const generatedId = GateValue.nextId++;
             this._id = generatedId.toString();
         }
     }

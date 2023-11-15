@@ -1,7 +1,7 @@
 import CoreConfig from "./src/api/CoreConfig.js";
 import {Directions} from "./src/values/api/Directions.js";
 import {ConfigurableValueFactory} from "./src/values/api/ConfigurableValueFactory.js";
-import {AbstractValue} from "./src/values/api/AbstractValue.js";
+import {GateValue} from "./src/values/api/GateValue.js";
 import {ValueOutputBuffer} from "./src/api/commonComponents/ValueOutputBuffer.js";
 import {ConnectionState} from "./src/api/commonConstants/ConnectionState.js";
 import {Registry} from "./src/api/commonComponents/Registry.js";
@@ -24,7 +24,7 @@ export {
     CoreConfig,
     Directions,
     ConfigurableValueFactory,
-    AbstractValue,
+    GateValue,
     ValueOutputBuffer,
     ConnectionState,
     Registry,

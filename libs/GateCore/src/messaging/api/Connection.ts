@@ -1,6 +1,6 @@
 import {ConnectionState} from "../../api/commonConstants/ConnectionState.js";
 import {SocketWrapper} from "./SocketWrapper.js";
-import {AbstractValue} from "../../values/api/AbstractValue.js";
+import {GateValue} from "../../values/api/GateValue.js";
 import {ValueMessage} from "../../api/commonTypes/ValueMessage.js";
 import {FunctionalHandler} from "./FunctionalHandler.js";
 
@@ -12,7 +12,7 @@ export interface Connection {
     setConnected: (socketWrapper: SocketWrapper) => void,
     setReady: () => void,
     close: () => void,
-    sendGateValue: (gateValue: AbstractValue<any>) => void,
+    sendGateValue: (gateValue: GateValue<any>) => void,
     sendValue: (value: [string, string]) => void,
     onValueMessage?: (valueMessage: ValueMessage) => void
 }

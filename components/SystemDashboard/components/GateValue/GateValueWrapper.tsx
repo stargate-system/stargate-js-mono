@@ -1,12 +1,12 @@
 import {ObservableValue} from "../../model/ObservableValue";
 import React, {Dispatch, SetStateAction, useCallback, useEffect, useMemo, useState} from "react";
-import {AbstractValue, ValueTypes} from "gate-core";
+import {GateValue, ValueTypes} from "gate-core";
 import styles from './GateValueWrapper.module.css';
 import {handleSubscription} from "../helper";
 import GateNumberView from "./GateNumberView/GateNumberView";
 
 export interface GateValueView {
-    gateValue: AbstractValue<any>,
+    gateValue: GateValue<any>,
     value: any,
     setValue: Dispatch<SetStateAction<any>>
     isActive: boolean

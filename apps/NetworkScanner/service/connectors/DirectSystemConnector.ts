@@ -1,17 +1,19 @@
-import {ValueMessage} from "gate-core";
+import {GateValue, ValueMessage} from "gate-core";
 import {ControllerConnector, Device, EventName, Router, SystemImage} from "gate-router";
 import {SystemConnector} from "../../../../components/SystemDashboard/api/SystemConnector";
 
-const handleValueMessage = (valueMessage: ValueMessage) => routerConnector.onValueMessage(valueMessage);
+const sendValue = (gateValue: GateValue<any>) => {
+    routerConnector.onValueMessage([[gateValue.id, gateValue.toString()]]);
+};
 
 const systemConnector: SystemConnector = {
     onDeviceEvent: () => {},
     onValueMessage: () => {},
-    handleValueMessage,
+    sendValue,
     onStateChange: () => {},
     onJoinEvent: () => {},
     joinSystem: () => {
-        Router.addController(DirectConnector.routerConnector);
+        Router.addController(DirectSystemConnector.routerConnector);
     }
 }
 
@@ -43,9 +45,9 @@ const routerConnector: ControllerConnector = {
     sendJoinData: (systemImage: SystemImage, connectedDevices: Array<string>) => systemConnector.onJoinEvent(systemImage, connectedDevices)
 };
 
-const DirectConnector = {
+const DirectSystemConnector = {
     systemConnector,
     routerConnector
 }
 
-export default DirectConnector
+export default DirectSystemConnector

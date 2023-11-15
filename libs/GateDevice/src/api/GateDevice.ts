@@ -1,5 +1,5 @@
 import logger from "../DeviceLogger.js";
-import {AbstractValue, ConnectionState, Directions, Manifest, Registry, ValueMessage} from "gate-core";
+import {GateValue, ConnectionState, Directions, Manifest, Registry, ValueMessage} from "gate-core";
 import config from "../../config.js";
 import ValueFactory from "../ValueFactory.js";
 import {DeviceState} from "./DeviceState.js";
@@ -9,8 +9,8 @@ import {ConnectionType} from "./ConnectionType.js";
 interface Device {
     isStarted: boolean,
     manifest: Manifest | undefined,
-    values: Registry<AbstractValue<any>>,
-    sendValue: (gateValue: AbstractValue<any>) => void,
+    values: Registry<GateValue<any>>,
+    sendValue: (gateValue: GateValue<any>) => void,
     onValueMessage: (changes: ValueMessage) => void,
     onStateChange: (state: ConnectionState) => void,
     deviceState: DeviceState
@@ -34,7 +34,7 @@ const startDevice = (): DeviceState => {
         device.manifest = {
             deviceName,
             values: [
-                ...device.values.getValues().map((value: AbstractValue<any>) => value.toManifest())
+                ...device.values.getValues().map((value: GateValue<any>) => value.toManifest())
             ]
         }
         startConnection();
@@ -80,7 +80,7 @@ const onStateChange = (state: ConnectionState) => {
 export const device: Device = {
     isStarted: false,
     manifest: undefined,
-    values: new Registry<AbstractValue<any>>(),
+    values: new Registry<GateValue<any>>(),
     sendValue: () => {},
     onValueMessage,
     onStateChange,

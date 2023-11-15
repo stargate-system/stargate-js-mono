@@ -1,11 +1,11 @@
 import {
     ConfigurableValueFactory,
-    AbstractValue
+    GateValue
 } from "gate-core";
 import {device} from "./api/GateDevice.js";
 import logger from "./DeviceLogger.js";
 
-const initializeValue = (value: AbstractValue<any>) => {
+const initializeValue = (value: GateValue<any>) => {
     if (device.isStarted) {
         logger.warning('Cannot initialize value (' + value.valueName + ') after device was started');
     } else {

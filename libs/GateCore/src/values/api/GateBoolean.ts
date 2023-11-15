@@ -1,8 +1,8 @@
-import {AbstractValue} from "./AbstractValue.js";
+import {GateValue} from "./GateValue.js";
 import {ValueTypes} from "./ValueTypes.js";
 import {ValueManifest} from "./ValueManifest.js";
 
-export class GateBoolean extends AbstractValue<boolean> {
+export class GateBoolean extends GateValue<boolean> {
     static fromManifest(manifest: ValueManifest): GateBoolean {
         const gateBoolean = new GateBoolean(manifest.id);
         GateBoolean.applyFromManifest(manifest, gateBoolean);

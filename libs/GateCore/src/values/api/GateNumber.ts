@@ -1,8 +1,8 @@
-import {AbstractValue} from "./AbstractValue.js";
+import {GateValue} from "./GateValue.js";
 import {ValueTypes} from "./ValueTypes.js";
 import {ValueManifest} from "./ValueManifest.js";
 
-export class GateNumber extends AbstractValue<number> {
+export class GateNumber extends GateValue<number> {
     private readonly _range: [number | undefined, number | undefined] = [undefined, undefined];
     static fromManifest(manifest: ValueManifest): GateNumber {
         const gateNumber = new GateNumber(manifest.type as ValueTypes.integer | ValueTypes.float, manifest.id);

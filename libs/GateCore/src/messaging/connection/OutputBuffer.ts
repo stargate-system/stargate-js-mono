@@ -1,4 +1,4 @@
-import {AbstractValue} from "../../values/api/AbstractValue.js";
+import {GateValue} from "../../values/api/GateValue.js";
 import {ValueMessage} from "../../api/commonTypes/ValueMessage.js";
 import MessageMapper from "../MessageMapper.js";
 import {ConnectionConfig} from "../api/ConnectionConfig.js";
@@ -13,7 +13,7 @@ export class OutputBuffer {
         this._bufferDelay = config?.outputBufferDelay !== undefined ? config.outputBufferDelay : 0;
     }
 
-    sendGateValue = (gateValue: AbstractValue<any>) => {
+    sendGateValue = (gateValue: GateValue<any>) => {
         if (this._sendFunction && gateValue.id) {
             this._buffer.set(gateValue.id, gateValue.toString());
             this._flushLater();

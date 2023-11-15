@@ -1,7 +1,7 @@
 import SystemDashboard from "../../../../components/SystemDashboard/SystemDashboard";
 import {Dispatch, SetStateAction} from "react";
 import scanService from "@/service/scanService/scanService";
-import DirectConnector from "@/service/connectors/DirectConnector";
+import DirectSystemConnector from "@/service/connectors/DirectSystemConnector";
 
 interface DevicesPageProps {
     setScanSuccess: Dispatch<SetStateAction<boolean>>
@@ -12,7 +12,7 @@ const DevicesPage = (props: DevicesPageProps) => {
 
     const backToScanner = () => {
         scanService.resetScan();
-        DirectConnector.routerConnector.onDisconnect();
+        DirectSystemConnector.routerConnector.onDisconnect();
         setScanSuccess(false);
     }
 
@@ -24,7 +24,7 @@ const DevicesPage = (props: DevicesPageProps) => {
 
     return (
         <div>
-            <SystemDashboard connector={DirectConnector.systemConnector} headerContent={<HeaderContent/>}/>
+            <SystemDashboard connector={DirectSystemConnector.systemConnector} headerContent={<HeaderContent/>}/>
         </div>
     );
 }

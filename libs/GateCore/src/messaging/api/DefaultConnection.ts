@@ -6,7 +6,7 @@ import {DefaultFunctionalHandler} from "../connection/DefaultFunctionalHandler.j
 import Markers from "../Markers.js";
 import MessageMapper from "../MessageMapper.js";
 import {ValueMessage} from "../../api/commonTypes/ValueMessage.js";
-import {AbstractValue} from "../../values/api/AbstractValue.js";
+import {GateValue} from "../../values/api/GateValue.js";
 import {Registry} from "../../api/commonComponents/Registry.js";
 import {Connection} from "./Connection.js";
 import {FunctionalHandler} from "./FunctionalHandler.js";
@@ -59,7 +59,7 @@ export class DefaultConnection implements Connection{
         this._handleClosed();
     }
 
-    sendGateValue = (gateValue: AbstractValue<any>) => {
+    sendGateValue = (gateValue: GateValue<any>) => {
         this._buffer.sendGateValue(gateValue);
     }
 
