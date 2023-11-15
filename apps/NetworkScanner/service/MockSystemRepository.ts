@@ -1,6 +1,6 @@
-import {SystemRepository} from "gate-router/dist/src/api/SystemRepository";
+import {SystemRepository} from "gate-router";
 import {Manifest} from "gate-core";
-import {ValidManifest} from "gate-router/dist/src/context/deviceContext/api/ValidManifest";
+import {ValidManifest} from "gate-router";
 
 let nextId = 1;
 let devices: ValidManifest[] = [];

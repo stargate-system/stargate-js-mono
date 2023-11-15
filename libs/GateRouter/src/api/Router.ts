@@ -1,7 +1,6 @@
-import {SystemRepository} from "./SystemRepository.js";
-import DeviceContext from "../context/deviceContext/DeviceContext";
-import ControllerContext from "../context/controllerContext/ControllerContext";
-
+import {SystemRepository} from "../interfaces/SystemRepository.js";
+import DeviceContext from "../components/deviceContext/DeviceContext";
+import ControllerContext from "../components/controllerContext/ControllerContext";
 
 const Router = {
     addDevice: DeviceContext.addDevice,

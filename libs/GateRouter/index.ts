@@ -1,11 +1,11 @@
-import {ControllerConnector} from "./src/context/controllerContext/api/ControllerConnector.js";
-import {DeviceConnector} from "./src/context/deviceContext/api/DeviceConnector.js";
-import {EventName} from "./src/api/EventName.js";
+import {ControllerConnector} from "./src/components/controllerContext/api/ControllerConnector.js";
+import {DeviceConnector} from "./src/components/deviceContext/api/DeviceConnector.js";
+import {EventName} from "./src/constants/EventName.js";
 import Router from "./src/api/Router.js";
-import {SystemImage} from './src/api/SystemImage';
-import {SystemRepository} from "./src/api/SystemRepository";
-import {ValidManifest} from "./src/context/deviceContext/api/ValidManifest";
-import {Device} from "./src/context/deviceContext/api/Device";
+import {SystemImage} from './src/interfaces/SystemImage';
+import {SystemRepository} from "./src/interfaces/SystemRepository";
+import {ValidManifest} from "./src/components/deviceContext/api/ValidManifest";
+import {Device} from "./src/components/deviceContext/api/Device";
 
 export {
     ControllerConnector,

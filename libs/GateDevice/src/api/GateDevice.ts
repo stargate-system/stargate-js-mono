@@ -1,10 +1,10 @@
-import logger from "../DeviceLogger.js";
+import logger from "../components/DeviceLogger.js";
 import {GateValue, ConnectionState, Directions, Manifest, Registry, ValueMessage} from "gate-core";
-import config from "../../config.js";
-import ValueFactory from "../ValueFactory.js";
-import {DeviceState} from "./DeviceState.js";
-import {initServerless} from "../connection/Serverless.js";
-import {ConnectionType} from "./ConnectionType.js";
+import config from "./config.js";
+import ValueFactory from "../components/ValueFactory.js";
+import {DeviceState} from "../interfaces/DeviceState.js";
+import {initServerless} from "../components/connection/Serverless.js";
+import {ConnectionType} from "../constants/ConnectionType.js";
 
 interface Device {
     isStarted: boolean,
