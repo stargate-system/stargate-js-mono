@@ -2,7 +2,7 @@ import styles from './ScanerPage.module.css';
 import IpInput from "@/pages/ScannerPage/components/IpInput/IpInput";
 import StartButton from "@/pages/ScannerPage/components/StartButton/StartButton";
 import {Dispatch, SetStateAction, useState} from "react";
-import scanService, {scanResult} from "@/service/scanService";
+import scanService, {scanResult} from "@/service/scanService/scanService";
 import scanConfig from "@/service/scanConfig";
 import DetectedList from "@/pages/ScannerPage/components/DetectedList/DetectedList";
 import {Router} from "gate-router";

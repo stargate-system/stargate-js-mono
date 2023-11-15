@@ -1,6 +1,6 @@
 import SystemDashboard from "../../../../components/SystemDashboard/SystemDashboard";
 import {Dispatch, SetStateAction} from "react";
-import scanService from "@/service/scanService";
+import scanService from "@/service/scanService/scanService";
 import DirectConnector from "@/service/connectors/DirectConnector";
 
 interface DevicesPageProps {
