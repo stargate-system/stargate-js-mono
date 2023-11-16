@@ -1,4 +1,4 @@
-import {GateValue, ValueMessage} from "gate-core";
+import {ConnectionState, GateValue, ValueMessage} from "gate-core";
 import {ControllerConnector, Device, EventName, Router, SystemImage} from "gate-router";
 import {SystemConnector} from "gate-viewmodel/api/SystemConnector";
 
@@ -7,6 +7,7 @@ const sendValue = (gateValue: GateValue<any>) => {
 };
 
 const systemConnector: SystemConnector = {
+    state: ConnectionState.closed,
     onDeviceEvent: () => {},
     onValueMessage: () => {},
     sendValue,

@@ -1,7 +1,7 @@
-import {EventName} from "../../../constants/EventName.js";
+import {EventName} from "../constants/EventName.js";
 import {ValueMessage} from "gate-core";
-import {SystemImage} from "../../../interfaces/SystemImage";
-import {Device} from "../../deviceContext/api/Device";
+import {SystemImage} from "../interfaces/SystemImage";
+import {Device} from "../interfaces/Device";
 
 export interface ControllerConnector{
     id?: string,

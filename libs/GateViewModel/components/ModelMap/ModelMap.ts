@@ -26,4 +26,14 @@ export class ModelMap<T> extends ModelNode<(event: ModelMapEvent) => void>{
         this._map.delete(key);
         this._notify((callback) => callback({name: MapEventName.removed, id: key}));
     }
+
+    update = (key: string, value: T) => {
+        const entity = this._map.get(key);
+        if (entity) {
+            this._map.set(key, value);
+            this._notify((callback) => callback({name: MapEventName.updated, id: key}));
+        } else {
+            this.add(key, value);
+        }
+    }
 }

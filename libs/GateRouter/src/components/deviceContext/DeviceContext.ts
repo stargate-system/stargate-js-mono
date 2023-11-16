@@ -1,10 +1,10 @@
-import {DeviceConnector} from "./api/DeviceConnector";
+import {DeviceConnector} from "../../api/DeviceConnector";
 import {EventName} from "../../constants/EventName";
 import {ConnectionState, Registry, ValueMessage} from "gate-core";
 import Router from "../../api/Router";
 import Markers from "../../constants/Markers";
 import ControllerContext from "../controllerContext/ControllerContext";
-import {Device} from "./api/Device";
+import {Device} from "../../interfaces/Device";
 
 const deviceRegistry = new Registry<Device>();
 

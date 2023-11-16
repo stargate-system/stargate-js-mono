@@ -1,4 +1,4 @@
-import {ValidManifest} from "../components/deviceContext/api/ValidManifest";
+import {ValidManifest} from "./ValidManifest";
 
 export interface SystemImage {
     devices: ValidManifest[]

@@ -1,4 +1,5 @@
 export enum MapEventName {
     added = 'added',
-    removed = 'removed'
+    removed = 'removed',
+    updated = 'updated'
 }
