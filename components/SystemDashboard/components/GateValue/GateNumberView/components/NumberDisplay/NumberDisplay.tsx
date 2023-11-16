@@ -1,19 +1,19 @@
-import {CSSProperties, Dispatch, SetStateAction, useEffect, useMemo, useState} from "react";
-import styles from './ValueDisplay.module.css';
-import {GateNumber, ValueTypes} from "gate-core";
+import {CSSProperties, useEffect, useMemo, useState} from "react";
+import styles from './NumberDisplay.module.css';
+import {ValueTypes} from "gate-core";
 
-interface ValueDisplayProps {
-    gateValue: GateNumber,
+interface NumberDisplayProps {
+    valueType?: ValueTypes | string
     value: number,
-    setValue: Dispatch<SetStateAction<number>>,
+    setValue: Function,
     isActive: boolean,
     editable: boolean,
     style?: CSSProperties
 }
 
-const ValueDisplay = (props: ValueDisplayProps) => {
+const NumberDisplay = (props: NumberDisplayProps) => {
     const {
-        gateValue,
+        valueType = ValueTypes.float,
         value,
         setValue,
         isActive,
@@ -31,16 +31,13 @@ const ValueDisplay = (props: ValueDisplayProps) => {
         const input = ev.target.value.trim();
         if (input.length) {
             if (input.match(/^-$/) ||
-                (gateValue.type === ValueTypes.float && input.match(/^-?[0-9]+\.$/)))
+                (valueType === ValueTypes.float && input.match(/^-?[0-9]+\.$/)))
             {
                 setDisplayValue(input);
             } else {
                 const inputValue = Number.parseFloat(input);
                 if (!Number.isNaN(inputValue)) {
-                    gateValue.setValue(inputValue);
-                    // @ts-ignore
-                    setValue(gateValue.value);
-                    setDisplayValue(gateValue.toString());
+                    setValue(inputValue);
                 }
             }
         } else {
@@ -69,4 +66,4 @@ const ValueDisplay = (props: ValueDisplayProps) => {
     )
 }
 
-export default ValueDisplay;
+export default NumberDisplay;

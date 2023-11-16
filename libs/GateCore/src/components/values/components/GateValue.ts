@@ -13,7 +13,7 @@ export abstract class GateValue<T> {
     protected _type: string | undefined;
     valueName: string | undefined;
     direction: Directions | undefined;
-    onLocalUpdate: ((value: GateValue<T>) => void) | undefined;
+    onLocalUpdate: ((wasChanged: boolean) => void) | undefined;
     onRemoteUpdate: ((value?: T) => void) | undefined;
 
     protected constructor(id?: string) {
@@ -42,11 +42,13 @@ export abstract class GateValue<T> {
     }
 
     protected _setLocalValue = (value: T | undefined) => {
+        let wasChanged = false;
         if (this._isValueChanged(value)) {
             this._value = value;
-            if (this.onLocalUpdate) {
-                this.onLocalUpdate(this);
-            }
+            wasChanged = true;
+        }
+        if (this.onLocalUpdate) {
+            this.onLocalUpdate(wasChanged);
         }
     }
 

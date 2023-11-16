@@ -1,27 +1,22 @@
 import {
-    Dispatch,
-    SetStateAction,
     useCallback, useEffect,
     useMemo,
     useRef,
     useState
 } from "react";
 import styles from './ValueBar.module.css';
-import {GateNumber} from "gate-core";
 
 interface ValueBarProps {
-    gateNumber: GateNumber
     min: number,
     max: number,
     value: number,
-    setValue: Dispatch<SetStateAction<number>>,
+    setValue: Function,
     isActive: boolean,
     editable: boolean
 }
 
 const ValueBar = (props: ValueBarProps) => {
     const {
-        gateNumber,
         min = 0,
         max,
         value,
@@ -74,9 +69,7 @@ const ValueBar = (props: ValueBarProps) => {
             const fullRange = valueBarRef.current?.offsetWidth;
             if (fullRange) {
                 const factor = (max - min) / fullRange;
-                gateNumber.setValue(factor * ev.nativeEvent.offsetX);
-                // @ts-ignore
-                setValue(gateNumber.value);
+                setValue(factor * ev.nativeEvent.offsetX);
             }
         }
     }
@@ -96,11 +89,9 @@ const ValueBar = (props: ValueBarProps) => {
     const sliderOnDrag = (ev: any) => {
         if (isActive) {
             if ((!ev.screenX && !ev.screenY) || !dragStart) return;
-            gateNumber.setValue(calcSliderValue(ev.clientX - dragStart));
+            setValue(calcSliderValue(ev.clientX - dragStart));
             // @ts-ignore
-            setValue(gateNumber.value);
-            // @ts-ignore
-            setSliderPosition(calcSliderPosition(calcPercent(gateNumber.value)));
+            setSliderPosition(calcSliderPosition(calcPercent(value)));
         }
     }
 

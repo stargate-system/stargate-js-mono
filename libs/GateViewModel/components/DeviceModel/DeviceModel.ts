@@ -6,11 +6,13 @@ import {GateValue} from "gate-core";
 import {GateValueModel} from "../GateValueModel/GateValueModel";
 
 export class DeviceModel {
+    private readonly _id: string;
     private readonly _state: ModelValue<DeviceState>;
     private readonly _gateValues: ModelMap<GateValueModel>;
     private readonly _name?: string;
 
     constructor(sendValue: (gateValue: GateValue<any>) => void, manifest: ValidManifest, isConnected: boolean) {
+        this._id = manifest.id;
         this._state = new ModelValue<DeviceState>(isConnected ? DeviceState.up : DeviceState.down);
         this._gateValues = new ModelMap<GateValueModel>();
         manifest.values.forEach((valueManifest) => {
@@ -28,6 +30,10 @@ export class DeviceModel {
                 value.state.setValue(this._state.value ?? DeviceState.down);
             })
         })
+    }
+
+    get id(): string {
+        return this._id;
     }
 
     get state() {

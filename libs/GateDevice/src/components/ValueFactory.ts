@@ -10,7 +10,11 @@ const initializeValue = (value: GateValue<any>) => {
         logger.warning('Cannot initialize value (' + value.valueName + ') after device was started');
     } else {
         device.values.add(value, value.id);
-        value.onLocalUpdate = () => device.sendValue(value);
+        value.onLocalUpdate = (wasChanged) => {
+            if (wasChanged) {
+                device.sendValue(value);
+            }
+        };
     }
 }
 

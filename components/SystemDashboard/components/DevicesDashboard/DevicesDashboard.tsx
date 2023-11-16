@@ -1,14 +1,16 @@
 import Device from "../Device/Device";
 import {useContext} from "react";
 import styles from './DevicesDashboard.module.css';
-import {DevicesImage} from "../../systemContext";
+import SystemModelContext from "../../../ReactGateViewModel/SystemModelContext";
+import useModelMap from "../../../ReactGateViewModel/hooks/useModelMap";
 
 const DevicesDashboard = () => {
-    const devices = useContext(DevicesImage);
+    const systemModel = useContext(SystemModelContext);
+    const devices = useModelMap(systemModel.devices);
 
     return (
         <div className={styles.devicesDashboard}>
-            {devices.map((manifest) => <Device key={manifest.id} manifest={manifest}/>)}
+            {devices.map((deviceModel) => <Device key={deviceModel.id} deviceModel={deviceModel}/>)}
         </div>
     )
 }

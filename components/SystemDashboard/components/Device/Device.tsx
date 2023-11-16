@@ -1,47 +1,39 @@
-import {Manifest} from "gate-core";
 import {useCallback, useEffect, useMemo, useState} from "react";
-import registries from "../../model/registries";
 import DeviceHeader from "./components/DeviceHeader/DeviceHeader";
 import styles from './Device.module.css';
 import GateValueWrapper from "../GateValue/GateValueWrapper";
-import {handleSubscription} from "../helper";
+import {DeviceModel, DeviceState} from "gate-viewmodel";
+import useModelValue from "../../../ReactGateViewModel/hooks/useModelValue";
+import useModelMap from "../../../ReactGateViewModel/hooks/useModelMap";
 
 interface DeviceProps {
-    manifest: Manifest
+    deviceModel: DeviceModel
 }
 
 const Device = (props: DeviceProps) => {
-    const {manifest} = props;
+    const {deviceModel} = props;
 
-    const [isActive, setIsActive] = useState(false);
-    const [deviceStateListenerKey, setDeviceStateListenerKey] = useState<string>();
+    const deviceState = useModelValue<DeviceState>(deviceModel.state);
+    const [isActive, setIsActive] = useState(deviceState === DeviceState.up);
+    const values = useModelMap(deviceModel.gateValues);
 
     const deviceContainerClass = useMemo(() => {
         return `${styles.deviceContainer} ${isActive ? styles.active : styles.inactive}`
     }, [isActive]);
 
     const generateValues = useCallback((isActive: boolean) => {
-        const values = manifest.values;
-        if (values) {
-            return values.map((valueManifest) => {
-                const registeredValue = registries.gateValuesRegistry.getByKey(valueManifest.id);
-                if (registeredValue) {
-                    return <GateValueWrapper key={valueManifest.id} isActive={isActive} registeredGateValue={registeredValue}/>
-                }
-            })
-        }
+        return values.map((valueModel) => {
+            return <GateValueWrapper key={valueModel.id} valueModel={valueModel} isActive={isActive}/>
+        });
     }, []);
 
     useEffect(() => {
-        // @ts-ignore
-        const deviceState = registries.deviceStateRegistry.getByKey(manifest.id);
-        // @ts-ignore
-        return handleSubscription(deviceState, deviceStateListenerKey, setDeviceStateListenerKey, () => setIsActive(deviceState.isActive))
-    }, [manifest]);
+        setIsActive(deviceState === DeviceState.up);
+    }, [deviceState]);
 
     return (
         <div className={deviceContainerClass}>
-            <DeviceHeader name={manifest.deviceName ?? ''}/>
+            <DeviceHeader name={deviceModel.name ?? ''}/>
             <div className={styles.valuesContainer}>
                 {generateValues(isActive)}
             </div>

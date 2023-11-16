@@ -2,6 +2,7 @@ import SystemDashboard from "../../../../components/SystemDashboard/SystemDashbo
 import {Dispatch, SetStateAction} from "react";
 import scanService from "@/service/scanService/scanService";
 import DirectSystemConnector from "@/service/connectors/DirectSystemConnector";
+import {SystemModel} from "gate-viewmodel";
 
 interface DevicesPageProps {
     setScanSuccess: Dispatch<SetStateAction<boolean>>
@@ -24,7 +25,7 @@ const DevicesPage = (props: DevicesPageProps) => {
 
     return (
         <div>
-            <SystemDashboard connector={DirectSystemConnector.systemConnector} headerContent={<HeaderContent/>}/>
+            <SystemDashboard systemModel={new SystemModel(DirectSystemConnector.systemConnector)} headerContent={<HeaderContent/>}/>
         </div>
     );
 }

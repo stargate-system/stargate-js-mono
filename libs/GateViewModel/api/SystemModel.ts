@@ -27,7 +27,7 @@ export class SystemModel {
                     .filter((id) => id === manifest.id).length;
                 this._devices.update(manifest.id,
                     new DeviceModel(this._systemConnector.sendValue, manifest, isConnected));
-            })
+            });
         }
         systemConnector.onValueMessage = (valueMessage: ValueMessage) => {
             valueMessage.forEach((change) => {

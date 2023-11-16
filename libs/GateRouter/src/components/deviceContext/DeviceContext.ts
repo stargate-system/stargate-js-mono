@@ -18,11 +18,6 @@ const addDevice = async (deviceConnector: DeviceConnector) => {
     deviceConnector.id = deviceConnector.manifest.id;
     const device: Device = deviceConnector as Device;
     deviceRegistry.add(device, device.id);
-    if (device.manifest.values) {
-        device.manifest.values.forEach((value) => {
-            value.id = appendSource(device.id, value.id);
-        });
-    }
     ControllerContext.handleDeviceEvent(EventName.connected, device);
     device.onStateChange = (state) => {
         if (state === ConnectionState.closed) {

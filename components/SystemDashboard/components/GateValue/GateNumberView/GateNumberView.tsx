@@ -1,26 +1,26 @@
 import {Directions, GateNumber, ValueTypes} from "gate-core";
-import {CSSProperties, Dispatch, SetStateAction, useEffect, useState} from "react";
+import {CSSProperties, useEffect, useState} from "react";
 import styles from './GateNumberView.module.css'
-import {GateValueView} from "../GateValueWrapper";
 import ValueBar from "./components/ValueBar/ValueBar";
-import ValueDisplay from "./components/ValueDisplay/ValueDisplay";
-
-interface GateNumberViewProps extends GateValueView{
-    gateValue: GateNumber,
-    value: number,
-    setValue: Dispatch<SetStateAction<number>>
-    isActive: boolean
-}
+import NumberDisplay from "./components/NumberDisplay/NumberDisplay";
+import {GateValueProps} from "../GateValueWrapper";
+import useModelValue from "../../../../ReactGateViewModel/hooks/useModelValue";
 
 const valueSize = 1.2;
 
-const GateNumberView = (props: GateValueView) => {
-    const {gateValue, value, setValue, isActive} = props as GateNumberViewProps;
+const GateNumberView = (props: GateValueProps) => {
+    const {valueModel, isActive} = props;
+    const gateValue = valueModel.gateValue as GateNumber;
+    const value = useModelValue(valueModel.value);
 
     const [isLimited, setIsLimited] = useState(false);
     const [editable, setEditable] = useState(false);
     const [rangePanelStyle, setRangePanelStyle] = useState<CSSProperties>();
     const [valuePanelStyle, setValuePanelStyle] = useState<CSSProperties>();
+
+    const setValue = (value: number) => {
+        gateValue.setValue(value);
+    }
 
     const setLimitedValueDisplayStyles = () => {
         const rangeSize = 0.7;
@@ -56,27 +56,24 @@ const GateNumberView = (props: GateValueView) => {
     }
 
     useEffect(() => {
-        if (gateValue) {
-            if (typeof gateValue.range[0] === "number" &&
-                typeof gateValue.range[1] === "number") {
-                setIsLimited(true);
+        if (typeof gateValue.range[0] === "number" &&
+            typeof gateValue.range[1] === "number") {
+            setIsLimited(true);
 
-                setLimitedValueDisplayStyles();
-            } else {
-                setRangePanelStyle(undefined);
-                setValuePanelStyle({width: '7rem', fontSize: `${valueSize}rem`})
-            }
-            if (gateValue.direction === Directions.input) {
-                setEditable(true);
-            }
+            setLimitedValueDisplayStyles();
+        } else {
+            setRangePanelStyle(undefined);
+            setValuePanelStyle({width: '7rem', fontSize: `${valueSize}rem`})
         }
-    }, [gateValue]);
+        if (gateValue.direction === Directions.input) {
+            setEditable(true);
+        }
+    }, [valueModel]);
 
     return (
         <div className={styles.numberOutputContainer}>
             {isLimited &&
                 <ValueBar
-                    gateNumber={gateValue}
                     min={gateValue.range[0] ?? 0}
                     max={gateValue.range[1] ?? 1}
                     value={value}
@@ -91,8 +88,8 @@ const GateNumberView = (props: GateValueView) => {
                         {gateValue.range[0]}
                     </div>
                 }
-                <ValueDisplay
-                    gateValue={gateValue}
+                <NumberDisplay
+                    valueType={gateValue.type}
                     value={value}
                     setValue={setValue}
                     isActive={isActive}

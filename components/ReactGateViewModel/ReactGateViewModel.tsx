@@ -1,17 +1,18 @@
 import {PropsWithChildren} from "react";
-import {SystemConnector} from "gate-viewmodel/api/SystemConnector";
+import {SystemModel} from "gate-viewmodel";
+import SystemModelContext from "./SystemModelContext";
 
 interface ReactGateViewModelProps extends PropsWithChildren{
-    connector: SystemConnector
+    systemModel: SystemModel
 }
 
 const ReactGateViewModel = (props: ReactGateViewModelProps) => {
-    const {connector, children} = props;
+    const {systemModel, children} = props;
 
     return (
-        <>
+        <SystemModelContext.Provider value={systemModel}>
             {children}
-        </>
+        </SystemModelContext.Provider>
     )
 }
 
