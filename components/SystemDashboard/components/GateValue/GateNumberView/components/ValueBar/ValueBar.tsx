@@ -63,13 +63,29 @@ const ValueBar = (props: ValueBarProps) => {
         return 0;
     }
 
+    const barPrecision = useMemo(() => {
+        const fullRange = Math.abs(max - min);
+        const baseDecimalCount = 2;
+        if (fullRange === 1) {
+            return baseDecimalCount;
+        } else if (fullRange > 1) {
+            const integerCount = Number.parseInt(fullRange.toString()).toString().length;
+            const desiredDecimals = baseDecimalCount - integerCount + 1;
+            return desiredDecimals > 0 ? desiredDecimals : 0;
+        } else if (fullRange < 1) {
+            const decimalCount = fullRange.toString().length - 2;
+            return baseDecimalCount + decimalCount;
+        }
+    }, [min, max]);
+
     const barOnClick = (ev: any) => {
         if (isActive) {
             // @ts-ignore
             const fullRange = valueBarRef.current?.offsetWidth;
             if (fullRange) {
                 const factor = (max - min) / fullRange;
-                setValue(factor * ev.nativeEvent.offsetX);
+                const newValue = factor * ev.nativeEvent.offsetX;
+                setValue(Number.parseFloat(newValue.toFixed(barPrecision).toString()));
             }
         }
     }
@@ -89,7 +105,10 @@ const ValueBar = (props: ValueBarProps) => {
     const sliderOnDrag = (ev: any) => {
         if (isActive) {
             if ((!ev.screenX && !ev.screenY) || !dragStart) return;
-            setValue(calcSliderValue(ev.clientX - dragStart));
+            const newValue = calcSliderValue(ev.clientX - dragStart);
+            if (newValue) {
+                setValue(Number.parseFloat(newValue.toFixed(barPrecision).toString()));
+            }
             // @ts-ignore
             setSliderPosition(calcSliderPosition(calcPercent(value)));
         }

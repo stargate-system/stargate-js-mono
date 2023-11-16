@@ -1,17 +1,20 @@
 .gateValueContainer {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 0.5rem;
+    align-items: stretch;
+    padding: 0.5rem 1rem;
 
     .nameContainer {
         font-size: 0.85rem;
         padding: 0.2rem;
         color: var(--gatevalue-name-color);
+        text-align: center;
     }
 
     .gateValue {
-        padding: 0 0.5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
     }
 }
 

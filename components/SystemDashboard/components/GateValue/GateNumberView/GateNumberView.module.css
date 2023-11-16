@@ -17,6 +17,7 @@
     .valueContainer {
         display: flex;
         flex-direction: row;
-        justify-content: stretch;
+        justify-content: space-between;
+        width: 100%;
     }
 }

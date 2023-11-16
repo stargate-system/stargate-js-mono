@@ -29,28 +29,35 @@ const NumberDisplay = (props: NumberDisplayProps) => {
 
     const onInput = (ev: any) => {
         const input = ev.target.value.trim();
-        if (input.length) {
-            if (input.match(/^-$/) ||
-                (valueType === ValueTypes.float && input.match(/^-?[0-9]+\.$/)))
-            {
-                setDisplayValue(input);
-            } else {
-                const inputValue = Number.parseFloat(input);
-                if (!Number.isNaN(inputValue)) {
-                    setValue(inputValue);
-                }
-            }
-        } else {
-            setDisplayValue('');
+        if (input.match(valueType === ValueTypes.float ? /^-?[0-9]*\.?[0-9]*$/ : /^-?[0-9]*$/)) {
+            setDisplayValue(input);
+        }
+    }
+
+    const setValueWithDisplayValue = () => {
+        const inputValue = Number.parseFloat(displayValue);
+        if (!Number.isNaN(inputValue)) {
+            setValue(inputValue);
         }
     }
 
     const onBlur = () => {
-        setDisplayValue(value.toString());
+        setValueWithDisplayValue();
+    }
+
+    const onKeyDown = (ev: any) => {
+        switch (ev.code) {
+            case 'Enter':
+                setValueWithDisplayValue();
+                break;
+            case 'Escape':
+                setDisplayValue(value.toString());
+                break;
+        }
     }
 
     useEffect(() => {
-        setDisplayValue(value.toString())
+        setDisplayValue(value.toString());
     }, [value]);
 
     return (
@@ -62,6 +69,7 @@ const NumberDisplay = (props: NumberDisplayProps) => {
             value={displayValue}
             className={valueClass}
             style={style}
+            onKeyDown={onKeyDown}
         />
     )
 }
