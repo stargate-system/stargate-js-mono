@@ -1,9 +1,9 @@
-import {ConnectionState, Manifest, ValueMessage} from "gate-core";
+import {Connection} from "gate-core";
+import {ValidManifest} from "../interfaces/ValidManifest";
 
 export interface DeviceConnector{
     id?: string,
-    sendValue: (value: [string, string]) => void,
-    onValueMessage?: (valueMessage: ValueMessage) => void,
-    onStateChange?: (state: ConnectionState) => void,
-    manifest?: Manifest
+    manifest?: ValidManifest,
+    connection: Connection,
+    onConnectorReady?: () => void
 }

@@ -1,7 +1,6 @@
 import {createSocket, generateAllFromPattern, helperState} from "@/service/scanService/helper";
 import scanConfig from "@/service/scanConfig";
 import {ServerlessDeviceConnector} from "@/service/connectors/ServerlessDeviceConnector";
-import {ConnectionState} from "gate-core";
 import {Router} from "gate-router";
 import {scanResult, scanState} from "@/service/scanService/scanService";
 import ScanService from "@/service/scanService/scanService";
@@ -41,11 +40,9 @@ export const scanForDevices = async (ipPattern: string,
                 socket.onopen = () => {
                     deviceScanState.openSockets.push(socket);
                     const deviceConnector = new ServerlessDeviceConnector(socket);
-                    deviceConnector.onStateChange = (state) => {
-                        if (state === ConnectionState.ready) {
-                            deviceScanState.connectedDevices.push(deviceConnector);
-                            Router.addDevice(deviceConnector);
-                        }
+                    deviceConnector.onConnectorReady = () => {
+                        deviceScanState.connectedDevices.push(deviceConnector);
+                        Router.addDevice(deviceConnector);
                     }
                     deviceDetectedCallback(ip);
                     clearTimeout(timeout);

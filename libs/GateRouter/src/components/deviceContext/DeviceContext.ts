@@ -1,7 +1,6 @@
 import {DeviceConnector} from "../../api/DeviceConnector";
 import {EventName} from "../../constants/EventName";
-import {ConnectionState, Registry, ValueMessage} from "gate-core";
-import Router from "../../api/Router";
+import {ConnectionState, Keywords, Registry, ValueMessage} from "gate-core";
 import Markers from "../../constants/Markers";
 import ControllerContext from "../controllerContext/ControllerContext";
 import {Device} from "../../interfaces/Device";
@@ -9,23 +8,18 @@ import {Device} from "../../interfaces/Device";
 const deviceRegistry = new Registry<Device>();
 
 const addDevice = async (deviceConnector: DeviceConnector) => {
-    if (!deviceConnector.manifest) {
-        throw new Error('On adding device - no manifest');
-    }
-    if (deviceConnector.manifest.id === undefined) {
-        deviceConnector.manifest = await Router.systemRepository.createDevice(deviceConnector.manifest);
-    }
-    deviceConnector.id = deviceConnector.manifest.id;
     const device: Device = deviceConnector as Device;
     deviceRegistry.add(device, device.id);
-    ControllerContext.handleDeviceEvent(EventName.connected, device);
-    device.onStateChange = (state) => {
+    device.connection.addStateChangeListener((state) => {
         if (state === ConnectionState.closed) {
             deviceRegistry.remove(device.id);
             ControllerContext.handleDeviceEvent(EventName.disconnected, device);
         }
-    };
-    device.onValueMessage = (valueMessage: ValueMessage) => routeDeviceMessage(valueMessage, device);
+    });
+    device.connection.onValueMessage = (valueMessage: ValueMessage) => routeDeviceMessage(valueMessage, device);
+    ControllerContext.handleDeviceEvent(EventName.connected, device);
+    device.connection.functionalHandler.sendCommand(Keywords.ready);
+    device.connection.setReady();
 }
 
 const appendSource = (source: string, target: string) => {
@@ -48,7 +42,9 @@ const handleValueMessage = (valueMessage: ValueMessage) => {
     valueMessage.forEach((message) => {
         const [deviceId, valueId] = extractTarget(message[0]);
         const device = deviceRegistry.getByKey(deviceId);
-        device?.sendValue([valueId, message[1]]);
+        if (device) {
+            device.connection.sendValue([valueId, message[1]]);
+        }
     });
 }
 

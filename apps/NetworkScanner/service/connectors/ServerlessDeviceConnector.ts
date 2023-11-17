@@ -3,17 +3,15 @@ import {
     ConnectionState,
     DefaultConnection,
     Keywords,
-    Manifest, SocketWrapper,
-    ValueMessage
+    SocketWrapper
 } from "gate-core";
-import {DeviceConnector} from "gate-router";
+import {DeviceConnector, Router, ValidManifest} from "gate-router";
 
 export class ServerlessDeviceConnector implements DeviceConnector{
-    id?: string;
+    private _id?: string;
     private readonly _connection: Connection;
-    manifest?: Manifest;
-    onValueMessage?: (change: ValueMessage) => void;
-    onStateChange?: (state: ConnectionState) => void;
+    private _manifest?: ValidManifest;
+    onConnectorReady?: () => void;
 
     constructor(socket: WebSocket) {
         const socketWrapper: SocketWrapper = {
@@ -29,16 +27,6 @@ export class ServerlessDeviceConnector implements DeviceConnector{
 
         this._connection = new DefaultConnection();
         this._connection.setConnected(socketWrapper)
-        this._connection.addStateChangeListener((state) => {
-            if (this.onStateChange) {
-                this.onStateChange(state);
-            }
-        });
-        this._connection.onValueMessage = (valueMessage: ValueMessage) => {
-            if(this.onValueMessage) {
-                this.onValueMessage(valueMessage);
-            }
-        }
 
         this.performHandshake();
     }
@@ -50,19 +38,25 @@ export class ServerlessDeviceConnector implements DeviceConnector{
                 .createQuery(Keywords.manifest)
                 .catch(() => this._connection.close());
             if (manifestString !== undefined) {
-                this.manifest = JSON.parse(manifestString);
-                functionalHandler.sendCommand(Keywords.ready);
-                this._connection.setReady();
+                const manifest = JSON.parse(manifestString);
+                this._manifest = await Router.systemRepository.createDevice(manifest);
+                this._id = this._manifest.id;
+                if (this.onConnectorReady) {
+                    this.onConnectorReady();
+                }
             }
         }
     }
 
+    get id(): string | undefined {
+        return this._id;
+    }
+
+    get manifest(): ValidManifest | undefined{
+        return this._manifest;
+    }
 
     get connection(): Connection {
         return this._connection;
-    }
-
-    sendValue = (value: [string, string]) => {
-        this._connection.sendValue(value);
     }
 }
