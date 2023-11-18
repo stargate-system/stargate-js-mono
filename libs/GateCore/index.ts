@@ -1,6 +1,6 @@
 import CoreConfig from "./src/api/CoreConfig.js";
 import {Directions} from "./src/components/values/constants/Directions.js";
-import {ConfigurableValueFactory} from "./src/api/ConfigurableValueFactory.js";
+import GateValueFactory from "./src/api/GateValueFactory.js";
 import {GateValue} from "./src/components/values/components/GateValue.js";
 import {ConnectionState} from "./src/constants/ConnectionState.js";
 import {Registry} from "./src/components/Registry.js";
@@ -22,7 +22,7 @@ import {SocketWrapper} from "./src/components/connection/interfaces/SocketWrappe
 export {
     CoreConfig,
     Directions,
-    ConfigurableValueFactory,
+    GateValueFactory,
     GateValue,
     ConnectionState,
     Registry,

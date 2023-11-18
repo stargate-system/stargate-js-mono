@@ -5,7 +5,7 @@ import {ValueManifest} from "../interfaces/ValueManifest.js";
 export class GateString extends GateValue<string> {
     static fromManifest(manifest: ValueManifest): GateString {
         const gateString = new GateString(manifest.id);
-        GateString.applyFromManifest(manifest, gateString);
+        GateString.setCommonsFromManifest(manifest, gateString);
         return gateString;
     }
 

@@ -5,7 +5,7 @@ import {ValueManifest} from "../interfaces/ValueManifest.js";
 export class GateBoolean extends GateValue<boolean> {
     static fromManifest(manifest: ValueManifest): GateBoolean {
         const gateBoolean = new GateBoolean(manifest.id);
-        GateBoolean.applyFromManifest(manifest, gateBoolean);
+        GateBoolean.setCommonsFromManifest(manifest, gateBoolean);
         return gateBoolean;
     }
 

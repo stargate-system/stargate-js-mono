@@ -6,7 +6,7 @@ const bigInteger = ValueFactory.createInteger(Directions.output, 'Big integer', 
 const unlimitedInteger = ValueFactory.createInteger(Directions.output, 'Unlimited integer');
 
 const increment = ValueFactory.createInteger(Directions.input, 'Increment amount', [1, 10]);
-increment.onRemoteUpdate = (value) => incrementValue = value ?? incrementValue;
+increment.onRemoteUpdate = () => incrementValue = increment.value;
 
 const frequency = ValueFactory.createFloat(Directions.input, 'Frequency', [1, 100]);
 frequency.setValue(4.5);
@@ -24,9 +24,9 @@ let incrementValue = increment.value;
 let counter = 0;
 
 const alterValue = () => {
-    if (counter > smallInteger.maximum) {
+    if (counter > smallInteger.settings.range[1]) {
         dir = -1;
-    } else if (counter < smallInteger.minimum) {
+    } else if (counter < smallInteger.settings.range[0]) {
         dir = 1;
     }
     counter += dir * incrementValue;

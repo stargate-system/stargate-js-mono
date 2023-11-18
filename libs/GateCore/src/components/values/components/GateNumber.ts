@@ -6,7 +6,7 @@ export class GateNumber extends GateValue<number> {
     private readonly _range: [number | undefined, number | undefined] = [undefined, undefined];
     static fromManifest(manifest: ValueManifest): GateNumber {
         const gateNumber = new GateNumber(manifest.type as ValueTypes.integer | ValueTypes.float, manifest.id);
-        GateNumber.applyFromManifest(manifest, gateNumber);
+        GateNumber.setCommonsFromManifest(manifest, gateNumber);
         // @ts-ignore
         if (manifest.options?.range) {
             // @ts-ignore

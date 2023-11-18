@@ -3,20 +3,20 @@ import {ValueManifest} from "../interfaces/ValueManifest";
 
 export abstract class GateValue<T> {
     private static nextId = 1;
-    protected static applyFromManifest(manifest: ValueManifest, target: GateValue<any>) {
+    protected static setCommonsFromManifest(manifest: ValueManifest, target: GateValue<any>) {
         target.valueName = manifest.valueName;
         target.direction = manifest.direction;
     };
 
-    private readonly _id: string;
-    private _value?: T;
-    protected _type?: string;
     valueName?: string;
     direction?: Directions;
     onLocalUpdate?: (wasChanged: boolean) => void;
-    onRemoteUpdate?: (value?: T) => void;
-    private _subscribed: boolean = false;
+    onRemoteUpdate?: (wasChanged: boolean) => void;
     onSubscriptionChange?: (subscribed: boolean) => void;
+    protected _type?: string;
+    private _value?: T;
+    private _subscribed: boolean = false;
+    private readonly _id: string;
 
     protected constructor(id?: string) {
         if (id !== undefined) {
@@ -43,6 +43,25 @@ export abstract class GateValue<T> {
         return this._subscribed;
     }
 
+    setValue = (value: T | undefined) => {
+        this._setLocalValue(value);
+    }
+
+    setSubscribed = (subscribed: boolean) => {
+        if (this._subscribed !== subscribed) {
+            this._subscribed = subscribed;
+            if (this.onSubscriptionChange) {
+                this.onSubscriptionChange(subscribed);
+            }
+        }
+    }
+
+    abstract toString(): string;
+
+    abstract fromRemote(textValue: string): void;
+
+    abstract toManifest(): ValueManifest;
+
     protected _isValueChanged = (newValue?: T): boolean => {
         return this._value !== newValue;
     }
@@ -58,31 +77,16 @@ export abstract class GateValue<T> {
         }
     }
 
-    setValue = (value: T | undefined) => {
-        this._setLocalValue(value);
-    }
-
-    setSubscribed = (subscribed: boolean) => {
-        if (this._subscribed !== subscribed) {
-            this._subscribed = subscribed;
-            if (this.onSubscriptionChange) {
-                this.onSubscriptionChange(subscribed);
-            }
-        }
-    }
-
     protected _setRemoteValue = (value: T | undefined) => {
+        let wasChanged = false;
         if (this._isValueChanged(value)) {
             this._value = value;
-            if (this.onRemoteUpdate) {
-                this.onRemoteUpdate(value);
-            }
+            wasChanged = true;
+        }
+        if (this.onRemoteUpdate) {
+            this.onRemoteUpdate(wasChanged);
         }
     }
-
-    abstract toString(): string;
-
-    abstract fromRemote(textValue: string): void;
 
     protected _getBasicManifest = (): ValueManifest => {
         const manifest: ValueManifest = {
@@ -99,6 +103,4 @@ export abstract class GateValue<T> {
         }
         return manifest;
     }
-
-    abstract toManifest(): ValueManifest
 }

@@ -11,7 +11,7 @@ import {
     ValueMessage
 } from "gate-core";
 import config from "./config.js";
-import ValueFactory from "../components/ValueFactory.js";
+import ValueFactory from "../components/values/ValueFactory.js";
 import {DeviceState} from "../interfaces/DeviceState.js";
 import {initServerless} from "../components/connection/Serverless.js";
 import {ConnectionType} from "../constants/ConnectionType.js";
