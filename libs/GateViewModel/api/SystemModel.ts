@@ -4,7 +4,7 @@ import {ConnectionState, ValueMessage} from "gate-core";
 import {ModelMap} from "../components/ModelMap/ModelMap";
 import {DeviceModel} from "../components/DeviceModel/DeviceModel";
 import {DeviceState} from "../components/DeviceModel/DeviceState";
-import {EventName, Markers, ValidManifest} from "gate-router";
+import {EventName, Router, ValidManifest} from "gate-router";
 
 export class SystemModel {
     private readonly _systemConnector: SystemConnector;
@@ -26,12 +26,12 @@ export class SystemModel {
                 const isConnected = !!connectedDevices
                     .filter((id) => id === manifest.id).length;
                 this._devices.update(manifest.id,
-                    new DeviceModel(this._systemConnector.sendValue, manifest, isConnected));
+                    new DeviceModel(this._systemConnector, manifest, isConnected));
             });
         }
         systemConnector.onValueMessage = (valueMessage: ValueMessage) => {
             valueMessage.forEach((change) => {
-                const deviceId = change[0].split(Markers.addressSeparator)[0];
+                const deviceId = Router.extractTargetId(change[0])[0];
                 const device = this._devices.getById(deviceId);
                 if (device) {
                     const gateValueModel = device.gateValues.getById(change[0]);
@@ -46,7 +46,7 @@ export class SystemModel {
                 case EventName.connected:
                     const manifest = args as ValidManifest;
                     this._devices.update(manifest.id,
-                        new DeviceModel(this._systemConnector.sendValue, manifest, true));
+                        new DeviceModel(this._systemConnector, manifest, true));
                     break;
                 case EventName.disconnected:
                     const deviceId = args as string;

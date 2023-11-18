@@ -2,8 +2,8 @@ import {ValidManifest} from "gate-router";
 import {ModelValue} from "../ModelValue";
 import {DeviceState} from "./DeviceState";
 import {ModelMap} from "../ModelMap/ModelMap";
-import {GateValue} from "gate-core";
 import {GateValueModel} from "../GateValueModel/GateValueModel";
+import {SystemConnector} from "../../api/SystemConnector";
 
 export class DeviceModel {
     private readonly _id: string;
@@ -11,7 +11,7 @@ export class DeviceModel {
     private readonly _gateValues: ModelMap<GateValueModel>;
     private readonly _name?: string;
 
-    constructor(sendValue: (gateValue: GateValue<any>) => void, manifest: ValidManifest, isConnected: boolean) {
+    constructor(systemConnector: SystemConnector, manifest: ValidManifest, isConnected: boolean) {
         this._id = manifest.id;
         this._state = new ModelValue<DeviceState>(isConnected ? DeviceState.up : DeviceState.down);
         this._gateValues = new ModelMap<GateValueModel>();
@@ -20,7 +20,7 @@ export class DeviceModel {
                 manifest.id,
                 valueManifest,
                 this._state.value ?? DeviceState.down,
-                sendValue);
+                systemConnector);
 
             this._gateValues.add(gateValueModel.gateValue.id, gateValueModel);
         });

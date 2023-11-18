@@ -8,10 +8,18 @@ export abstract class ModelNode<T extends Function> {
     }
 
     subscribe = (callback: T): string => {
+        if (this.onSubscriptionChange && this._subscribers.isEmpty()) {
+            this.onSubscriptionChange(true);
+        }
         return this._subscribers.add(callback);
     }
 
     unsubscribe = (key: string) => {
         this._subscribers.remove(key);
+        if (this.onSubscriptionChange && this._subscribers.isEmpty()) {
+            this.onSubscriptionChange(false);
+        }
     }
+
+    onSubscriptionChange?: (subscribed: boolean) => void;
 }

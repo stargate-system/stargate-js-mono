@@ -9,12 +9,14 @@ export abstract class GateValue<T> {
     };
 
     private readonly _id: string;
-    private _value: T | undefined;
-    protected _type: string | undefined;
-    valueName: string | undefined;
-    direction: Directions | undefined;
-    onLocalUpdate: ((wasChanged: boolean) => void) | undefined;
-    onRemoteUpdate: ((value?: T) => void) | undefined;
+    private _value?: T;
+    protected _type?: string;
+    valueName?: string;
+    direction?: Directions;
+    onLocalUpdate?: (wasChanged: boolean) => void;
+    onRemoteUpdate?: (value?: T) => void;
+    private _subscribed: boolean = false;
+    onSubscriptionChange?: (subscribed: boolean) => void;
 
     protected constructor(id?: string) {
         if (id !== undefined) {
@@ -37,11 +39,15 @@ export abstract class GateValue<T> {
         return this._value;
     }
 
-    protected _isValueChanged = (newValue: T | undefined): boolean => {
+    get subscribed(): boolean {
+        return this._subscribed;
+    }
+
+    protected _isValueChanged = (newValue?: T): boolean => {
         return this._value !== newValue;
     }
 
-    protected _setLocalValue = (value: T | undefined) => {
+    protected _setLocalValue = (value?: T) => {
         let wasChanged = false;
         if (this._isValueChanged(value)) {
             this._value = value;
@@ -56,14 +62,18 @@ export abstract class GateValue<T> {
         this._setLocalValue(value);
     }
 
+    setSubscribed = (subscribed: boolean) => {
+        if (this._subscribed !== subscribed) {
+            this._subscribed = subscribed;
+            if (this.onSubscriptionChange) {
+                this.onSubscriptionChange(subscribed);
+            }
+        }
+    }
+
     protected _setRemoteValue = (value: T | undefined) => {
         if (this._isValueChanged(value)) {
-            if (this.direction === Directions.input) {
-                // setting same way as locally to emit sync message for other controllers
-                this.setValue(value);
-            } else {
-                this._value = value;
-            }
+            this._value = value;
             if (this.onRemoteUpdate) {
                 this.onRemoteUpdate(value);
             }
@@ -79,15 +89,12 @@ export abstract class GateValue<T> {
             id: this._id,
         }
         if (this._type !== undefined) {
-            // @ts-ignore
             manifest.type = this._type;
         }
         if (this.valueName !== undefined) {
-            // @ts-ignore
             manifest.valueName = this.valueName;
         }
         if (this.direction !== undefined) {
-            // @ts-ignore
             manifest.direction = this.direction;
         }
         return manifest;

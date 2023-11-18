@@ -1,39 +1,39 @@
 export class Registry<T> {
-    private readonly registry = new Map<string, T>();
-    private generatedKey = 0;
+    private readonly _registry = new Map<string, T>();
+    private _generatedKey = 0;
 
-    private generateKey(): string {
-        const generated = this.generatedKey++;
+    private _generateKey = (): string => {
+        const generated = this._generatedKey++;
         return generated.toString();
     }
 
-    add(value: T, key?: string): string {
+    add = (value: T, key?: string): string => {
         let usedKey: string;
         if (key !== undefined) {
             usedKey = key;
         } else {
-            usedKey = this.generateKey();
+            usedKey = this._generateKey();
         }
-        if (this.registry.has(usedKey)) {
+        if (this._registry.has(usedKey)) {
             throw new Error('Key already in use');
         }
-        this.registry.set(usedKey, value);
+        this._registry.set(usedKey, value);
         return usedKey;
     }
 
-    remove(key: string) {
-        this.registry.delete(key);
+    remove = (key: string) => {
+        this._registry.delete(key);
     }
 
-    getByKey(key: string): T | undefined {
-        return this.registry.get(key);
+    getByKey = (key: string): T | undefined => {
+        return this._registry.get(key);
     }
 
-    getValues(): Array<T> {
-        return [...this.registry.values()];
+    getValues = (): Array<T> => {
+        return [...this._registry.values()];
     }
 
-    isEmpty(): boolean {
-        return !this.registry.size;
+    isEmpty = (): boolean => {
+        return !this._registry.size;
     }
 }

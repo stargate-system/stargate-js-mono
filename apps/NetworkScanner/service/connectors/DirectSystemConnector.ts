@@ -1,16 +1,31 @@
 import {ConnectionState, GateValue, ValueMessage} from "gate-core";
-import {ControllerConnector, Device, EventName, Router, SystemImage} from "gate-router";
+import {ControllerConnector, Device, EventName, Router, SubscriptionBuffer, SystemImage} from "gate-router";
 import {SystemConnector} from "gate-viewmodel";
 
 const sendValue = (gateValue: GateValue<any>) => {
     routerConnector.onValueMessage([[gateValue.id, gateValue.toString()]]);
 };
 
+const subscribe = (id: string) => {
+    subscriptionBuffer.subscribe(id);
+}
+
+const unsubscribe = (id: string) => {
+    subscriptionBuffer.unsubscribe(id);
+}
+
+const subscriptionBuffer = new SubscriptionBuffer(
+    (subscribed) => routerConnector.onSubscribed(subscribed),
+    (unsubscribed) => routerConnector.onUnsubscribed(unsubscribed)
+);
+
 const systemConnector: SystemConnector = {
     state: ConnectionState.closed,
     onDeviceEvent: () => {},
     onValueMessage: () => {},
     sendValue,
+    subscribe,
+    unsubscribe,
     onStateChange: () => {},
     onJoinEvent: () => {},
     joinSystem: () => {
@@ -34,7 +49,7 @@ const sendDeviceEvent = (event: EventName, device: Device) => {
 };
 
 const routerConnector: ControllerConnector = {
-    id: undefined,
+    id: '',
     sendValueMessage: (valueMessage: ValueMessage) => {
         if (systemConnector.onValueMessage) {
             systemConnector.onValueMessage(valueMessage);
@@ -43,6 +58,8 @@ const routerConnector: ControllerConnector = {
     sendDeviceEvent,
     onValueMessage: () => {},
     onDisconnect: () => {},
+    onSubscribed: () => {},
+    onUnsubscribed: () => {},
     sendJoinData: (systemImage: SystemImage, connectedDevices: Array<string>) => systemConnector.onJoinEvent(systemImage, connectedDevices)
 };
 

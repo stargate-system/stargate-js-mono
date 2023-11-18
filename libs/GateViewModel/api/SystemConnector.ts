@@ -6,6 +6,8 @@ export interface SystemConnector {
     onDeviceEvent?: (event: EventName, data: ValidManifest | string) => void,
     onValueMessage?: (message: ValueMessage) => void,
     sendValue: (gateValue: GateValue<any>) => void,
+    subscribe: (id: string) => void,
+    unsubscribe: (id: string) => void,
     onStateChange?: (state: ConnectionState) => void,
     onJoinEvent: (systemImage: SystemImage, connectedDevices: Array<string>) => void,
     joinSystem: () => void

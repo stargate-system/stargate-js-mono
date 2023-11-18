@@ -1,5 +1,15 @@
 import logger from "../components/DeviceLogger.js";
-import {GateValue, ConnectionState, Directions, Manifest, Registry, ValueMessage} from "gate-core";
+import {
+    Connection,
+    ConnectionState,
+    DefaultConnection,
+    Directions,
+    GateValue,
+    Keywords,
+    Manifest,
+    Registry,
+    ValueMessage
+} from "gate-core";
 import config from "./config.js";
 import ValueFactory from "../components/ValueFactory.js";
 import {DeviceState} from "../interfaces/DeviceState.js";
@@ -10,10 +20,8 @@ interface Device {
     isStarted: boolean,
     manifest: Manifest | undefined,
     values: Registry<GateValue<any>>,
-    sendValue: (gateValue: GateValue<any>) => void,
-    onValueMessage: (changes: ValueMessage) => void,
-    onStateChange: (state: ConnectionState) => void,
-    deviceState: DeviceState
+    deviceState: DeviceState,
+    connection: Connection
 }
 
 let deviceName = "New Device";
@@ -43,6 +51,8 @@ const startDevice = (): DeviceState => {
 }
 
 const startConnection = () => {
+    device.connection.onValueMessage = onValueMessage;
+    device.connection.addStateChangeListener(onStateChange);
     switch (config.connectionType) {
         case ConnectionType.serverless:
             initServerless();
@@ -70,24 +80,45 @@ const onValueMessage = (changes: ValueMessage) => {
     })
 }
 
+const handleSubscriptionChange = (subscribed: boolean, ids?: string[]) => {
+    if (ids) {
+        ids.forEach((id) => {
+            const gateValue = device.values.getByKey(id);
+            if (gateValue) {
+                gateValue.setSubscribed(subscribed);
+            } else {
+                logger.warning(`Attempting to ${subscribed ? 'subscribe' : 'unsubscribe'} unknown value with id: ${id}`);
+            }
+        });
+    }
+}
+
 const onStateChange = (state: ConnectionState) => {
     device.deviceState.state = state;
     if (device.deviceState.onStateChange) {
         device.deviceState.onStateChange(state);
     }
-}
+    if (state === ConnectionState.connected) {
+        device.connection.functionalHandler.addCommandListener(Keywords.subscribe, (ids) => {
+            handleSubscriptionChange(true, ids);
+        });
+        device.connection.functionalHandler.addCommandListener(Keywords.unsubscribe, (ids) => {
+            handleSubscriptionChange(false, ids);
+        });
+    } else if (state === ConnectionState.closed) {
+        device.values.getValues().forEach((value) => value.setSubscribed(false));
+    }
+};
 
 export const device: Device = {
     isStarted: false,
     manifest: undefined,
     values: new Registry<GateValue<any>>(),
-    sendValue: () => {},
-    onValueMessage,
-    onStateChange,
     deviceState: {
         state: ConnectionState.closed,
         onStateChange: undefined
-    }
+    },
+    connection: new DefaultConnection(config)
 };
 
 export default {

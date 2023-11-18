@@ -1,7 +1,8 @@
 import {GateBoolean, GateNumber, GateString, GateValue, ValueManifest, ValueTypes} from "gate-core";
 import {DeviceState} from "../DeviceModel/DeviceState";
 import {ModelValue} from "../ModelValue";
-import {Markers} from "gate-router";
+import {Router} from "gate-router";
+import {SystemConnector} from "../../api/SystemConnector";
 
 export class GateValueModel {
     private readonly _id: string;
@@ -10,10 +11,12 @@ export class GateValueModel {
     private readonly _value: ModelValue<any>;
     private readonly _name?: string;
 
-    constructor(parentId: string, valueManifest: ValueManifest, state: DeviceState, sendValue: (gateValue: GateValue<any>) => void) {
+    constructor(parentId: string, valueManifest: ValueManifest, state: DeviceState, systemConnector: SystemConnector) {
         this._state = new ModelValue<DeviceState>(state);
         const modifiedManifest = {...valueManifest};
-        modifiedManifest.id = parentId + Markers.addressSeparator + valueManifest.id;
+        modifiedManifest.id = Router.appendParentId(parentId, valueManifest.id);
+        this._id = modifiedManifest.id;
+        this._name = modifiedManifest.valueName;
         switch (modifiedManifest.type) {
             case ValueTypes.boolean:
                 this._gateValue = GateBoolean.fromManifest(modifiedManifest);
@@ -30,17 +33,18 @@ export class GateValueModel {
                 throw new Error('On creating value model: unknown type ' + modifiedManifest.type);
         }
         this._value = new ModelValue(this._gateValue.value);
+        this._value.onSubscriptionChange = (subscribed) => {
+            subscribed ? systemConnector.subscribe(this._id) : systemConnector.unsubscribe(this._id);
+        }
         this._gateValue.onRemoteUpdate = () => {
             this._value.setValue(this._gateValue.value);
         };
         this._gateValue.onLocalUpdate = (wasChanged) => {
             this._value.setValue(this._gateValue.value);
             if (wasChanged) {
-                sendValue(this._gateValue);
+                systemConnector.sendValue(this._gateValue);
             }
         }
-        this._name = modifiedManifest.valueName;
-        this._id = modifiedManifest.id;
     }
 
     get state(): ModelValue<DeviceState> {

@@ -1,10 +1,9 @@
 // @ts-ignore
 import {WebSocketServer} from 'ws';
-import {ConnectionState, CoreConfig, DefaultConnection, Keywords, SocketWrapper} from 'gate-core'
+import {ConnectionState, CoreConfig, Keywords, SocketWrapper} from 'gate-core'
 import {device} from "../../api/GateDevice.js";
 import config from "../../api/config.js";
 
-const connection = new DefaultConnection(config);
 let handshakeTimeout: NodeJS.Timeout | undefined;
 
 interface WebSocketInterface {
@@ -15,10 +14,6 @@ interface WebSocketInterface {
 }
 
 export const initServerless = () => {
-
-    connection.addStateChangeListener(device.onStateChange);
-    connection.onValueMessage = device.onValueMessage;
-    device.sendValue = connection.sendGateValue;
     const server = new WebSocketServer({port: CoreConfig.serverlessPort});
     server.on('connection', (socket: WebSocketInterface) => {
         const socketWrapper: SocketWrapper = {
@@ -35,26 +30,26 @@ const handleConnection = (socketWrapper: SocketWrapper) => {
     if (device.deviceState.state !== ConnectionState.closed) {
         socketWrapper.close();
     } else {
-        connection.setConnected(socketWrapper);
+        device.connection.setConnected(socketWrapper);
         setHandshakeListeners();
     }
 };
 
 const setHandshakeListeners = () => {
     handshakeTimeout = setTimeout(() => {
-        connection.close();
+        device.connection.close();
         handshakeTimeout = undefined;
     }, config.handShakeTimeout);
 
-    const connectionStateListenerKey = connection.addStateChangeListener(() => {
+    const connectionStateListenerKey = device.connection.addStateChangeListener(() => {
         clearHandshakeListeners(connectionStateListenerKey);
-    })
-    const functionalHandler = connection.functionalHandler;
+    });
+    const functionalHandler = device.connection.functionalHandler;
     functionalHandler.addQueryListener(Keywords.manifest, (respond: (response: string) => void) => {
         respond(JSON.stringify(device.manifest));
     });
     functionalHandler.addCommandListener(Keywords.ready, () => {
-        connection.setReady();
+        device.connection.setReady();
     });
 };
 
@@ -63,8 +58,8 @@ const clearHandshakeListeners = (connectionStateListenerKey: string) => {
         clearTimeout(handshakeTimeout);
         handshakeTimeout = undefined;
     }
-    connection.removeStateChangeListener(connectionStateListenerKey);
-    const functionalHandler = connection.functionalHandler;
+    device.connection.removeStateChangeListener(connectionStateListenerKey);
+    const functionalHandler = device.connection.functionalHandler;
     functionalHandler.removeQueryListener(Keywords.manifest);
     functionalHandler.removeCommandListener(Keywords.ready);
 };

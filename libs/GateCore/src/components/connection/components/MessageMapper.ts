@@ -25,7 +25,7 @@ const parseArray = (message: string) => {
     const lengths = message.slice(0, separator).split(auxSeparator).map((val) => Number.parseInt(val));
     const messagesString = message.slice(separator + 1);
     if (lengths.reduce((a, b) => a + b) !== messagesString.length) {
-        throw new Error('Messages length inconsistent with declared');
+        throw new Error('Messages length inconsistent with declared: ' + message);
     }
     const messagesArray: Array<string> = [];
     let currentIndex = 0;
@@ -70,7 +70,7 @@ const functionalMessage = (msg: string) => {
 
 const command = (keyword: string, params?: Array<string>) => {
     let message = commandPrefix + keyword;
-    if (params !== undefined) {
+    if (params !== undefined && params.length) {
         message += mainSeparator + serializeArray(params);
     }
     return functionalMessage(message);

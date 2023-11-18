@@ -11,10 +11,15 @@ const initializeValue = (value: GateValue<any>) => {
     } else {
         device.values.add(value, value.id);
         value.onLocalUpdate = (wasChanged) => {
-            if (wasChanged) {
-                device.sendValue(value);
+            if (wasChanged && value.subscribed) {
+                device.connection.sendGateValue(value);
             }
         };
+        value.onSubscriptionChange = (subscribed) => {
+            if (subscribed) {
+                device.connection.sendGateValue(value);
+            }
+        }
     }
 }
 

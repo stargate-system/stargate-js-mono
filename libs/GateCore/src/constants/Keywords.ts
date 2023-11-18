@@ -1,7 +1,8 @@
 const Keywords = {
     ready: 'ready',
     manifest: 'manifest',
-    subscribe: 'subscribe'
+    subscribe: 'subscribe',
+    unsubscribe: 'unsubscribe'
 }
 
 export default Keywords;
