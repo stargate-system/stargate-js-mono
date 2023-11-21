@@ -10,6 +10,7 @@ const valueSize = 1.2;
 
 const GateNumberView = (props: GateValueProps) => {
     const {valueModel, isActive} = props;
+    // @ts-ignore
     const gateValue = valueModel.gateValue as GateNumber;
     const value = useModelValue(valueModel.value);
 

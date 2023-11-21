@@ -23,8 +23,12 @@ const createAndWrap = <V>(manifest: ValueManifest) => {
     return new DeviceValue<V>(gateValue);
 }
 
-const createBoolean = (direction: Directions, name?: string): DeviceValue<boolean> => {
+const createBoolean = (direction: Directions, name?: string, labelTrue?: string, labelFalse?: string): DeviceValue<boolean> => {
     const manifest = createManifest(ValueTypes.boolean, direction, name);
+    manifest.options = {
+        labelTrue,
+        labelFalse
+    }
     return createAndWrap(manifest);
 }
 
