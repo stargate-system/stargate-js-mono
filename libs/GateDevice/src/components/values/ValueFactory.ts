@@ -6,11 +6,10 @@ import {
 } from "gate-core";
 import {DeviceValue} from "./DeviceValue.js";
 import {device} from "../../api/GateDevice.js";
-import logger from '../DeviceLogger.js'
 
 const createManifest = (type: ValueTypes, direction: Directions, name?: string): ValueManifest => {
     if (device.isStarted) {
-        logger.warning(`Value with name "${name}" created after device was started`);
+        console.log(`WARNING: Value with name "${name}" created after device was started`);
     }
     return {
         type: type,

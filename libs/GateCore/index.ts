@@ -9,7 +9,6 @@ import {ValueMessage} from "./src/interfaces/ValueMessage.js";
 import {Manifest} from "./src/interfaces/Manifest.js";
 import {ValueManifest} from "./src/components/values/interfaces/ValueManifest.js";
 import {Logger} from "./src/interfaces/Logger.js";
-import LogPrefix from "./src/constants/LogPrefix.js";
 import {GateBoolean} from "./src/components/values/components/GateBoolean.js";
 import {GateNumber} from "./src/components/values/components/GateNumber.js";
 import {GateString} from "./src/components/values/components/GateString.js";
@@ -31,7 +30,6 @@ export {
     Manifest,
     ValueManifest,
     Logger,
-    LogPrefix,
     GateNumber,
     GateString,
     GateBoolean,

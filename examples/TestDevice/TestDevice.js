@@ -1,5 +1,5 @@
 import {Directions, GateDevice} from 'gate-device';
-const {logger, ValueFactory} = GateDevice;
+const {ValueFactory} = GateDevice;
 
 const smallInteger = ValueFactory.createInteger(Directions.output, 'Small integer', [0, 200]);
 const bigInteger = ValueFactory.createInteger(Directions.output, 'Big integer', [-5000, 50000]);
@@ -15,9 +15,9 @@ GateDevice.setDeviceName('Test device');
 const deviceState = GateDevice.startDevice();
 
 deviceState.onStateChange = (state) => {
-    logger.info('Connection state: ' + state);
+    console.log('Connection state: ' + state);
 };
-logger.info('Waiting for connection...');
+console.log('Waiting for connection...');
 
 let dir = 1;
 let incrementValue = increment.value;

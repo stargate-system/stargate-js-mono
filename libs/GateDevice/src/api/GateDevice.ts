@@ -1,4 +1,3 @@
-import logger from "../components/DeviceLogger.js";
 import {
     Connection,
     ConnectionState,
@@ -30,13 +29,13 @@ const setDeviceName = (name: string) => {
     if (!device.isStarted) {
         deviceName = name;
     } else {
-        logger.warning('Attempting to change device name after device started');
+        console.log('WARNING: Attempting to change device name after device started');
     }
 }
 
 const startDevice = (): DeviceState => {
     if (device.isStarted) {
-        logger.warning("Attempting to start already running device");
+        console.log("WARNING: Attempting to start already running device");
     } else {
         device.isStarted = true;
         device.manifest = {
@@ -53,6 +52,12 @@ const startDevice = (): DeviceState => {
 const startConnection = () => {
     device.connection.onValueMessage = onValueMessage;
     device.connection.addStateChangeListener(onStateChange);
+    device.connection.functionalHandler.addCommandListener(Keywords.subscribe, (ids) => {
+        handleSubscriptionChange(true, ids);
+    });
+    device.connection.functionalHandler.addCommandListener(Keywords.unsubscribe, (ids) => {
+        handleSubscriptionChange(false, ids);
+    });
     switch (config.connectionType) {
         case ConnectionType.serverless:
             initServerless();
@@ -70,12 +75,12 @@ const onValueMessage = (changes: ValueMessage) => {
         const targetValue = device.values.getByKey(change[0]);
         if (targetValue !== undefined) {
             if (targetValue.direction === Directions.output) {
-                logger.warning('Attempting to remotely change output value: ' + targetValue.valueName)
+                console.log('WARNING: Attempting to remotely change output value: ' + targetValue.valueName)
             } else {
                 targetValue.fromRemote(change[1]);
             }
         } else {
-            logger.warning('Unknown value with id: ' + change[0]);
+            console.log('WARNING: Unknown value with id: ' + change[0]);
         }
     })
 }
@@ -87,7 +92,7 @@ const handleSubscriptionChange = (subscribed: boolean, ids?: string[]) => {
             if (gateValue) {
                 gateValue.setSubscribed(subscribed);
             } else {
-                logger.warning(`Attempting to ${subscribed ? 'subscribe' : 'unsubscribe'} unknown value with id: ${id}`);
+                console.log(`WARNING: Attempting to ${subscribed ? 'subscribe' : 'unsubscribe'} unknown value with id: ${id}`);
             }
         });
     }
@@ -98,14 +103,7 @@ const onStateChange = (state: ConnectionState) => {
     if (device.deviceState.onStateChange) {
         device.deviceState.onStateChange(state);
     }
-    if (state === ConnectionState.connected) {
-        device.connection.functionalHandler.addCommandListener(Keywords.subscribe, (ids) => {
-            handleSubscriptionChange(true, ids);
-        });
-        device.connection.functionalHandler.addCommandListener(Keywords.unsubscribe, (ids) => {
-            handleSubscriptionChange(false, ids);
-        });
-    } else if (state === ConnectionState.closed) {
+    if (state === ConnectionState.closed) {
         device.values.getValues().forEach((value) => value.setSubscribed(false));
     }
 };
@@ -124,7 +122,6 @@ export const device: Device = {
 export default {
     setDeviceName,
     startDevice,
-    logger,
     config,
     ValueFactory
 }

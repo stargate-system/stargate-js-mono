@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "name": "basicraspberry",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Basic Raspberry Pi device example",
+  "main": "BasicRaspberry.js",
+  "author": "Michał Marchel",
+  "license": "ISC",
+  "dependencies": {
+    "gate-core": "file:GateCore",
+    "gate-device": "file:GateDevice",
+    "raspi": "^6.0.1",
+    "raspi-soft-pwm": "^6.0.2"
+  }
+}

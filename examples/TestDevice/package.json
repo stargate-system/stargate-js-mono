@@ -1,12 +1,12 @@
 {
   "type": "module",
-  "name": "basicdevice",
+  "name": "testdevice",
   "version": "1.0.0",
   "private": true,
-  "description": "Basic device example",
-  "main": "BasicDevice.js",
+  "description": "Device for system testing",
+  "main": "TestDevice.js",
   "scripts": {
-    "start": "node BasicDevice.js"
+    "start": "node TestDevice.js"
   },
   "author": "Michał Marchel",
   "license": "ISC",

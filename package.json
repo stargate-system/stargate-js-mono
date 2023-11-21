@@ -8,7 +8,7 @@
     "./libs/GateRouter",
     "./libs/GateViewModel",
     "./apps/NetworkScanner",
-    "./examples/BasicDevice"
+    "./examples/TestDevice"
   ],
   "scripts": {
     "build:scanner": "npm -w apps/NetworkScanner run build",
@@ -19,7 +19,7 @@
     "build:libs": "run-s build:core build:device build:router build:model",
     "build": "run-s build:libs build:scanner",
     "dev:scanner": "npm -w apps/NetworkScanner run dev",
-    "device:basic": "npm -w examples/BasicDevice run start"
+    "device:test": "npm -w examples/TestDevice run start"
   },
   "dependencies": {
     "next": "14.0.0",

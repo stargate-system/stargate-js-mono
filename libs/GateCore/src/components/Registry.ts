@@ -15,7 +15,7 @@ export class Registry<T> {
             usedKey = this._generateKey();
         }
         if (this._registry.has(usedKey)) {
-            throw new Error('Key already in use');
+            throw new Error(`Key ${usedKey} already in use`);
         }
         this._registry.set(usedKey, value);
         return usedKey;
