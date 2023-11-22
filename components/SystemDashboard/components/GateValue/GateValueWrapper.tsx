@@ -4,6 +4,7 @@ import styles from './GateValueWrapper.module.css';
 import GateNumberView from "./GateNumberView/GateNumberView";
 import {GateValueModel} from "gate-viewmodel";
 import GateBooleanView from "./GateBooleanView/GateBooleanView";
+import GateStringView from "./GateStringView/GateStringView";
 
 export interface GateValueProps {
     valueModel: GateValueModel,
@@ -24,7 +25,9 @@ const GateValueWrapper = (props: GateValueProps) => {
                 return <GateNumberView valueModel={valueModel} isActive={isActive}/>
             case ValueTypes.boolean:
                 return <GateBooleanView valueModel={valueModel} isActive={isActive}/>
-            // TODO
+            case ValueTypes.string:
+                return <GateStringView valueModel={valueModel} isActive={isActive}/>
+            // TODO handle custom views
         }
     }, [valueModel, isActive]);
 

@@ -1,4 +1,4 @@
-import {GateValue, GateValueFactory, ValueManifest} from "gate-core";
+import {GateValue, GateValueFactory, ValueManifest, ValueTypes} from "gate-core";
 import {DeviceState} from "../DeviceModel/DeviceState";
 import {ModelValue} from "../ModelValue";
 import {Router} from "gate-router";
@@ -27,7 +27,7 @@ export class GateValueModel {
         };
         this._gateValue.onLocalUpdate = (wasChanged) => {
             this._value.setValue(this._gateValue.value);
-            if (wasChanged) {
+            if (wasChanged || this._gateValue.type === ValueTypes.string) {
                 systemConnector.sendValue(this._gateValue);
             }
         }

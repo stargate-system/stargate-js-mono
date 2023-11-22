@@ -5,7 +5,7 @@
     flex-direction: column;
     ---boolean-display-size: 1.3rem;
     --display-color-true: #0ee50e;
-    --display-color-false: #0c600c;
+    --display-color-false: #0b5d0b;
 
     .readonlyDisplay {
         width: var(---boolean-display-size);

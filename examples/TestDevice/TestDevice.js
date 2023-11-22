@@ -20,6 +20,27 @@ countRunning.onRemoteUpdate = () => {
         alterValue();
     }
 }
+countRunning.onLocalUpdate = countRunning.onRemoteUpdate;
+
+const testStringOut = ValueFactory.createString(Directions.output, 'Test text', 20);
+const testStringIn = ValueFactory.createString(Directions.input, 'Test command');
+testStringIn.onRemoteUpdate = () => {
+    switch (testStringIn.value) {
+        case 'stop':
+            countRunning.setValue(false);
+            testStringOut.setValue('Stopped by command');
+            break;
+        case 'start':
+            countRunning.setValue(true);
+            testStringOut.setValue('Started by command');
+            break;
+        case 'longword':
+            testStringOut.setValue('Rindfleischetikettierungsüberwachungsaufgabenübertragungsgesetz');
+            break;
+        default:
+            testStringOut.setValue('Unknown command received. Allowed commands are only "start", "stop" and "longword"');
+    }
+}
 
 GateDevice.setDeviceName('Test device');
 const deviceState = GateDevice.startDevice();
@@ -37,9 +58,11 @@ const alterValue = () => {
     if (counter > smallInteger.settings.range[1]) {
         dir = -1;
         testBool.setValue(false);
+        testStringOut.setValue('Counter runs reverse');
     } else if (counter < smallInteger.settings.range[0]) {
         dir = 1;
         testBool.setValue(true);
+        testStringOut.setValue('Counter runs forward');
     }
     counter += dir * incrementValue;
     // logger.info('Set to: ' + counter);

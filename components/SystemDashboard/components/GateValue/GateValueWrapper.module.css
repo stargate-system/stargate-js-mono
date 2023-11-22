@@ -9,6 +9,7 @@
         padding: 0.2rem;
         color: var(--gatevalue-name-color);
         text-align: center;
+        cursor: default;
     }
 
     .gateValue {

@@ -6,8 +6,15 @@ export class GateString extends GateValue<string> {
     static fromManifest(manifest: ValueManifest): GateString {
         const gateString = new GateString(manifest.id);
         GateString.setCommonsFromManifest(manifest, gateString);
+        // @ts-ignore
+        if (manifest.options?.minimumLength) {
+            // @ts-ignore
+            gateString.minimumLength = manifest.options.minimumLength;
+        }
         return gateString;
     }
+
+    minimumLength?: number;
 
     constructor(id?: string) {
         super(id);
@@ -16,7 +23,7 @@ export class GateString extends GateValue<string> {
     }
 
     toString = (): string => {
-        return super.value ?? '';
+        return this.value ?? '';
     }
 
     fromRemote = (textValue: string) => {
@@ -24,6 +31,10 @@ export class GateString extends GateValue<string> {
     }
 
     toManifest(): ValueManifest {
-        return this._getBasicManifest();
+        const manifest = this._getBasicManifest();
+        manifest.options = {
+            minimumLength: this.minimumLength
+        }
+        return manifest;
     }
 }

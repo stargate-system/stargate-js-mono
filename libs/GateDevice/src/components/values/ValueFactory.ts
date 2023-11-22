@@ -32,8 +32,11 @@ const createBoolean = (direction: Directions, name?: string, labelTrue?: string,
     return createAndWrap(manifest);
 }
 
-const createString = (direction: Directions, name?: string): DeviceValue<string> => {
+const createString = (direction: Directions, name?: string, minimumLength?: number): DeviceValue<string> => {
     const manifest = createManifest(ValueTypes.string, direction, name);
+    manifest.options = {
+        minimumLength
+    };
     return createAndWrap(manifest);
 }
 
