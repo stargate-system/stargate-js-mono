@@ -7,6 +7,7 @@
     "./libs/GateDevice",
     "./libs/GateRouter",
     "./libs/GateViewModel",
+    "./libs/LocalServer",
     "./apps/NetworkScanner",
     "./examples/TestDevice"
   ],
@@ -16,9 +17,12 @@
     "build:device": "npm -w libs/GateDevice run build",
     "build:router": "npm -w libs/GateRouter run build",
     "build:model": "npm -w libs/GateViewModel run build",
+    "build:server": "npm -w libs/LocalServer run build",
+    "start:server": "npm -w libs/LocalServer run start",
     "build:libs": "run-s build:core build:device build:router build:model",
     "build": "run-s build:libs build:scanner",
     "dev:scanner": "npm -w apps/NetworkScanner run dev",
+    "server": "run-s build:server start:server",
     "device:test": "npm -w examples/TestDevice run start"
   },
   "dependencies": {

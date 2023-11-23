@@ -63,7 +63,7 @@ export class GateNumber extends GateValue<number> {
     setMaximum(maximum: number | undefined) {
         this._range[1] = maximum;
         if ((maximum !== undefined) && (super.value !== undefined) && (super.value > maximum)) {
-            super.setValue(maximum);
+            this.setValue(maximum);
         }
     }
 

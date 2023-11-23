@@ -4,8 +4,7 @@
     "allowJs": true,
     "strict": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
+    "module": "commonjs",
     "outDir": "./dist",
     "declaration": true
   },

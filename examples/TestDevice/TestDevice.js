@@ -1,4 +1,5 @@
-import {Directions, GateDevice} from 'gate-device';
+deviceLib = require('gate-device');
+const {Directions, GateDevice} = deviceLib;
 const {ValueFactory} = GateDevice;
 
 const smallInteger = ValueFactory.createInteger(Directions.output, 'Small integer', [0, 200]);
