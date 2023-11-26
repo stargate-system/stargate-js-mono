@@ -20,6 +20,7 @@ const subscriptionBuffer = new SubscriptionBuffer(
 );
 
 const systemConnector: SystemConnector = {
+    disconnect: () => {},
     state: ConnectionState.closed,
     onDeviceEvent: () => {},
     onValueMessage: () => {},

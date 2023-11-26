@@ -15,6 +15,7 @@ import {DeviceState} from "../interfaces/DeviceState.js";
 import {initServerless} from "../components/connection/Serverless.js";
 import {ConnectionType} from "../constants/ConnectionType.js";
 import {initLocalServer} from "../components/connection/LocalServer";
+import fs from 'fs';
 
 interface Device {
     isStarted: boolean,
@@ -111,8 +112,12 @@ const onStateChange = (state: ConnectionState) => {
 };
 
 const getDeviceId = () => {
-    // TODO
-    return undefined;
+    try {
+        const storedId = fs.readFileSync('id.json');
+        return JSON.parse(storedId.toString()).id;
+    } catch (err) {
+        return undefined;
+    }
 }
 
 export const device: Device = {

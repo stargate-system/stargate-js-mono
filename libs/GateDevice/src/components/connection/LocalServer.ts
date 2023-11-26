@@ -3,6 +3,7 @@ import dgram from "dgram";
 import {CoreConfig, Keywords, SocketWrapper} from "gate-core";
 import {device} from "../../api/GateDevice";
 import config from "../../api/config";
+import fs from 'fs';
 
 let handshakeTimeout: NodeJS.Timeout | undefined;
 
@@ -79,5 +80,12 @@ const clearHandshakeListeners = (connectionStateListenerKey: string) => {
 };
 
 const saveId = (id: string) => {
-    // TODO
+    const storedId = {
+        id: id
+    }
+    fs.writeFile('id.json', JSON.stringify(storedId), (err) => {
+        if (err) {
+            console.log('On saving id', err);
+        }
+    });
 }

@@ -15,7 +15,8 @@ const MockSystemRepository: SystemRepository = {
         const validManifest = manifest as ValidManifest;
         devices.push(validManifest);
         return validManifest;
-    }
+    },
+    updateDevice: async (manifest: ValidManifest) => manifest
 }
 
 const getMockSystemRepository = () => {

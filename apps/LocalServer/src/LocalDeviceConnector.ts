@@ -38,9 +38,9 @@ export class LocalDeviceConnector implements DeviceConnector{
                 const manifest = JSON.parse(manifestString);
                 if (manifest.id === undefined) {
                     this._manifest = await Router.systemRepository.createDevice(manifest);
-                    // functionalHandler.sendCommand(Keywords.assignedId, [this._manifest.id]);
+                    functionalHandler.sendCommand(Keywords.assignedId, [this._manifest.id]);
                 } else {
-                    this._manifest = manifest;
+                    this._manifest = await Router.systemRepository.updateDevice(manifest);
                 }
                 // @ts-ignore
                 this._id = this._manifest.id;
