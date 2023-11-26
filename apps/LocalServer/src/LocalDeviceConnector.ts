@@ -15,6 +15,7 @@ export class LocalDeviceConnector implements DeviceConnector{
     onConnectorReady?: () => void;
 
     constructor(socket: net.Socket) {
+        socket.setNoDelay(true);
         const socketWrapper: SocketWrapper = {
             send: socket.write.bind(socket),
             close: socket.destroy.bind(socket),

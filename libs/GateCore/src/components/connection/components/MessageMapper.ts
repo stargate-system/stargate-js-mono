@@ -53,9 +53,14 @@ const parseValueMessage = (message: string): ValueMessage => {
     const firstSeparator = message.indexOf(mainSeparator);
     const ids = message.slice(0, firstSeparator).split(auxSeparator);
     const serializedValues = message.slice(firstSeparator + 1);
-    const messages = parseArray(serializedValues);
+    let messages: string[];
+    try {
+        messages = parseArray(serializedValues);
+    } catch (err) {
+        throw new Error('On parsing value message ' + message + ' reason: ' + err)
+    }
     if (ids.length !== messages.length) {
-        throw new Error('Ids count not match messages count');
+        throw new Error('Ids count not match messages count: ' + message);
     }
     const result: ValueMessage = [];
     ids.forEach((id, index) => {

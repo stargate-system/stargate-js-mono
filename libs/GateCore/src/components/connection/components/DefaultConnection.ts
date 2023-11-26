@@ -87,7 +87,11 @@ export class DefaultConnection implements Connection{
             this._functionalHandler.handleFunctionalMessage(message);
         } else {
             if (this.onValueMessage) {
-                this.onValueMessage(MessageMapper.parseValueMessage(message));
+                try {
+                    this.onValueMessage(MessageMapper.parseValueMessage(message));
+                } catch (err) {
+                    console.log('On handling value message: ' + err);
+                }
             }
         }
     }

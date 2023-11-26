@@ -18,11 +18,16 @@ export const initLocalServer = () => {
         }
     });
 
+    socket.on('error', () => {
+        console.log('Binding discovery socket failed. Retrying...');
+        setTimeout(() => socket.bind(CoreConfig.discoveryPort), 5000);
+    });
     socket.bind(CoreConfig.discoveryPort);
 }
 
 const connect = (serverIp: string) => {
     const socket = net.connect(CoreConfig.localServerDevicePort, serverIp, () => {
+        socket.setNoDelay(true);
         const socketWrapper: SocketWrapper = {
             send: socket.write.bind(socket),
             close: socket.destroy.bind(socket),
