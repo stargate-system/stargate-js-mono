@@ -78,10 +78,9 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
     }
 
     sendCommand = (keyword: string, params?: Array<string>) => {
-        if (!this._sendFunction) {
-            throw new Error('Sending command failed: connection closed');
+        if (this._sendFunction) {
+            this._sendFunction(MessageMapper.command(keyword, params));
         }
-        this._sendFunction(MessageMapper.command(keyword, params));
     }
 
     private handleQueryRequest = (queryMessage: string) => {

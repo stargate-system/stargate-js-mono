@@ -26,7 +26,7 @@ const systemConnector: SystemConnector = {
     sendValue,
     subscribe,
     unsubscribe,
-    onStateChange: () => {},
+    addStateChangeListener: () => {},
     onJoinEvent: () => {},
     joinSystem: () => {
         Router.addController(DirectSystemConnector.routerConnector);
@@ -36,10 +36,10 @@ const systemConnector: SystemConnector = {
 const sendDeviceEvent = (event: EventName, device: Device) => {
     let data;
     switch (event) {
-        case EventName.connected:
+        case EventName.deviceConnected:
             data = device.manifest;
             break;
-        case EventName.disconnected:
+        case EventName.deviceDisconnected:
             data = device.id;
             break;
     }

@@ -6,6 +6,7 @@ export class DeviceValue<V> {
     private readonly _settings?: Object;
     onLocalUpdate?: (wasChanged: boolean) => void;
     onRemoteUpdate?: (wasChanged: boolean) => void;
+    onSubscriptionChange?: (subscribed: boolean) => void;
 
     constructor(gateValue: GateValue<any>) {
         this._gateValue = gateValue;
@@ -30,6 +31,9 @@ export class DeviceValue<V> {
         gateValue.onSubscriptionChange = (subscribed) => {
             if (subscribed) {
                 device.connection.sendGateValue(gateValue);
+            }
+            if (this.onSubscriptionChange) {
+                this.onSubscriptionChange(subscribed);
             }
         }
     }

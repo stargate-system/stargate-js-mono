@@ -59,13 +59,18 @@ const getActiveDeviceIds = (): string[] => {
     return deviceRegistry.getValues().map((device) => device.id);
 }
 
+const unsubscribeConsumer = (consumerId: string) => {
+    deviceRegistry.getValues().forEach((device) => device.unsubscribeConsumer(consumerId));
+}
+
 const DeviceContext = {
     deviceRegistry,
     addDevice,
     forwardValueMessage,
     forwardSubscribed,
     forwardUnsubscribed,
-    getActiveDeviceIds
+    getActiveDeviceIds,
+    unsubscribeConsumer
 }
 
 export default DeviceContext;

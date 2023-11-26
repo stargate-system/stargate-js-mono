@@ -1,4 +1,4 @@
 export enum EventName {
-    connected = 'connected',
-    disconnected = 'disconnected'
+    deviceConnected = 'deviceConnected',
+    deviceDisconnected = 'deviceDisconnected'
 }

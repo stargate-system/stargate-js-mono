@@ -14,6 +14,7 @@ import ValueFactory from "../components/values/ValueFactory.js";
 import {DeviceState} from "../interfaces/DeviceState.js";
 import {initServerless} from "../components/connection/Serverless.js";
 import {ConnectionType} from "../constants/ConnectionType.js";
+import {initLocalServer} from "../components/connection/LocalServer";
 
 interface Device {
     isStarted: boolean,
@@ -39,6 +40,7 @@ const startDevice = (): DeviceState => {
     } else {
         device.isStarted = true;
         device.manifest = {
+            id: getDeviceId(),
             deviceName,
             values: [
                 ...device.values.getValues().map((value: GateValue<any>) => value.toManifest())
@@ -63,7 +65,7 @@ const startConnection = () => {
             initServerless();
             break;
         case ConnectionType.localServer:
-            // TODO
+            initLocalServer();
             break;
         default:
             throw new Error('On starting connection: unknown connection type ' + config.connectionType);
@@ -107,6 +109,11 @@ const onStateChange = (state: ConnectionState) => {
         device.values.getValues().forEach((value) => value.setSubscribed(false));
     }
 };
+
+const getDeviceId = () => {
+    // TODO
+    return undefined;
+}
 
 export const device: Device = {
     isStarted: false,

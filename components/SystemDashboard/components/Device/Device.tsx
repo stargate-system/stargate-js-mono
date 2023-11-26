@@ -23,7 +23,7 @@ const Device = (props: DeviceProps) => {
 
     const generateValues = useCallback((isActive: boolean) => {
         return values.map((valueModel) => {
-            return <GateValueWrapper key={valueModel.id} valueModel={valueModel} isActive={isActive}/>
+            return <GateValueWrapper key={valueModel.id + Date.now()} valueModel={valueModel} isActive={isActive}/>
         });
     }, []);
 

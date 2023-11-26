@@ -32,14 +32,14 @@ export class Device {
         this._connection.addStateChangeListener((state) => {
             if (state === ConnectionState.closed) {
                 DeviceContext.deviceRegistry.remove(this._id);
-                ControllerContext.forwardDeviceEvent(EventName.disconnected, this);
+                ControllerContext.forwardDeviceEvent(EventName.deviceDisconnected, this);
             }
         });
         this._connection.onValueMessage = this._routeDeviceMessage;
         this._connection.functionalHandler.sendCommand(Keywords.ready);
         this._connection.setReady();
         DeviceContext.deviceRegistry.add(this, this._id);
-        ControllerContext.forwardDeviceEvent(EventName.connected, this);
+        ControllerContext.forwardDeviceEvent(EventName.deviceConnected, this);
     }
 
     get id(): string {
@@ -76,6 +76,17 @@ export class Device {
         }
     }
 
+    unsubscribeConsumer = (consumerId: string) => {
+        this._subscriptions.forEach((map, valueId) => {
+            if (map.has(consumerId)) {
+                map.delete(consumerId);
+                if (map.size === 0) {
+                    this._subscriptionBuffer.unsubscribe(valueId);
+                }
+            }
+        });
+    }
+
     private readonly _routeDeviceMessage = (valueMessage: ValueMessage) => {
         const receiversMap = new Map<string, [ValueMessageConsumer, ValueMessage]>
         valueMessage.forEach((change) => {
@@ -94,6 +105,8 @@ export class Device {
                 });
             }
         });
-        receiversMap.forEach((value) => value[0].sendValueMessage(value[1]));
+        receiversMap.forEach((value) => {
+            value[0].sendValueMessage(value[1]);
+        });
     }
 }

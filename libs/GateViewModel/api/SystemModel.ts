@@ -14,12 +14,12 @@ export class SystemModel {
     constructor(systemConnector: SystemConnector) {
         this._systemConnector = systemConnector;
         this._state = new ModelValue<ConnectionState>(systemConnector.state);
-        systemConnector.onStateChange = (state) => {
+        systemConnector.addStateChangeListener((state) => {
             this._state.setValue(state);
             if (state !== ConnectionState.ready) {
                 this._devices.values.forEach((device) => device.state.setValue(DeviceState.down));
             }
-        };
+        });
         this._devices = new ModelMap<DeviceModel>();
         systemConnector.onJoinEvent = (systemImage, connectedDevices) => {
             systemImage.devices.forEach((manifest) => {
@@ -43,12 +43,12 @@ export class SystemModel {
         }
         systemConnector.onDeviceEvent = (event: EventName, args: string | ValidManifest) => {
             switch (event) {
-                case EventName.connected:
+                case EventName.deviceConnected:
                     const manifest = args as ValidManifest;
                     this._devices.update(manifest.id,
                         new DeviceModel(this._systemConnector, manifest, true));
                     break;
-                case EventName.disconnected:
+                case EventName.deviceDisconnected:
                     const deviceId = args as string;
                     const device = this._devices.getById(deviceId);
                     if (device) {

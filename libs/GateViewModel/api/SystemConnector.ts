@@ -8,7 +8,8 @@ export interface SystemConnector {
     sendValue: (gateValue: GateValue<any>) => void,
     subscribe: (id: string) => void,
     unsubscribe: (id: string) => void,
-    onStateChange?: (state: ConnectionState) => void,
+    addStateChangeListener: (callback: (state: ConnectionState) => void) => void,
     onJoinEvent: (systemImage: SystemImage, connectedDevices: Array<string>) => void,
-    joinSystem: () => void
+    joinSystem: () => void,
+    disconnect: () => void
 }

@@ -1,0 +1,15 @@
+{
+  "name": "localdevice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Device for testing local server",
+  "main": "LocalDevice.js",
+  "scripts": {
+    "start": "node LocalDevice.js"
+  },
+  "author": "Michał Marchel",
+  "license": "ISC",
+  "dependencies": {
+    "gate-device": "^1.0.0"
+  }
+}

@@ -12,15 +12,21 @@ const addController = async (controller: ControllerConnector) => {
     controller.onDisconnect = () => controllerDisconnected(controller);
     controller.onValueMessage = DeviceContext.forwardValueMessage;
     const systemImage = await Router.systemRepository.getSystemImage();
-    controller.sendJoinData(systemImage, DeviceContext.getActiveDeviceIds());
-    controller.onSubscribed = (ids) => DeviceContext.forwardSubscribed(ids, controller);
+    const activeDeviceIds = DeviceContext.getActiveDeviceIds();
+    controller.sendJoinData(systemImage, activeDeviceIds);
+    controller.onSubscribed = (ids) => {
+        DeviceContext.forwardSubscribed(ids, controller)
+    };
     // @ts-ignore
-    controller.onUnsubscribed = (ids) => DeviceContext.forwardUnsubscribed(ids, controller.id);
+    controller.onUnsubscribed = (ids) => {
+        DeviceContext.forwardUnsubscribed(ids, controller.id);
+    };
 }
 
 const controllerDisconnected = (controller: ControllerConnector) => {
     if (controller.id) {
         controllerRegistry.remove(controller.id);
+        DeviceContext.unsubscribeConsumer(controller.id);
     }
 }
 
