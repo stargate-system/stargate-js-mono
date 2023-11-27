@@ -59,9 +59,7 @@ export class Device {
     subscribe = (subscribedValueId: string, consumer: ValueMessageConsumer) => {
         const subscribers = this._subscriptions.get(subscribedValueId);
         if (subscribers) {
-            if (subscribers.size === 0) {
-                this._subscriptionBuffer.subscribe(subscribedValueId);
-            }
+            this._subscriptionBuffer.subscribe(subscribedValueId);
             subscribers.set(consumer.id, consumer);
         }
     }

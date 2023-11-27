@@ -19,7 +19,7 @@ const GateStringView = (props: GateValueProps) => {
     }
 
     const onKeyDown = (ev: any) => {
-        switch (ev.code) {
+        switch (ev.key) {
             case 'Enter':
                 gateValue.setValue(displayValue);
                 break;

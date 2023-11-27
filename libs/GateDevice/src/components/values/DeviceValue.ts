@@ -21,7 +21,7 @@ export class DeviceValue<V> {
             }
         };
         gateValue.onRemoteUpdate = (wasChanged) => {
-            if (gateValue.type === Directions.input && wasChanged) {
+            if (gateValue.direction === Directions.input && wasChanged) {
                 device.connection.sendGateValue(gateValue);
             }
             if (this.onRemoteUpdate) {

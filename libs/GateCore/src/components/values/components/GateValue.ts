@@ -48,11 +48,9 @@ export abstract class GateValue<T> {
     }
 
     setSubscribed = (subscribed: boolean) => {
-        if (this._subscribed !== subscribed) {
-            this._subscribed = subscribed;
-            if (this.onSubscriptionChange) {
-                this.onSubscriptionChange(subscribed);
-            }
+        this._subscribed = subscribed;
+        if (this.onSubscriptionChange) {
+            this.onSubscriptionChange(subscribed);
         }
     }
 
