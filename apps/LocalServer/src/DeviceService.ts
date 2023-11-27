@@ -9,6 +9,7 @@ export const initDeviceService = () => {
 }
 
 const handleConnection = (socket: net.Socket) => {
+    socket.on('error', console.log);
     const connector = new LocalDeviceConnector(socket);
     connector.onConnectorReady = () => Router.addDevice(connector);
 }

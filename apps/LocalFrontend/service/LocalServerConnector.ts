@@ -89,6 +89,7 @@ const LocalServerConnector: SystemConnector = {
     unsubscribe: subscriptionBuffer.unsubscribe,
     joinSystem,
     addStateChangeListener: connection.addStateChangeListener,
+    removeStateChangeListener: connection.removeStateChangeListener,
     disconnect
 }
 

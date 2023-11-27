@@ -8,5 +8,5 @@
 }
 
 .inputError {
-    border: 2px solid var(--global-color-error);
+    border: 2px solid red;
 }

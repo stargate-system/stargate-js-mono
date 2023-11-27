@@ -10,6 +10,6 @@
 
     .validationMessage {
         text-align: center;
-        color: var(--global-color-error);
+        color: red;
     }
 }

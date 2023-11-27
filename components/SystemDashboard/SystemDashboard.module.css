@@ -5,3 +5,8 @@
     color: var(--system-color);
     min-height: 100vh;
 }
+
+.connectionModal {
+    font-size: 2rem;
+    color: white;
+}

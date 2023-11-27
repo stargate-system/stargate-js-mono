@@ -27,7 +27,8 @@ const systemConnector: SystemConnector = {
     sendValue,
     subscribe,
     unsubscribe,
-    addStateChangeListener: () => {},
+    addStateChangeListener: () => '',
+    removeStateChangeListener: () => {},
     onJoinEvent: () => {},
     joinSystem: () => {
         Router.addController(DirectSystemConnector.routerConnector);

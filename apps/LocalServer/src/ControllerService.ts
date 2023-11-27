@@ -6,6 +6,7 @@ import {Router} from "gate-router";
 export const initControllerService = () => {
     const server = new WebSocketServer({port: CoreConfig.localServerControllerPort});
     server.on('connection', (socket) => {
+        socket.on('error', console.log);
         const socketWrapper: SocketWrapper = {
             send: socket.send.bind(socket),
             close: socket.close.bind(socket),

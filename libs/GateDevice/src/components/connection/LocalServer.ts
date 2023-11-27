@@ -28,6 +28,7 @@ export const initLocalServer = () => {
 const connect = (serverIp: string) => {
     const socket = net.connect(CoreConfig.localServerDevicePort, serverIp, () => {
         socket.setNoDelay(true);
+        socket.on('error', console.log);
         const socketWrapper: SocketWrapper = {
             send: socket.write.bind(socket),
             close: socket.destroy.bind(socket),

@@ -1,0 +1,13 @@
+.modal {
+    padding: 2rem;
+    border: 1px solid #f5debf;
+    border-radius: 0.5rem;
+    z-index: 100;
+    background-color: transparent;
+    outline-color: transparent;
+    outline-style: none;
+}
+
+.modal::backdrop {
+    background: hsl(0 0% 0% / 50%);
+}
