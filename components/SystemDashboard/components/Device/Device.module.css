@@ -12,6 +12,7 @@
     border-right: var(--device-border-style);
     border-bottom: var(--device-border-style);
     border-radius: var(--device-border-radius);
+    max-width: 90vw;
 
     .valuesContainer {
         display: flex;

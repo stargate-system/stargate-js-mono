@@ -1,11 +1,17 @@
 .modal {
+    z-index: 100;
+    background-color: transparent;
+    border: none;
+    outline-color: transparent;
+    outline-style: none;
+}
+
+.childrenContainer {
     padding: 2rem;
     border: 1px solid #f5debf;
     border-radius: 0.5rem;
-    z-index: 100;
-    background-color: transparent;
-    outline-color: transparent;
-    outline-style: none;
+    max-width: 90vw;
+    background-color: rgba(2, 45, 2, 0.43);
 }
 
 .modal::backdrop {

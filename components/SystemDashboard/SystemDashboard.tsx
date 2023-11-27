@@ -7,6 +7,7 @@ import ReactGateViewModel from "../ReactGateViewModel/ReactGateViewModel";
 import LocalServerConnector from "../../apps/LocalFrontend/service/LocalServerConnector";
 import {ConnectionState} from "gate-core";
 import ModalComponent from "../ModalComponent/ModalComponent";
+import Spinner from "../Spinner/Spinner";
 
 interface SystemDashboardProps {
     systemModel: SystemModel,
@@ -30,7 +31,10 @@ const SystemDashboard = (props: SystemDashboardProps) => {
     return (
         <div className={styles.systemDashboard}>
             <ModalComponent open={!connectionReady}>
-                <div className={styles.connectionModal} autoFocus={true}>Waiting for connection...</div>
+                <div className={styles.connectionModal}>
+                    <Spinner className={styles.connectionSpinner}/>
+                    Waiting for connection...
+                </div>
             </ModalComponent>
             <SystemHeader content={headerContent}/>
             <ReactGateViewModel systemModel={systemModel}>

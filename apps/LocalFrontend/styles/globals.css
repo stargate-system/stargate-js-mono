@@ -1,1 +1,5 @@
-
+@media only screen and (max-device-width: 640px){
+    :root {
+        font-size: 20px;
+    }
+}

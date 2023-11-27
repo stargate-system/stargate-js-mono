@@ -21,7 +21,9 @@ const ModalComponent = (props: ModalComponentProps) => {
 
     return (
         <dialog ref={dialogRef} className={styles.modal}>
-            {children}
+            <div className={styles.childrenContainer}>
+                {children}
+            </div>
         </dialog>
     )
 }
