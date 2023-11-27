@@ -10,6 +10,14 @@ init(() => {
         led.write(ledBrightness.value);
     };
 
+    ledBrightness.onSubscriptionChange = (subscribed) => {
+        if (subscribed) {
+            led.write(ledBrightness.value);
+        } else {
+            led.write(0);
+        }
+    };
+
     GateDevice.setDeviceName('Raspberry LED');
     GateDevice.startDevice();
 })

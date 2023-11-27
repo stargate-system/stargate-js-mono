@@ -1,9 +1,5 @@
-const {ConnectionType} = require("gate-device");
-deviceLib = require('gate-device');
-const {Directions, GateDevice} = deviceLib;
+const {Directions, GateDevice} = require('gate-device');
 const {ValueFactory} = GateDevice;
-
-GateDevice.config.connectionType = ConnectionType.localServer;
 
 const smallInteger = ValueFactory.createInteger(Directions.output, 'Small integer', [0, 200]);
 const bigInteger = ValueFactory.createInteger(Directions.output, 'Big integer', [-5000, 50000]);

@@ -28,17 +28,20 @@ export const initLocalServer = () => {
 const connect = (serverIp: string) => {
     const socket = net.connect(CoreConfig.localServerDevicePort, serverIp, () => {
         socket.setNoDelay(true);
-        socket.on('error', console.log);
         const socketWrapper: SocketWrapper = {
             send: socket.write.bind(socket),
             close: socket.destroy.bind(socket),
             setOnClose: (callback) => socket.on('close', () => {
                 callback();
-                initLocalServer();
             }),
             setOnMessage: (callback) => socket.on('data', (data: any) => callback(data.toString()))
         }
         handleConnection(socketWrapper);
+    });
+    socket.on('error', console.log);
+    socket.on('close', () => {
+        console.log('Reconnecting...');
+        setTimeout(initLocalServer, 5000);
     });
 }
 

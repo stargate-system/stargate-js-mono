@@ -7,7 +7,11 @@ import {ValueMessageConsumer} from "../../interfaces/ValueMessageConsumer";
 const deviceRegistry = new Registry<Device>();
 
 const addDevice = async (deviceConnector: DeviceConnector) => {
-    new Device(deviceConnector);
+    try {
+        new Device(deviceConnector);
+    } catch (err) {
+        console.log(err);
+    }
 }
 
 const forwardValueMessage = (valueMessage: ValueMessage) => {

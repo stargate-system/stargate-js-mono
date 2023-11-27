@@ -1,11 +1,8 @@
 const {
     GateDevice,
-    ConnectionType,
-    Directions,
-    ConnectionState
+    Directions
 } = require('gate-device');
 
-GateDevice.config.connectionType = ConnectionType.localServer;
 GateDevice.setDeviceName('Test local');
 const testBool = GateDevice.ValueFactory.createBoolean(Directions.input, 'Test bool');
 testBool.onRemoteUpdate = () => console.log('>>> value', testBool.value);

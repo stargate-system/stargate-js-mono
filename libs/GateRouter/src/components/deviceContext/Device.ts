@@ -17,6 +17,7 @@ export class Device {
 
     constructor(connector: DeviceConnector) {
         if (!connector.id || !connector.manifest) {
+            connector.connection.close();
             throw new Error('On creating device: connector has incomplete data');
         }
         this._subscriptionBuffer = new SubscriptionBuffer(
@@ -36,10 +37,15 @@ export class Device {
             }
         });
         this._connection.onValueMessage = this._routeDeviceMessage;
-        this._connection.functionalHandler.sendCommand(Keywords.ready);
-        this._connection.setReady();
-        DeviceContext.deviceRegistry.add(this, this._id);
-        ControllerContext.forwardDeviceEvent(EventName.deviceConnected, this);
+        try {
+            DeviceContext.deviceRegistry.add(this, this._id);
+            this._connection.functionalHandler.sendCommand(Keywords.ready);
+            this._connection.setReady();
+            ControllerContext.forwardDeviceEvent(EventName.deviceConnected, this);
+        } catch (err) {
+            this._connection.close();
+            throw new Error('Failed registering device: ' + err);
+        }
     }
 
     get id(): string {

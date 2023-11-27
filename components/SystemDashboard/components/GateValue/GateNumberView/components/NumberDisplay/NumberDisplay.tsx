@@ -46,7 +46,7 @@ const NumberDisplay = (props: NumberDisplayProps) => {
     }
 
     const onKeyDown = (ev: any) => {
-        switch (ev.code) {
+        switch (ev.key) {
             case 'Enter':
                 setValueWithDisplayValue();
                 break;
