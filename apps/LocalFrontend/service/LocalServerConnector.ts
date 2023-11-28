@@ -2,7 +2,7 @@ import {ConnectionState, CoreConfig, DefaultConnection, GateValue, Keywords, Soc
 import {SystemConnector} from "gate-viewmodel";
 import {EventName, SubscriptionBuffer, ValidManifest} from "gate-router";
 
-const connection = new DefaultConnection();
+const connection = new DefaultConnection(true);
 const subscriptionBuffer = new SubscriptionBuffer(
     (subscribed) => connection.functionalHandler.sendCommand(Keywords.subscribe, subscribed),
     (unsubscribed) => connection.functionalHandler.sendCommand(Keywords.unsubscribe, unsubscribed)
@@ -90,7 +90,8 @@ const LocalServerConnector: SystemConnector = {
     joinSystem,
     addStateChangeListener: connection.addStateChangeListener,
     removeStateChangeListener: connection.removeStateChangeListener,
-    disconnect
+    disconnect,
+    getCurrentPing: () => connection.ping
 }
 
 export default LocalServerConnector;

@@ -33,7 +33,9 @@ const connect = (serverIp: string) => {
         setOnClose: (callback) => socket.on('close', callback),
         setOnMessage: (callback) => socket.on('message', (ev: any) => callback(ev.toString()))
     }
-    handleConnection(socketWrapper);
+    socket.onopen = () => {
+        handleConnection(socketWrapper);
+    }
     socket.on('error', console.log);
     socket.on('close', () => {
         console.log('Reconnecting...');

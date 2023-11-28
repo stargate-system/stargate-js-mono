@@ -1,6 +1,7 @@
 import {Directions, GateDevice} from 'gate-device';
 import { init } from 'raspi';
 import { SoftPWM } from 'raspi-soft-pwm';
+GateDevice.config.usePing = true;
 
 init(() => {
     const led = new SoftPWM('GPIO22');

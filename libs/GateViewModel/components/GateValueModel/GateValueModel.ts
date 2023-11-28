@@ -1,4 +1,4 @@
-import {GateValue, GateValueFactory, ValueManifest, ValueTypes} from "gate-core";
+import {GateValue, GateValueFactory, SystemIds, ValueManifest, ValueTypes} from "gate-core";
 import {DeviceState} from "../DeviceModel/DeviceState";
 import {ModelValue} from "../ModelValue";
 import {Router} from "gate-router";
@@ -22,9 +22,16 @@ export class GateValueModel {
         this._value.onSubscriptionChange = (subscribed) => {
             subscribed ? systemConnector.subscribe(this._id) : systemConnector.unsubscribe(this._id);
         }
-        this._gateValue.onRemoteUpdate = () => {
-            this._value.setValue(this._gateValue.value);
-        };
+        if (valueManifest.id === SystemIds.ping) {
+            this._gateValue.onRemoteUpdate = () => {
+                console.log('to server: ' + this._gateValue.value + ', from server: ' + systemConnector.getCurrentPing());
+                this._value.setValue(this._gateValue.value + (systemConnector.getCurrentPing() ?? 0));
+            };
+        } else {
+            this._gateValue.onRemoteUpdate = () => {
+                this._value.setValue(this._gateValue.value);
+            };
+        }
         this._gateValue.onLocalUpdate = (wasChanged) => {
             this._value.setValue(this._gateValue.value);
             if (wasChanged || this._gateValue.type === ValueTypes.string) {

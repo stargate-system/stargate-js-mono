@@ -17,6 +17,7 @@ import {Connection} from "./src/components/connection/interfaces/Connection.js";
 import {ConnectionConfig} from "./src/api/ConnectionConfig.js";
 import {DefaultConnection} from "./src/components/connection/components/DefaultConnection.js";
 import {SocketWrapper} from "./src/components/connection/interfaces/SocketWrapper.js";
+import {SystemIds} from "./src/constants/SystemIds";
 
 export {
     CoreConfig,
@@ -37,5 +38,6 @@ export {
     Connection,
     ConnectionConfig,
     DefaultConnection,
-    SocketWrapper
+    SocketWrapper,
+    SystemIds
 }

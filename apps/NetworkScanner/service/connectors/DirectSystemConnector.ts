@@ -32,7 +32,8 @@ const systemConnector: SystemConnector = {
     onJoinEvent: () => {},
     joinSystem: () => {
         Router.addController(DirectSystemConnector.routerConnector);
-    }
+    },
+    getCurrentPing: () => 0
 }
 
 const sendDeviceEvent = (event: EventName, device: Device) => {

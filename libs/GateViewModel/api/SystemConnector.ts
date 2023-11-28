@@ -12,5 +12,6 @@ export interface SystemConnector {
     removeStateChangeListener: (listenerKey: string) => void,
     onJoinEvent: (systemImage: SystemImage, connectedDevices: Array<string>) => void,
     joinSystem: () => void,
-    disconnect: () => void
+    disconnect: () => void,
+    getCurrentPing: () => number | undefined
 }

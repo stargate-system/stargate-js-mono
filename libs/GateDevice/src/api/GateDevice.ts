@@ -2,12 +2,15 @@ import {
     Connection,
     ConnectionState,
     DefaultConnection,
-    Directions,
+    Directions, GateNumber,
     GateValue,
+    GateValueFactory,
     Keywords,
     Manifest,
     Registry,
-    ValueMessage
+    SystemIds,
+    ValueMessage,
+    ValueTypes
 } from "gate-core";
 import config from "./config.js";
 import ValueFactory from "../components/values/ValueFactory.js";
@@ -39,6 +42,21 @@ const startDevice = (): DeviceState => {
     if (device.isStarted) {
         console.log("WARNING: Attempting to start already running device");
     } else {
+        if (config.usePing) {
+            const ping = GateValueFactory.fromManifest({
+                id: SystemIds.ping,
+                type: ValueTypes.integer,
+                direction: Directions.output,
+                valueName: 'Ping'
+            }) as GateNumber;
+            device.connection.onPingChange = (value) => {
+                if (ping.subscribed) {
+                    ping.setValue(value);
+                    device.connection.sendGateValue(ping);
+                }
+            }
+            device.values.add(ping, ping.id);
+        }
         device.isStarted = true;
         device.manifest = {
             id: getDeviceId(),
@@ -128,7 +146,7 @@ export const device: Device = {
         state: ConnectionState.closed,
         onStateChange: undefined
     },
-    connection: new DefaultConnection(config)
+    connection: new DefaultConnection(true, config)
 };
 
 export default {

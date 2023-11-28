@@ -14,5 +14,7 @@ export interface Connection {
     close: () => void,
     sendGateValue: (gateValue: GateValue<any>) => void,
     sendValue: (value: [string, string]) => void,
-    onValueMessage?: (valueMessage: ValueMessage) => void
+    onValueMessage?: (valueMessage: ValueMessage) => void,
+    ping?: number,
+    onPingChange?: (ping: number) => void
 }

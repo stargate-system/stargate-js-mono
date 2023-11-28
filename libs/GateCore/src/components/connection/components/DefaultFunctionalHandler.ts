@@ -29,7 +29,7 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
         this._pendingQueries.getValues().forEach((pendingQuery) => pendingQuery.rejectQuery('Connection closed'));
     }
 
-    createQuery = (keyword: string): Promise<string> => {
+    createQuery = (keyword: string, timeout?: number): Promise<string> => {
         if (!this._sendFunction) {
             throw new Error('Query creation failed: connection closed');
         }
@@ -38,16 +38,16 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
             let resolveQuery: (value: string) => void;
             let rejectQuery: (reason: string) => void;
             const result = new Promise<string>((resolve, reject) => {
-                const timeout = setTimeout(() => {
+                const timeoutKey = setTimeout(() => {
                     this._pendingQueries.remove(keyword);
                     reject('Query timeout');
-                }, this._queryTimeout);
+                }, timeout ?? this._queryTimeout);
                 resolveQuery = (value: string) => {
-                    clearTimeout(timeout);
+                    clearTimeout(timeoutKey);
                     resolve(value);
                 }
                 rejectQuery = (reason: string) => {
-                    clearTimeout(timeout);
+                    clearTimeout(timeoutKey);
                     reject(reason);
                 }
             });
