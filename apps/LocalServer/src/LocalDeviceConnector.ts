@@ -6,7 +6,6 @@ import {
     SocketWrapper
 } from "gate-core";
 import {DeviceConnector, Router, ValidManifest} from "gate-router";
-import net from 'net';
 
 export class LocalDeviceConnector implements DeviceConnector{
     private _id?: string;
@@ -14,15 +13,7 @@ export class LocalDeviceConnector implements DeviceConnector{
     private _manifest?: ValidManifest;
     onConnectorReady?: () => void;
 
-    constructor(socket: net.Socket) {
-        socket.setNoDelay(true);
-        const socketWrapper: SocketWrapper = {
-            send: socket.write.bind(socket),
-            close: socket.destroy.bind(socket),
-            setOnClose: (callback) => socket.on('close', callback),
-            setOnMessage: (callback) => socket.on('data', (data: any) => callback(data.toString()))
-        };
-
+    constructor(socketWrapper: SocketWrapper) {
         this._connection = new DefaultConnection();
         this._connection.setConnected(socketWrapper)
 

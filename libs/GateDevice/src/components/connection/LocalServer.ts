@@ -1,4 +1,4 @@
-import net from 'net';
+import {WebSocket} from 'ws';
 import dgram from "dgram";
 import {CoreConfig, Keywords, SocketWrapper} from "gate-core";
 import {device} from "../../api/GateDevice";
@@ -26,18 +26,14 @@ export const initLocalServer = () => {
 }
 
 const connect = (serverIp: string) => {
-    const socket = net.connect(CoreConfig.localServerDevicePort, serverIp, () => {
-        socket.setNoDelay(true);
-        const socketWrapper: SocketWrapper = {
-            send: socket.write.bind(socket),
-            close: socket.destroy.bind(socket),
-            setOnClose: (callback) => socket.on('close', () => {
-                callback();
-            }),
-            setOnMessage: (callback) => socket.on('data', (data: any) => callback(data.toString()))
-        }
-        handleConnection(socketWrapper);
-    });
+    const socket = new WebSocket('ws://' + serverIp + ':' + CoreConfig.localServerDevicePort);
+    const socketWrapper: SocketWrapper = {
+        send: socket.send.bind(socket),
+        close: socket.close.bind(socket),
+        setOnClose: (callback) => socket.on('close', callback),
+        setOnMessage: (callback) => socket.on('message', (ev: any) => callback(ev.toString()))
+    }
+    handleConnection(socketWrapper);
     socket.on('error', console.log);
     socket.on('close', () => {
         console.log('Reconnecting...');
