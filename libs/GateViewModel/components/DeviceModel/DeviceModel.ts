@@ -1,4 +1,4 @@
-import {ValidManifest} from "gate-router";
+import {EventName, ValidManifest} from "gate-router";
 import {ModelValue} from "../ModelValue";
 import {DeviceState} from "./DeviceState";
 import {ModelMap} from "../ModelMap/ModelMap";
@@ -9,7 +9,7 @@ export class DeviceModel {
     private readonly _id: string;
     private readonly _state: ModelValue<DeviceState>;
     private readonly _gateValues: ModelMap<GateValueModel>;
-    private readonly _name?: string;
+    private readonly _name: ModelValue<string>;
     private readonly _systemConnector: SystemConnector;
 
     constructor(systemConnector: SystemConnector, manifest: ValidManifest, isConnected: boolean) {
@@ -26,7 +26,7 @@ export class DeviceModel {
 
             this._gateValues.add(gateValueModel.gateValue.id, gateValueModel);
         });
-        this._name = manifest.deviceName;
+        this._name = new ModelValue<string>(manifest.deviceName ?? '');
         this._state.subscribe(() => {
             this._gateValues.values.forEach((value) => {
                 value.state.setValue(this._state.value ?? DeviceState.down);
@@ -35,8 +35,13 @@ export class DeviceModel {
     }
 
     remove = () => {
-        this._systemConnector.removeDevice(this._id);
+        this._systemConnector.sendDeviceEvent(EventName.deviceRemoved, [this._id]);
     }
+
+    rename = (newName: string) => {
+        this.name.setValue(newName);
+        this._systemConnector.sendDeviceEvent(EventName.deviceRenamed, [this._id, newName]);
+    };
 
     get id(): string {
         return this._id;
@@ -50,7 +55,7 @@ export class DeviceModel {
         return this._gateValues;
     }
 
-    get name(): string | undefined{
+    get name(): ModelValue<string>{
         return this._name;
     }
 }

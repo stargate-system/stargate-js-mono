@@ -21,6 +21,7 @@ const BasicSystemRepository: SystemRepository = {
     updateDevice: async (manifest: ValidManifest)=> {
         const index = systemImage.devices.findIndex((storedManifest) => storedManifest.id === manifest.id);
         if (index !== -1) {
+            manifest.deviceName = systemImage.devices[index].deviceName;
             systemImage.devices[index] = manifest;
         } else {
             systemImage.devices.push(manifest);
@@ -30,6 +31,13 @@ const BasicSystemRepository: SystemRepository = {
     },
     removeDevice: (id: string) => {
         systemImage.devices = systemImage.devices.filter((device) => device.id !== id);
+        saveRepository();
+    },
+    renameDevice: (id: string, newName: string) => {
+        const device = systemImage.devices.find((manifest) => manifest.id === id);
+        if (device) {
+            device.deviceName = newName;
+        }
         saveRepository();
     }
 }

@@ -3,7 +3,8 @@
     flex-direction: column;
     align-items: center;
     font-size: 1.5rem;
-    color: var(--system-color);
+    text-align: center;
+    color: #f5debf;
 
     .buttonsContainer {
         display: flex;

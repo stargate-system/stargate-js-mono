@@ -6,7 +6,7 @@ export interface SystemConnector {
     sendValue: (gateValue: GateValue<any>) => void,
     unsubscribe: (id: string) => void,
     subscribe: (id: string) => void,
-    removeDevice: (id: string) => void,
+    sendDeviceEvent: (event: string, params: string[]) => void,
     joinSystem: () => void,
     disconnect: () => void,
     getCurrentPing: () => number | undefined

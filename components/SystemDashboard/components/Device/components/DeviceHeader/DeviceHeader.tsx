@@ -1,10 +1,17 @@
 import styles from './DeviceHeader.module.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faEllipsis} from '@fortawesome/free-solid-svg-icons';
-import {useContext, useEffect, useRef, useState} from "react";
+import React, {
+    MutableRefObject,
+    useContext,
+    useEffect,
+    useRef,
+    useState
+} from "react";
 import {DeviceModel} from "gate-viewmodel";
 import ModalContext from "../../../../ModalContext";
 import StandardModal from "../../../StandardModal/StandardModal";
+import useModelValue from "../../../../../ReactGateViewModel/hooks/useModelValue";
 
 interface DeviceHeaderProps {
     deviceModel: DeviceModel,
@@ -14,20 +21,51 @@ interface DeviceHeaderProps {
 const DeviceHeader = (props: DeviceHeaderProps) => {
     const {deviceModel, isActive} = props;
     const modal = useContext(ModalContext);
+    const deviceName = useModelValue(deviceModel.name);
 
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
+    const newNameRef = useRef('');
+
+    const RenameModalBody: React.FC<{nameRef: MutableRefObject<string>}> = (props) => {
+        const {nameRef} = props;
+        const [newDeviceName, setNewDeviceName] = useState(nameRef.current);
+
+        return (
+            <div className={styles.modalBodyContainer}>
+                {`New name for ${deviceName && deviceName.length ? deviceName : 'selected device'}`}
+                <input
+                    type='text'
+                    onInput={(ev: any) => {
+                        nameRef.current = ev.target.value;
+                        setNewDeviceName(ev.target.value);
+                    }}
+                    value={newDeviceName}
+                    className={styles.newNameInput}
+                />
+            </div>
+        )
+    }
 
     const onRename = () => {
-        console.log('Rename');
+        if (modal) {
+            newNameRef.current = deviceName ?? '';
+            modal.openModal(
+                <StandardModal
+                    body={<RenameModalBody nameRef={newNameRef}/>}
+                    onApprove={() => deviceModel.rename(newNameRef.current)}
+                    approveLabel={'Save'}
+                />
+            )
+        }
     }
 
     const onDelete = () => {
         if (modal) {
             modal.openModal(
                 <StandardModal
-                    body={`Sure you want to remove ${deviceModel.name && deviceModel.name.length
-                        ? deviceModel.name
+                    body={`Sure you want to remove ${deviceName && deviceName.length
+                        ? deviceName
                         : 'selected device'}?`}
                     onApprove={() => deviceModel.remove()}
                 />
@@ -39,13 +77,13 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
         if (menuOpen && menuRef.current) {
             menuRef.current.focus();
         }
-    });
+    }, [menuOpen]);
 
     return (
         <div className={styles.deviceHeader}>
             <div className={styles.sidePanel}/>
             <div className={styles.nameContainer}>
-                {deviceModel.name ?? ''}
+                {deviceName}
             </div>
             <div
                 tabIndex={0}

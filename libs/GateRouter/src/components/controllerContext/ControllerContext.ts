@@ -25,8 +25,12 @@ const addController = async (controller: ControllerConnector) => {
             console.log('Cancelled removing device: device is active');
         } else {
             Router.systemRepository.removeDevice(id);
-            controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRemoved, id));
+            controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRemoved, [id]));
         }
+    }
+    controller.onDeviceRenamed = (id: string, newName: string) => {
+        Router.systemRepository.renameDevice(id, newName);
+        controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRenamed, [id, newName]));
     }
 }
 
@@ -37,7 +41,7 @@ const controllerDisconnected = (controller: ControllerConnector) => {
     }
 }
 
-const forwardDeviceEvent = (eventName: EventName, data: string) => {
+const forwardDeviceEvent = (eventName: EventName, data: string[]) => {
     controllerRegistry.getValues()
         .forEach((controller) => controller.sendDeviceEvent(eventName, data));
 }

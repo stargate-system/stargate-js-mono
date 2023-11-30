@@ -44,6 +44,12 @@ connection.functionalHandler.addCommandListener(EventName.deviceRemoved, (params
     }
 });
 
+connection.functionalHandler.addCommandListener(EventName.deviceRenamed, (params) => {
+    if (params && LocalServerConnector.onDeviceEvent) {
+        LocalServerConnector.onDeviceEvent(EventName.deviceRenamed, params);
+    }
+});
+
 connection.onValueMessage = (valueMessage) => {
     if (LocalServerConnector.onValueMessage) {
         LocalServerConnector.onValueMessage(valueMessage);
@@ -86,8 +92,8 @@ const sendValue = (gateValue: GateValue<any>) => {
 
 const disconnect = () => connection.close();
 
-const removeDevice = (id: string) => {
-    connection.functionalHandler.sendCommand(EventName.deviceRemoved, [id]);
+const sendDeviceEvent = (event: string, params: string[]) => {
+    connection.functionalHandler.sendCommand(event, params);
 }
 
 const LocalServerConnector: SystemConnector = {
@@ -101,7 +107,7 @@ const LocalServerConnector: SystemConnector = {
     removeStateChangeListener: connection.removeStateChangeListener,
     disconnect,
     getCurrentPing: () => connection.ping,
-    removeDevice
+    sendDeviceEvent
 }
 
 export default LocalServerConnector;

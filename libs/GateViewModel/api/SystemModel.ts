@@ -65,6 +65,15 @@ export class SystemModel {
                         this._devices.remove(deviceId);
                     }
                     break;
+                case EventName.deviceRenamed:
+                    if (args[0] && args[1]) {
+                        const deviceId = args[0];
+                        const device = this._devices.getById(deviceId);
+                        if (device) {
+                            device.name.setValue(args[1]);
+                        }
+                    }
+                    break;
             }
         }
         systemConnector.joinSystem();
