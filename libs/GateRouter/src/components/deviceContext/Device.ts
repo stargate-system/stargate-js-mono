@@ -33,7 +33,7 @@ export class Device {
         this._connection.addStateChangeListener((state) => {
             if (state === ConnectionState.closed) {
                 DeviceContext.deviceRegistry.remove(this._id);
-                ControllerContext.forwardDeviceEvent(EventName.deviceDisconnected, this);
+                ControllerContext.forwardDeviceEvent(EventName.deviceDisconnected, this._id);
             }
         });
         this._connection.onValueMessage = this._routeDeviceMessage;
@@ -41,7 +41,7 @@ export class Device {
             DeviceContext.deviceRegistry.add(this, this._id);
             this._connection.functionalHandler.sendCommand(Keywords.ready);
             this._connection.setReady();
-            ControllerContext.forwardDeviceEvent(EventName.deviceConnected, this);
+            ControllerContext.forwardDeviceEvent(EventName.deviceConnected, JSON.stringify(this._manifest));
         } catch (err) {
             this._connection.close();
             throw new Error('Failed registering device: ' + err);

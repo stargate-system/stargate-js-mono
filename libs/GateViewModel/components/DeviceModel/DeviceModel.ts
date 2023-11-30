@@ -10,8 +10,10 @@ export class DeviceModel {
     private readonly _state: ModelValue<DeviceState>;
     private readonly _gateValues: ModelMap<GateValueModel>;
     private readonly _name?: string;
+    private readonly _systemConnector: SystemConnector;
 
     constructor(systemConnector: SystemConnector, manifest: ValidManifest, isConnected: boolean) {
+        this._systemConnector = systemConnector;
         this._id = manifest.id;
         this._state = new ModelValue<DeviceState>(isConnected ? DeviceState.up : DeviceState.down);
         this._gateValues = new ModelMap<GateValueModel>();
@@ -30,6 +32,10 @@ export class DeviceModel {
                 value.state.setValue(this._state.value ?? DeviceState.down);
             })
         })
+    }
+
+    remove = () => {
+        this._systemConnector.removeDevice(this._id);
     }
 
     get id(): string {

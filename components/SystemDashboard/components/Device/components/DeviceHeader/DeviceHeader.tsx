@@ -2,13 +2,15 @@ import styles from './DeviceHeader.module.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faEllipsis} from '@fortawesome/free-solid-svg-icons';
 import {useEffect, useRef, useState} from "react";
+import {DeviceModel} from "gate-viewmodel";
 
 interface DeviceHeaderProps {
-    name: string
+    deviceModel: DeviceModel,
+    isActive: boolean
 }
 
 const DeviceHeader = (props: DeviceHeaderProps) => {
-    const {name} = props;
+    const {deviceModel, isActive} = props;
 
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
@@ -18,7 +20,7 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
     }
 
     const onDelete = () => {
-        console.log('Delete');
+        deviceModel.remove();
     }
 
     useEffect(() => {
@@ -31,7 +33,7 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
         <div className={styles.deviceHeader}>
             <div className={styles.sidePanel}/>
             <div className={styles.nameContainer}>
-                {name}
+                {deviceModel.name ?? ''}
             </div>
             <div
                 tabIndex={0}
@@ -42,9 +44,9 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
             >
                 <FontAwesomeIcon className={styles.iconClass} icon={faEllipsis} rotation={90}/>
                 <div hidden={!menuOpen} className={styles.dropdownMenuContainer}>
-                    <div className={styles.dropdownMenu}>
-                        <span onClick={onRename} className={`${styles.menuItem} ${styles.separator}`}>Rename...</span>
-                        <span onClick={onDelete} className={styles.menuItem}>Delete</span>
+                    <div className={styles.dropdownMenu} style={{height: isActive ? '1.5rem' : '3rem'}}>
+                        {!isActive && <span onClick={onDelete} className={`${styles.menuItem} ${styles.separator}`}>Delete</span>}
+                        <span onClick={onRename} className={styles.menuItem}>Rename...</span>
                     </div>
                 </div>
             </div>

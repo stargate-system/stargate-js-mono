@@ -33,7 +33,7 @@ const Device = (props: DeviceProps) => {
 
     return (
         <div className={deviceContainerClass}>
-            <DeviceHeader name={deviceModel.name ?? ''}/>
+            <DeviceHeader deviceModel={deviceModel} isActive={isActive}/>
             <div className={styles.valuesContainer}>
                 {generateValues(isActive)}
             </div>

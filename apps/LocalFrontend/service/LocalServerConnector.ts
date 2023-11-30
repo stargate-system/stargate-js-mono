@@ -1,6 +1,6 @@
 import {ConnectionState, CoreConfig, DefaultConnection, GateValue, Keywords, SocketWrapper} from "gate-core";
 import {SystemConnector} from "gate-viewmodel";
-import {EventName, SubscriptionBuffer, ValidManifest} from "gate-router";
+import {EventName, SubscriptionBuffer} from "gate-router";
 
 const connection = new DefaultConnection(true);
 const subscriptionBuffer = new SubscriptionBuffer(
@@ -28,14 +28,19 @@ connection.functionalHandler.addCommandListener(Keywords.joinData, (params) => {
 
 connection.functionalHandler.addCommandListener(EventName.deviceConnected, (params) => {
     if (params && LocalServerConnector.onDeviceEvent) {
-        const manifest = JSON.parse(params[0]) as ValidManifest;
-        LocalServerConnector.onDeviceEvent(EventName.deviceConnected, manifest);
+        LocalServerConnector.onDeviceEvent(EventName.deviceConnected, params);
     }
 });
 
 connection.functionalHandler.addCommandListener(EventName.deviceDisconnected, (params) => {
     if (params && LocalServerConnector.onDeviceEvent) {
-        LocalServerConnector.onDeviceEvent(EventName.deviceDisconnected, params[0]);
+        LocalServerConnector.onDeviceEvent(EventName.deviceDisconnected, params);
+    }
+});
+
+connection.functionalHandler.addCommandListener(EventName.deviceRemoved, (params) => {
+    if (params && LocalServerConnector.onDeviceEvent) {
+        LocalServerConnector.onDeviceEvent(EventName.deviceRemoved, params);
     }
 });
 
@@ -81,6 +86,10 @@ const sendValue = (gateValue: GateValue<any>) => {
 
 const disconnect = () => connection.close();
 
+const removeDevice = (id: string) => {
+    connection.functionalHandler.sendCommand(EventName.deviceRemoved, [id]);
+}
+
 const LocalServerConnector: SystemConnector = {
     onJoinEvent: () => {},
     sendValue,
@@ -91,7 +100,8 @@ const LocalServerConnector: SystemConnector = {
     addStateChangeListener: connection.addStateChangeListener,
     removeStateChangeListener: connection.removeStateChangeListener,
     disconnect,
-    getCurrentPing: () => connection.ping
+    getCurrentPing: () => connection.ping,
+    removeDevice
 }
 
 export default LocalServerConnector;

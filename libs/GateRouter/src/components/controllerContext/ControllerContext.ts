@@ -3,7 +3,6 @@ import {ControllerConnector} from "../../api/ControllerConnector";
 import Router from "../../api/Router";
 import DeviceContext from "../deviceContext/DeviceContext";
 import {EventName} from "../../constants/EventName";
-import {Device} from "../deviceContext/Device";
 
 const controllerRegistry = new Registry<ControllerConnector>();
 
@@ -21,6 +20,14 @@ const addController = async (controller: ControllerConnector) => {
     controller.onUnsubscribed = (ids) => {
         DeviceContext.forwardUnsubscribed(ids, controller.id);
     };
+    controller.onDeviceRemoved = (id: string) => {
+        if (DeviceContext.deviceRegistry.getByKey(id)) {
+            console.log('Cancelled removing device: device is active');
+        } else {
+            Router.systemRepository.removeDevice(id);
+            controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRemoved, id));
+        }
+    }
 }
 
 const controllerDisconnected = (controller: ControllerConnector) => {
@@ -30,9 +37,9 @@ const controllerDisconnected = (controller: ControllerConnector) => {
     }
 }
 
-const forwardDeviceEvent = (eventName: EventName, device: Device) => {
+const forwardDeviceEvent = (eventName: EventName, data: string) => {
     controllerRegistry.getValues()
-        .forEach((controller) => controller.sendDeviceEvent(eventName, device));
+        .forEach((controller) => controller.sendDeviceEvent(eventName, data));
 }
 
 const forwardValueMessage = (valueMessage: ValueMessage) => {

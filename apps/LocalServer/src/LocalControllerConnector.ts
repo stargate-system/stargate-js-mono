@@ -1,4 +1,4 @@
-import {ControllerConnector, Device, EventName, SystemImage} from "gate-router";
+import {ControllerConnector, EventName, SystemImage} from "gate-router";
 import {Connection, ConnectionState, DefaultConnection, Keywords, SocketWrapper, ValueMessage} from "gate-core";
 
 export class LocalControllerConnector implements ControllerConnector {
@@ -7,6 +7,7 @@ export class LocalControllerConnector implements ControllerConnector {
     onSubscribed: (ids: string[]) => void = () => {};
     onUnsubscribed: (ids: string[]) => void  = () => {};
     onValueMessage: (valueMessage: ValueMessage) => void = () => {};
+    onDeviceRemoved: (id: string) => void = () => {};
 
     private readonly _connection: Connection;
 
@@ -26,20 +27,16 @@ export class LocalControllerConnector implements ControllerConnector {
         functionalHandler.addCommandListener(Keywords.unsubscribe, (params) => {
             this.onUnsubscribed(params ?? []);
         });
+        functionalHandler.addCommandListener(EventName.deviceRemoved, (params) => {
+            if (params && params[0]) {
+                this.onDeviceRemoved(params[0]);
+            }
+        });
         this._connection.setReady();
     }
 
-    sendDeviceEvent = (event: EventName, device: Device) => {
-        let param: string;
-        switch (event) {
-            case EventName.deviceConnected:
-                param = JSON.stringify(device.manifest);
-                break;
-            case EventName.deviceDisconnected:
-                param = device.id;
-                break;
-        }
-        this._connection.functionalHandler.sendCommand(event, [param]);
+    sendDeviceEvent = (event: EventName, data: string) => {
+        this._connection.functionalHandler.sendCommand(event, [data]);
     }
 
     sendJoinData = (systemImage: SystemImage, connectedDevices: string[]) => {

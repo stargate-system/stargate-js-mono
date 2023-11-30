@@ -27,6 +27,10 @@ const BasicSystemRepository: SystemRepository = {
         }
         saveRepository();
         return manifest
+    },
+    removeDevice: (id: string) => {
+        systemImage.devices = systemImage.devices.filter((device) => device.id !== id);
+        saveRepository();
     }
 }
 

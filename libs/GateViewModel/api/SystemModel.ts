@@ -41,19 +41,30 @@ export class SystemModel {
                 }
             });
         }
-        systemConnector.onDeviceEvent = (event: EventName, args: string | ValidManifest) => {
+        systemConnector.onDeviceEvent = (event: EventName, args: string[]) => {
             switch (event) {
                 case EventName.deviceConnected:
-                    const manifest = args as ValidManifest;
-                    this._devices.update(manifest.id,
-                        new DeviceModel(this._systemConnector, manifest, true));
+                    if (args[0]) {
+                        const manifest = JSON.parse(args[0]) as ValidManifest;
+                        this._devices.update(manifest.id,
+                            new DeviceModel(this._systemConnector, manifest, true));
+                    }
                     break;
                 case EventName.deviceDisconnected:
-                    const deviceId = args as string;
-                    const device = this._devices.getById(deviceId);
-                    if (device) {
-                        device.state.setValue(DeviceState.down);
+                    if (args[0]) {
+                        const deviceId = args[0];
+                        const device = this._devices.getById(deviceId);
+                        if (device) {
+                            device.state.setValue(DeviceState.down);
+                        }
                     }
+                    break;
+                case EventName.deviceRemoved:
+                    if (args[0]) {
+                        const deviceId = args[0];
+                        this._devices.remove(deviceId);
+                    }
+                    break;
             }
         }
         systemConnector.joinSystem();
