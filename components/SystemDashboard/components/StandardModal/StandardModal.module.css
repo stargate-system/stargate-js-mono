@@ -1,0 +1,21 @@
+.standardModalContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.5rem;
+    color: var(--system-color);
+
+    .buttonsContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        padding-top: 2rem;
+    }
+
+    .button {
+        font-family: inherit;
+        font-size: 1.5rem;
+        width: 6rem;
+        margin: 0 1rem;
+    }
+}

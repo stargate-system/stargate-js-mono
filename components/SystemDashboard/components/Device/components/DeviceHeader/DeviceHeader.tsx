@@ -1,8 +1,10 @@
 import styles from './DeviceHeader.module.css';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faEllipsis} from '@fortawesome/free-solid-svg-icons';
-import {useEffect, useRef, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {DeviceModel} from "gate-viewmodel";
+import ModalContext from "../../../../ModalContext";
+import StandardModal from "../../../StandardModal/StandardModal";
 
 interface DeviceHeaderProps {
     deviceModel: DeviceModel,
@@ -11,6 +13,7 @@ interface DeviceHeaderProps {
 
 const DeviceHeader = (props: DeviceHeaderProps) => {
     const {deviceModel, isActive} = props;
+    const modal = useContext(ModalContext);
 
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
@@ -20,7 +23,16 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
     }
 
     const onDelete = () => {
-        deviceModel.remove();
+        if (modal) {
+            modal.openModal(
+                <StandardModal
+                    body={`Sure you want to remove ${deviceModel.name && deviceModel.name.length
+                        ? deviceModel.name
+                        : 'selected device'}?`}
+                    onApprove={() => deviceModel.remove()}
+                />
+            );
+        }
     }
 
     useEffect(() => {
