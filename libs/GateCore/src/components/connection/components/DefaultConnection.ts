@@ -92,7 +92,6 @@ export class DefaultConnection implements Connection{
                 .catch(() => this._failedPings += 1);
             this.ping = (Date.now() - startTime)/2;
             if (this._failedPings === 3) {
-                console.log('Connection timeout');
                 this.close();
             } else {
                 if (response) {
@@ -111,7 +110,6 @@ export class DefaultConnection implements Connection{
             clearTimeout(this._pingTimeout);
         }
         this._pingTimeout = setTimeout(() => {
-            console.log('Connection timeout');
             this.close();
         }, 10000);
     }

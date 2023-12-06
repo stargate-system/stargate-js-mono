@@ -82,5 +82,9 @@
         max-width: 80vw;
         color: white;
     }
+
+    .newNameInput:focus {
+        outline: none;
+    }
 }
 

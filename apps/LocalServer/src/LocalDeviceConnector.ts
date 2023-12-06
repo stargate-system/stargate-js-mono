@@ -27,17 +27,22 @@ export class LocalDeviceConnector implements DeviceConnector{
                 .createQuery(Keywords.manifest)
                 .catch(() => this._connection.close());
             if (manifestString !== undefined) {
-                const manifest = JSON.parse(manifestString);
-                if (manifest.id === undefined) {
-                    this._manifest = await Router.systemRepository.createDevice(manifest);
-                    functionalHandler.sendCommand(Keywords.assignedId, [this._manifest.id]);
-                } else {
-                    this._manifest = await Router.systemRepository.updateDevice(manifest);
-                }
-                // @ts-ignore
-                this._id = this._manifest.id;
-                if (this.onConnectorReady) {
-                    this.onConnectorReady();
+                try {
+                    const manifest = JSON.parse(manifestString);
+                    if (manifest.id === undefined) {
+                        this._manifest = await Router.systemRepository.createDevice(manifest);
+                        functionalHandler.sendCommand(Keywords.assignedId, [this._manifest.id]);
+                    } else {
+                        this._manifest = await Router.systemRepository.updateDevice(manifest);
+                    }
+                    // @ts-ignore
+                    this._id = this._manifest.id;
+                    if (this.onConnectorReady) {
+                        this.onConnectorReady();
+                    }
+                } catch (err) {
+                    console.log("Failed connection (on handshake)", err);
+                    this._connection.close();
                 }
             } else {
                 this._connection.close();
