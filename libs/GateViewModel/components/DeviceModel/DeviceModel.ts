@@ -18,13 +18,17 @@ export class DeviceModel {
         this._state = new ModelValue<DeviceState>(isConnected ? DeviceState.up : DeviceState.down);
         this._gateValues = new ModelMap<GateValueModel>();
         manifest.values.forEach((valueManifest) => {
-            const gateValueModel = new GateValueModel(
-                manifest.id,
-                valueManifest,
-                this._state.value ?? DeviceState.down,
-                systemConnector);
+            try {
+                const gateValueModel = new GateValueModel(
+                    manifest.id,
+                    valueManifest,
+                    this._state.value ?? DeviceState.down,
+                    systemConnector);
 
-            this._gateValues.add(gateValueModel.gateValue.id, gateValueModel);
+                this._gateValues.add(gateValueModel.gateValue.id, gateValueModel);
+            } catch (err) {
+                console.log(err);
+            }
         });
         this._name = new ModelValue<string>(manifest.deviceName ?? '');
         this._state.subscribe(() => {

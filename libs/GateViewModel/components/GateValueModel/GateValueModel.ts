@@ -17,7 +17,11 @@ export class GateValueModel {
         modifiedManifest.id = Router.appendParentId(parentId, valueManifest.id);
         this._id = modifiedManifest.id;
         this._name = modifiedManifest.valueName;
-        this._gateValue = GateValueFactory.fromManifest(modifiedManifest);
+        try {
+            this._gateValue = GateValueFactory.fromManifest(modifiedManifest);
+        } catch (err) {
+            throw new Error("On creating value from manifest: " + err);
+        }
         this._value = new ModelValue(this._gateValue.value);
         this._value.onSubscriptionChange = (subscribed) => {
             subscribed ? systemConnector.subscribe(this._id) : systemConnector.unsubscribe(this._id);
