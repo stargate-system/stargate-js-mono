@@ -84,7 +84,7 @@ const ValueBar = (props: ValueBarProps) => {
             const fullRange = valueBarRef.current?.offsetWidth;
             if (fullRange) {
                 const factor = (max - min) / fullRange;
-                const newValue = factor * ev.nativeEvent.offsetX;
+                const newValue = (factor * ev.nativeEvent.offsetX) + min;
                 setValue(Number.parseFloat(newValue.toFixed(barPrecision).toString()));
             }
         }
