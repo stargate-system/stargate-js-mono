@@ -4,7 +4,7 @@ const {
 } = require('gate-device');
 
 GateDevice.config.usePing = true;
-GateDevice.setDeviceName('Test local');
+GateDevice.setName('Test local');
 const testBool = GateDevice.ValueFactory.createBoolean(Directions.input, 'Test bool');
 testBool.onRemoteUpdate = () => console.log('>>> value', testBool.value);
 
@@ -20,7 +20,7 @@ setInterval(() => {
     testNum.setValue(testNum.value + dir);
 }, 200);
 
-const state = GateDevice.startDevice();
+const state = GateDevice.start();
 state.onStateChange = (state) => {
     console.log('State: ' + state);
 }

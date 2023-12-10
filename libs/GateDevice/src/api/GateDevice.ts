@@ -30,7 +30,7 @@ interface Device {
 
 let deviceName = "New Device";
 
-const setDeviceName = (name: string) => {
+const setName = (name: string) => {
     if (!device.isStarted) {
         deviceName = name;
     } else {
@@ -38,7 +38,7 @@ const setDeviceName = (name: string) => {
     }
 }
 
-const startDevice = (): DeviceState => {
+const start = (): DeviceState => {
     if (device.isStarted) {
         console.log("WARNING: Attempting to start already running device");
     } else {
@@ -150,8 +150,8 @@ export const device: Device = {
 };
 
 export default {
-    setDeviceName,
-    startDevice,
+    setName,
+    start,
     config,
     ValueFactory
 }

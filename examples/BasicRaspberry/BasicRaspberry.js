@@ -19,6 +19,6 @@ init(() => {
         }
     };
 
-    GateDevice.setDeviceName('Raspberry LED');
-    GateDevice.startDevice();
+    GateDevice.setName('Raspberry LED');
+    GateDevice.start();
 })

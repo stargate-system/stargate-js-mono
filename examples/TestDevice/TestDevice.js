@@ -42,8 +42,8 @@ testStringIn.onRemoteUpdate = () => {
     }
 }
 
-GateDevice.setDeviceName('Test device');
-const deviceState = GateDevice.startDevice();
+GateDevice.setName('Test device');
+const deviceState = GateDevice.start();
 
 deviceState.onStateChange = (state) => {
     console.log('Connection state: ' + state);
