@@ -5,20 +5,16 @@
   "workspaces": [
     "./libs/GateCore",
     "./libs/GateDevice",
-    "./libs/GateRouter",
     "./libs/GateViewModel",
     "./apps/LocalServer",
-    "./apps/NetworkScanner",
     "./apps/LocalFrontend",
     "./examples/TestDevice",
     "./examples/LocalDevice"
   ],
   "scripts": {
-    "build:scanner": "npm -w apps/NetworkScanner run build",
     "build:local": "npm -w apps/LocalFrontend run build",
     "build:core": "npm -w libs/GateCore run build",
     "build:device": "npm -w libs/GateDevice run build",
-    "build:router": "npm -w libs/GateRouter run build",
     "build:model": "npm -w libs/GateViewModel run build",
     "build:server": "npm -w apps/LocalServer run build",
     "build:libs": "run-s build:core build:device build:router build:model",

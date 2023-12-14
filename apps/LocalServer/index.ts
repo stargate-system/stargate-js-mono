@@ -1,9 +1,9 @@
 import express from 'express';
 import {initDiscovery} from "./src/DiscoveryService";
-import {Router} from 'gate-router';
-import getBasicRepository from "./src/BasicSystemRepository";
-import {initDeviceService} from "./src/DeviceService";
-import {initControllerService} from "./src/ControllerService";
+import getBasicRepository from "./src/persistence/BasicSystemRepository";
+import {initDeviceService} from "./src/device/DeviceService";
+import {initControllerService} from "./src/controller/ControllerService";
+import Router from "./src/router/Router";
 
 const app = express();
 const port = process.env.PORT || 8080;
