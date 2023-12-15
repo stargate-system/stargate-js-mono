@@ -1,5 +1,5 @@
 import {Directions, GateValue} from "gate-core";
-import {device} from "../../api/GateDevice.js";
+import {device} from "../api/GateDevice.js";
 
 export class DeviceValue<V> {
     private readonly _gateValue: GateValue<any>;

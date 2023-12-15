@@ -1,10 +1,15 @@
 import {SystemConnector} from "./SystemConnector";
 import {ModelValue} from "../components/ModelValue";
-import {ConnectionState, ValueMessage} from "gate-core";
+import {
+    ConnectionState,
+    ValueMessage,
+    EventName,
+    AddressMapper,
+    ValidManifest
+} from "gate-core";
 import {ModelMap} from "../components/ModelMap/ModelMap";
 import {DeviceModel} from "../components/DeviceModel/DeviceModel";
 import {DeviceState} from "../components/DeviceModel/DeviceState";
-import {EventName, Router, ValidManifest} from "gate-router";
 
 export class SystemModel {
     private readonly _systemConnector: SystemConnector;
@@ -31,7 +36,7 @@ export class SystemModel {
         }
         systemConnector.onValueMessage = (valueMessage: ValueMessage) => {
             valueMessage.forEach((change) => {
-                const deviceId = Router.extractTargetId(change[0])[0];
+                const deviceId = AddressMapper.extractTargetId(change[0])[0];
                 const device = this._devices.getById(deviceId);
                 if (device) {
                     const gateValueModel = device.gateValues.getById(change[0]);

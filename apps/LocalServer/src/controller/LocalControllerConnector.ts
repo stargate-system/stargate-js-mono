@@ -1,7 +1,7 @@
 import {Connection, ConnectionState, DefaultConnection, Keywords, SocketWrapper, ValueMessage} from "gate-core";
 import {ControllerConnector} from "./ControllerConnector";
-import {EventName} from "../common/EventName";
-import {SystemImage} from "../persistence/SystemImage";
+import {EventName} from "gate-core";
+import {SystemImage} from "gate-core";
 
 export class LocalControllerConnector implements ControllerConnector {
     id: string = '';

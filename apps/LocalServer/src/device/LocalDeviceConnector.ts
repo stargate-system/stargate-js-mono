@@ -3,11 +3,11 @@ import {
     ConnectionState,
     DefaultConnection,
     Keywords,
-    SocketWrapper
+    SocketWrapper,
+    ValidManifest
 } from "gate-core";
 import {DeviceConnector} from "./DeviceConnector";
-import {ValidManifest} from "../common/ValidManifest";
-import Router from "../router/Router";
+import Router from "../Router";
 
 export class LocalDeviceConnector implements DeviceConnector{
     private _id?: string;

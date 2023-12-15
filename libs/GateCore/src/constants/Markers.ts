@@ -4,7 +4,8 @@ const Markers = {
     functionalMessagePrefix: '*',
     commandPrefix: '!',
     queryPrefix: '?',
-    answerPrefix: '>'
+    answerPrefix: '>',
+    addressSeparator: ':'
 }
 
 export default Markers;

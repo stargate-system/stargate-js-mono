@@ -1,7 +1,6 @@
 import {DeviceConnector} from "./DeviceConnector";
-import {Registry, ValueMessage} from "gate-core";
+import {Registry, ValueMessage, AddressMapper} from "gate-core";
 import {Device} from "./Device";
-import Router from "../router/Router";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
 
 const deviceRegistry = new Registry<Device>();
@@ -16,7 +15,7 @@ const addDevice = async (deviceConnector: DeviceConnector) => {
 
 const forwardValueMessage = (valueMessage: ValueMessage) => {
     valueMessage.forEach((message) => {
-        const [deviceId, valueId] = Router.extractTargetId(message[0]);
+        const [deviceId, valueId] = AddressMapper.extractTargetId(message[0]);
         const device = deviceRegistry.getByKey(deviceId);
         if (device) {
             device.sendValue([valueId, message[1]]);
@@ -27,7 +26,7 @@ const forwardValueMessage = (valueMessage: ValueMessage) => {
 const handleSubscription = (ids: string[], source: ValueMessageConsumer | string) => {
     const devicesMap = new Map<string, string[]>();
     ids.forEach((idWithParent) => {
-        const [parentId, valueId] = Router.extractTargetId(idWithParent);
+        const [parentId, valueId] = AddressMapper.extractTargetId(idWithParent);
         let message = devicesMap.get(parentId);
         if (message) {
             message.push(valueId);

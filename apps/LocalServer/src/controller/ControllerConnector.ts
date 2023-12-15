@@ -1,6 +1,6 @@
-import {EventName} from "../common/EventName";
+import {EventName} from "gate-core";
 import {ValueMessage} from "gate-core";
-import {SystemImage} from "../persistence/SystemImage";
+import {SystemImage} from "gate-core";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
 
 export interface ControllerConnector extends ValueMessageConsumer{

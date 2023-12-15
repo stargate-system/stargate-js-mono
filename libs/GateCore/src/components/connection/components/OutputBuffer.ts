@@ -1,7 +1,7 @@
 import {GateValue} from "../../values/components/GateValue.js";
 import {ValueMessage} from "../../../interfaces/ValueMessage.js";
 import MessageMapper from "./MessageMapper.js";
-import {ConnectionConfig} from "../../../api/ConnectionConfig.js";
+import {ConnectionConfig} from "../../../interfaces/ConnectionConfig.js";
 
 export class OutputBuffer {
     private _buffer: Map<string, string> = new Map<string, string>();

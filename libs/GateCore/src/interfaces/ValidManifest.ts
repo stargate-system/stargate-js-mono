@@ -1,4 +1,4 @@
-import {Manifest} from "gate-core";
+import {Manifest} from "./Manifest";
 
 export interface ValidManifest extends Manifest {
     id: string

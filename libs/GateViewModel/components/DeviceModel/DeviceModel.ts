@@ -1,4 +1,4 @@
-import {EventName, ValidManifest} from "gate-router";
+import {EventName, ValidManifest} from "gate-core";
 import {ModelValue} from "../ModelValue";
 import {DeviceState} from "./DeviceState";
 import {ModelMap} from "../ModelMap/ModelMap";

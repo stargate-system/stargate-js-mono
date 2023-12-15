@@ -1,7 +1,13 @@
-import {GateValue, GateValueFactory, SystemIds, ValueManifest, ValueTypes} from "gate-core";
+import {
+    GateValue,
+    GateValueFactory,
+    SystemIds,
+    ValueManifest,
+    ValueTypes,
+    AddressMapper
+} from "gate-core";
 import {DeviceState} from "../DeviceModel/DeviceState";
 import {ModelValue} from "../ModelValue";
-import {Router} from "gate-router";
 import {SystemConnector} from "../../api/SystemConnector";
 
 export class GateValueModel {
@@ -14,7 +20,7 @@ export class GateValueModel {
     constructor(parentId: string, valueManifest: ValueManifest, state: DeviceState, systemConnector: SystemConnector) {
         this._state = new ModelValue<DeviceState>(state);
         const modifiedManifest = {...valueManifest};
-        modifiedManifest.id = Router.appendParentId(parentId, valueManifest.id);
+        modifiedManifest.id = AddressMapper.appendParentId(parentId, valueManifest.id);
         this._id = modifiedManifest.id;
         this._name = modifiedManifest.valueName;
         try {

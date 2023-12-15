@@ -1,8 +1,8 @@
-import {GateBoolean} from "../components/values/components/GateBoolean.js";
-import {GateString} from "../components/values/components/GateString.js";
-import {GateNumber} from "../components/values/components/GateNumber.js";
-import {ValueTypes} from "../components/values/constants/ValueTypes.js";
-import {ValueManifest} from "../components/values/interfaces/ValueManifest";
+import {GateBoolean} from "./GateBoolean.js";
+import {GateString} from "./GateString.js";
+import {GateNumber} from "./GateNumber.js";
+import {ValueTypes} from "../constants/ValueTypes.js";
+import {ValueManifest} from "../interfaces/ValueManifest";
 
 const fromManifest = (manifest: ValueManifest) => {
     switch (manifest.type) {

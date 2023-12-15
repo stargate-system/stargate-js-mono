@@ -1,5 +1,10 @@
-import {GateValue, ConnectionState, ValueMessage} from "gate-core";
-import {EventName, SystemImage} from "gate-router";
+import {
+    GateValue,
+    ConnectionState,
+    ValueMessage,
+    EventName,
+    SystemImage
+} from "gate-core";
 
 export interface SystemConnector {
     state: ConnectionState,

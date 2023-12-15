@@ -3,7 +3,7 @@ import {initDiscovery} from "./src/DiscoveryService";
 import getBasicRepository from "./src/persistence/BasicSystemRepository";
 import {initDeviceService} from "./src/device/DeviceService";
 import {initControllerService} from "./src/controller/ControllerService";
-import Router from "./src/router/Router";
+import Router from "./src/Router";
 
 const app = express();
 const port = process.env.PORT || 8080;

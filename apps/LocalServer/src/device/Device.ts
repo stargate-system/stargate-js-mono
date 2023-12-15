@@ -1,12 +1,17 @@
 import {DeviceConnector} from "./DeviceConnector";
-import {Connection, ConnectionState, Keywords, ValueMessage} from "gate-core";
+import {
+    Connection,
+    ConnectionState,
+    Keywords,
+    ValueMessage,
+    SubscriptionBuffer,
+    ValidManifest,
+    EventName,
+    AddressMapper
+} from "gate-core";
 import ControllerContext from "../controller/ControllerContext";
-import {EventName} from "../common/EventName";
 import DeviceContext from "../device/DeviceContext";
-import {ValidManifest} from "../common/ValidManifest";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
-import {SubscriptionBuffer} from "../common/SubscriptionBuffer";
-import Router from "../router/Router";
 
 export class Device {
     private readonly _id: string;
@@ -95,7 +100,7 @@ export class Device {
         const receiversMap = new Map<string, [ValueMessageConsumer, ValueMessage]>
         valueMessage.forEach((change) => {
             const [valueId, message] = change;
-            const idWithParent = Router.appendParentId(this._id, valueId);
+            const idWithParent = AddressMapper.appendParentId(this._id, valueId);
             const receivers = this._subscriptions.get(valueId);
             if (receivers) {
                 receivers.forEach((consumer, consumerId) => {

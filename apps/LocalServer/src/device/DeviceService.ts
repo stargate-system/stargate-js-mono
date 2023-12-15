@@ -1,7 +1,7 @@
 import {CoreConfig, SocketWrapper} from "gate-core";
 import {LocalDeviceConnector} from "./LocalDeviceConnector";
 import {WebSocketServer, WebSocket} from "ws";
-import Router from "../router/Router";
+import Router from "../Router";
 
 export const initDeviceService = () => {
     const server = new WebSocketServer({port: CoreConfig.localServerDevicePort});

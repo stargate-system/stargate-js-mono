@@ -1,5 +1,4 @@
-import {Connection} from "gate-core";
-import {ValidManifest} from "../common/ValidManifest";
+import {Connection, ValidManifest} from "gate-core";
 
 export interface DeviceConnector{
     id?: string,

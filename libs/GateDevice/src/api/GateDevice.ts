@@ -13,11 +13,10 @@ import {
     ValueTypes
 } from "gate-core";
 import config from "./config.js";
-import ValueFactory from "../components/values/ValueFactory.js";
-import {DeviceState} from "../interfaces/DeviceState.js";
-import {initServerless} from "../components/connection/Serverless.js";
-import {ConnectionType} from "../constants/ConnectionType.js";
-import {initLocalServer} from "../components/connection/LocalServer";
+import ValueFactory from "../values/ValueFactory.js";
+import {DeviceState} from "./DeviceState.js";
+import {ConnectionType} from "../connection/ConnectionType.js";
+import {initLocalServer} from "../connection/LocalServer";
 import fs from 'fs';
 
 interface Device {
@@ -80,9 +79,6 @@ const startConnection = () => {
         handleSubscriptionChange(false, ids);
     });
     switch (config.connectionType) {
-        case ConnectionType.serverless:
-            initServerless();
-            break;
         case ConnectionType.localServer:
             initLocalServer();
             break;

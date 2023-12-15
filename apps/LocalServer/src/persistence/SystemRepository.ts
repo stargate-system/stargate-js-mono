@@ -1,6 +1,4 @@
-import {SystemImage} from "./SystemImage";
-import {ValidManifest} from "../common/ValidManifest";
-import {Manifest} from "gate-core";
+import {SystemImage, Manifest, ValidManifest} from "gate-core";
 
 export interface SystemRepository {
     getSystemImage: () => Promise<SystemImage>,

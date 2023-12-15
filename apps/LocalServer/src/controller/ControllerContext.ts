@@ -1,8 +1,8 @@
 import {Registry, ValueMessage} from "gate-core";
 import {ControllerConnector} from "./ControllerConnector";
-import Router from "../router/Router";
+import Router from "../Router";
 import DeviceContext from "../device/DeviceContext";
-import {EventName} from "../common/EventName";
+import {EventName} from "gate-core";
 
 const controllerRegistry = new Registry<ControllerConnector>();
 

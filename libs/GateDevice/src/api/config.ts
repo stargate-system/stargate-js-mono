@@ -1,4 +1,4 @@
-import {ConnectionType} from "../constants/ConnectionType.js";
+import {ConnectionType} from "../connection/ConnectionType.js";
 
 const config = {
   connectionType: ConnectionType.localServer,

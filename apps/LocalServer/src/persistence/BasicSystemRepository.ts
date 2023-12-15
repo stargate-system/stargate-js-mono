@@ -1,9 +1,8 @@
-import {Manifest} from "gate-core";
+import {Manifest, ValidManifest} from "gate-core";
 import crypto from 'crypto';
 import fs from 'fs';
-import {SystemImage} from "./SystemImage";
+import {SystemImage} from "gate-core";
 import {SystemRepository} from "./SystemRepository";
-import {ValidManifest} from "../common/ValidManifest";
 
 let systemImage: SystemImage;
 let saveTimeout: NodeJS.Timeout | undefined;

@@ -1,8 +1,8 @@
 import {WebSocket} from 'ws';
 import dgram from "dgram";
 import {CoreConfig, Keywords, SocketWrapper} from "gate-core";
-import {device} from "../../api/GateDevice";
-import config from "../../api/config";
+import {device} from "../api/GateDevice";
+import config from "../api/config";
 import fs from 'fs';
 
 let handshakeTimeout: NodeJS.Timeout | undefined;

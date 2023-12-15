@@ -1,7 +1,7 @@
 import {WebSocketServer} from 'ws';
 import {CoreConfig, SocketWrapper} from "gate-core";
 import {LocalControllerConnector} from "./LocalControllerConnector";
-import Router from "../router/Router";
+import Router from "../Router";
 
 export const initControllerService = () => {
     const server = new WebSocketServer({port: CoreConfig.localServerControllerPort});

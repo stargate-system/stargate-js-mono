@@ -1,7 +1,7 @@
 import {Registry} from "../../Registry.js";
-import {ConnectionConfig} from "../../../api/ConnectionConfig.js";
+import {ConnectionConfig} from "../../../interfaces/ConnectionConfig.js";
 import MessageMapper from "./MessageMapper.js";
-import Markers from "../constants/Markers.js";
+import Markers from "../../../constants/Markers.js";
 import {FunctionalHandler} from "../interfaces/FunctionalHandler.js";
 
 interface PendingQuery {
