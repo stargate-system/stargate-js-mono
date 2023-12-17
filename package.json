@@ -8,6 +8,7 @@
     "./libs/GateViewModel",
     "./apps/LocalServer",
     "./apps/LocalFrontend",
+    "./apps/GateSerialAdapter",
     "./examples/TestDevice",
     "./examples/LocalDevice"
   ],
@@ -17,11 +18,14 @@
     "build:device": "npm -w libs/GateDevice run build",
     "build:model": "npm -w libs/GateViewModel run build",
     "build:server": "npm -w apps/LocalServer run build",
+    "build:adapter": "npm -w apps/GateSerialAdapter run build",
     "build:libs": "run-s build:core build:device build:model",
     "build": "run-s build:libs build:local build:server",
     "dev:local": "npm -w apps/LocalFrontend run dev",
     "start:server": "npm -w apps/LocalServer run start",
+    "start:adapter": "npm -w apps/GateSerialAdapter run start",
     "server": "run-s build:server start:server",
+    "adapter": "run-s build:adapter start:adapter",
     "device:test": "npm -w examples/TestDevice run start",
     "device:local": "npm -w examples/LocalDevice run start"
   },
