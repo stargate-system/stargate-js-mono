@@ -1,6 +1,6 @@
 import {WebSocket} from 'ws';
 import dgram from "dgram";
-import {CoreConfig, Keywords, SocketWrapper} from "gate-core";
+import {ConnectionType, CoreConfig, Keywords, SocketWrapper} from "gate-core";
 import {device} from "../api/GateDevice";
 import config from "../api/config";
 import fs from 'fs';
@@ -26,7 +26,7 @@ export const initLocalServer = () => {
 }
 
 const connect = (serverIp: string) => {
-    const socket = new WebSocket('ws://' + serverIp + ':' + CoreConfig.localServerDevicePort);
+    const socket = new WebSocket('ws://' + serverIp + ':' + CoreConfig.connectionPort);
     const socketWrapper: SocketWrapper = {
         send: socket.send.bind(socket),
         close: socket.close.bind(socket),
@@ -58,6 +58,12 @@ const setHandshakeListeners = () => {
         clearHandshakeListeners(connectionStateListenerKey);
     });
     const functionalHandler = device.connection.functionalHandler;
+    functionalHandler.addQueryListener(Keywords.type, (respond) => {
+        respond(ConnectionType.device);
+    });
+    functionalHandler.addQueryListener(Keywords.manifest, (respond) => {
+        respond(JSON.stringify(device.manifest));
+    });
     functionalHandler.addCommandListener(Keywords.assignedId, (params) => {
         if (params) {
             const assignedId = params[0];
@@ -65,9 +71,6 @@ const setHandshakeListeners = () => {
             device.manifest.id = assignedId;
             saveId(assignedId);
         }
-    })
-    functionalHandler.addQueryListener(Keywords.manifest, (respond: (response: string) => void) => {
-        respond(JSON.stringify(device.manifest));
     });
     functionalHandler.addCommandListener(Keywords.ready, () => {
         device.connection.setReady();
@@ -81,9 +84,10 @@ const clearHandshakeListeners = (connectionStateListenerKey: string) => {
     }
     device.connection.removeStateChangeListener(connectionStateListenerKey);
     const functionalHandler = device.connection.functionalHandler;
+    functionalHandler.removeQueryListener(Keywords.type);
     functionalHandler.removeQueryListener(Keywords.manifest);
-    functionalHandler.removeCommandListener(Keywords.ready);
     functionalHandler.removeCommandListener(Keywords.assignedId);
+    functionalHandler.removeCommandListener(Keywords.ready);
 };
 
 const saveId = (id: string) => {

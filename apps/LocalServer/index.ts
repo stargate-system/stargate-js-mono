@@ -1,8 +1,7 @@
 import express from 'express';
 import {initDiscovery} from "./src/DiscoveryService";
 import getBasicRepository from "./src/persistence/BasicSystemRepository";
-import {initDeviceService} from "./src/device/DeviceService";
-import {initControllerService} from "./src/controller/ControllerService";
+import {initConnectionService} from "./src/ConnectionService";
 import Router from "./src/Router";
 
 const app = express();
@@ -16,5 +15,4 @@ app.get('/', function(req, res) {
 app.listen(port);
 Router.systemRepository = getBasicRepository();
 initDiscovery();
-initDeviceService();
-initControllerService();
+initConnectionService();

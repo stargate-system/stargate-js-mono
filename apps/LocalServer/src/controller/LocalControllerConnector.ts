@@ -1,4 +1,4 @@
-import {Connection, ConnectionState, DefaultConnection, Keywords, SocketWrapper, ValueMessage} from "gate-core";
+import {Connection, ConnectionState, Keywords, ValueMessage} from "gate-core";
 import {ControllerConnector} from "./ControllerConnector";
 import {EventName} from "gate-core";
 import {SystemImage} from "gate-core";
@@ -14,9 +14,8 @@ export class LocalControllerConnector implements ControllerConnector {
 
     private readonly _connection: Connection;
 
-    constructor(socketWrapper: SocketWrapper) {
-        this._connection = new DefaultConnection();
-        this._connection.setConnected(socketWrapper);
+    constructor(connection: Connection) {
+        this._connection = connection;
         this._connection.addStateChangeListener((state) => {
             if (state === ConnectionState.closed) {
                 this.onDisconnect();

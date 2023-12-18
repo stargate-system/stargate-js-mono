@@ -1,9 +1,7 @@
 import {
     Connection,
     ConnectionState,
-    DefaultConnection,
     Keywords,
-    SocketWrapper,
     ValidManifest
 } from "gate-core";
 import {DeviceConnector} from "./DeviceConnector";
@@ -15,10 +13,8 @@ export class LocalDeviceConnector implements DeviceConnector{
     private _manifest?: ValidManifest;
     onConnectorReady?: () => void;
 
-    constructor(socketWrapper: SocketWrapper) {
-        this._connection = new DefaultConnection();
-        this._connection.setConnected(socketWrapper)
-
+    constructor(connection: Connection) {
+        this._connection = connection;
         this.performHandshake();
     }
 

@@ -15,8 +15,7 @@ import {
 import config from "./config.js";
 import ValueFactory from "../values/ValueFactory.js";
 import {DeviceState} from "./DeviceState.js";
-import {ConnectionType} from "../connection/ConnectionType.js";
-import {initLocalServer} from "../connection/LocalServer";
+import {initLocalServer} from "../connection/LocalServer.js";
 import fs from 'fs';
 
 interface Device {
@@ -78,13 +77,7 @@ const startConnection = () => {
     device.connection.functionalHandler.addCommandListener(Keywords.unsubscribe, (ids) => {
         handleSubscriptionChange(false, ids);
     });
-    switch (config.connectionType) {
-        case ConnectionType.localServer:
-            initLocalServer();
-            break;
-        default:
-            throw new Error('On starting connection: unknown connection type ' + config.connectionType);
-    }
+    initLocalServer();
 }
 
 const onValueMessage = (changes: ValueMessage) => {

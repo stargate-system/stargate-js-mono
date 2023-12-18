@@ -5,7 +5,8 @@ const Keywords = {
     unsubscribe: 'unsubscribe',
     assignedId: 'assignedId',
     joinData: 'joinData',
-    ping: 'ping'
+    ping: 'ping',
+    type: 'type'
 }
 
 export default Keywords;

@@ -22,6 +22,7 @@ import {EventName} from "./src/constants/EventName";
 import {SystemImage} from "./src/interfaces/SystemImage";
 import {ValidManifest} from "./src/interfaces/ValidManifest";
 import AddressMapper from "./src/components/AddressMapper";
+import {ConnectionType} from "./src/constants/ConnectionType";
 
 export {
     CoreConfig,
@@ -47,5 +48,6 @@ export {
     EventName,
     SystemImage,
     ValidManifest,
-    AddressMapper
+    AddressMapper,
+    ConnectionType
 }

@@ -1,4 +1,12 @@
-import {ConnectionState, CoreConfig, DefaultConnection, GateValue, Keywords, SocketWrapper} from "gate-core";
+import {
+    ConnectionState,
+    ConnectionType,
+    CoreConfig,
+    DefaultConnection,
+    GateValue,
+    Keywords,
+    SocketWrapper
+} from "gate-core";
 import {SystemConnector} from "gate-viewmodel";
 import {EventName, SubscriptionBuffer} from "gate-core";
 
@@ -62,7 +70,7 @@ const joinSystem = () => {
     }
     if (typeof window !== 'undefined') {
         console.log('Connecting...');
-        const socket = new WebSocket('ws://' + window.location.hostname + ':' + CoreConfig.localServerControllerPort);
+        const socket = new WebSocket('ws://' + window.location.hostname + ':' + CoreConfig.connectionPort);
         socket.onclose = handleConnectionClosed;
         socket.onopen = () => {
             console.log('Socket opened');
@@ -77,6 +85,10 @@ const joinSystem = () => {
                 }
             };
             connection.setConnected(socketWrapper);
+            connection.functionalHandler.addQueryListener(Keywords.type, (respond) => {
+                respond(ConnectionType.controller);
+                connection.functionalHandler.removeQueryListener(Keywords.type);
+            });
         }
     }
 }
