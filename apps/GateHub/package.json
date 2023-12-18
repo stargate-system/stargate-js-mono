@@ -1,8 +1,8 @@
 {
-  "name": "gate-serial-adapter",
+  "name": "gate-hub",
   "version": "1.0.0",
   "private": true,
-  "description": "Adapter for devices using SerialGateDevice library",
+  "description": "Service for handling multiple devices within one physical device",
   "main": "dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {

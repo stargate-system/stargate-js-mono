@@ -10,6 +10,7 @@ const DevicesDashboard = () => {
 
     return (
         <div className={styles.devicesContainer}>
+            {!devices.length && <div className={styles.noDevicesContainer}>No devices available</div>}
             {devices.map((deviceModel) => <Device key={deviceModel.id + Date.now()} deviceModel={deviceModel}/>)}
         </div>
     )

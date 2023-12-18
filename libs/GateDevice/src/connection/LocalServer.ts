@@ -20,7 +20,7 @@ export const initLocalServer = () => {
 
     socket.on('error', () => {
         console.log('Binding discovery socket failed. Retrying...');
-        setTimeout(() => socket.bind(CoreConfig.discoveryPort), 5000);
+        setTimeout(() => socket.bind(CoreConfig.discoveryPort), CoreConfig.discoveryInterval);
     });
     socket.bind(CoreConfig.discoveryPort);
 }

@@ -9,7 +9,7 @@ export const initDiscovery = () => {
         socket.setBroadcast(true);
         setInterval(() => {
             socket.send(message, 0, message.length, CoreConfig.discoveryPort, '255.255.255.255');
-        }, 5000);
+        }, CoreConfig.discoveryInterval);
     });
 
     socket.bind(CoreConfig.broadcastingSocketPort);

@@ -33,9 +33,6 @@ export const initConnectionService = () => {
                     const controllerConnector = new LocalControllerConnector(connection);
                     Router.addController(controllerConnector);
                     break;
-                case ConnectionType.container:
-                    // TODO
-                    break;
                 default:
                     connection.close();
             }
