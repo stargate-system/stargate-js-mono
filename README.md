@@ -6,15 +6,13 @@
 3. Run "npm install"
 4. Run "npm build"
 
-To start scanner server - "npm run dev:scanner" (available on localhost:3000) \
 To start local server - "npm run server" (available on localhost:8080)
 
 ## Example devices
-GateDevice is configured to use Local Server connection by default.
-It can be overridden to use Network scanner by adding the following to the beginning of device code:
+Device can optionally display it's current ping. To turn on this feature,
+add following line in code (before invoking GateDevice.start()):
 
-    const {ConnectionType} = require('gate-device');
-    GateDevice.config.connectionType = ConnectionType.serverless;
+    GateDevice.config.usePing = true;
 
 ### Test device
 Containing all types of GateValues configured both as input and output,
@@ -41,7 +39,18 @@ Contains one number input to control PWM on pin GPIO22
 3. Within BasicRaspberry folder, open terminal and run "npm install"
 4. When finished successfully, run "sudo node BasicRaspberry.js"
 
-## Structure
+## GateHub
+App to facilitate running multiple devices on one physical device.
+
+**Capabilities:**
+1. Detecting and connecting boards using SerialGateDevice library to Local Server
+2. Serves as discovery service for all device processes running on the same physical device (multiple devices don't need to wait for discovery port to be released)
+3. **(Not yet implemented)** Runs all devices from autostart list on startup
+
+**Setup:** \
+Open terminal under project's root directory and run "npm run hub"
+
+## Repo structure
 |- **apps**: code meant to be run as standalone applications \
 |- **components**: common FE components \
 |- **examples**: example implementations \
