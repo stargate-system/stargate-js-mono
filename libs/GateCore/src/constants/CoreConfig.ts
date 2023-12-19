@@ -1,4 +1,5 @@
 const coreConfig = {
+    hubDiscoveryPort: 10000,
     discoveryPort: 10001,
     broadcastingSocketPort: 10002,
     connectionPort: 10003,

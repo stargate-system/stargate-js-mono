@@ -13,16 +13,34 @@ export const initLocalServer = () => {
     socket.on('message', function (message, remote) {
         if (message.toString() === CoreConfig.discoveryKeyword) {
             const serverIp = remote.address;
+            console.log("Discovered server ip: " + serverIp);
             socket.close();
             connect(serverIp);
         }
     });
 
     socket.on('error', () => {
+        checkHub(socket);
+    });
+    socket.bind(CoreConfig.discoveryPort);
+}
+
+const checkHub = (socket: dgram.Socket) => {
+    fetch("http://localhost:" + CoreConfig.hubDiscoveryPort).then((response) => {
+        if (response.status === 204) {
+            console.log("Waiting for server ip...")
+            setTimeout(() => checkHub(socket), CoreConfig.discoveryInterval);
+        } else {
+            response.text().then((serverIp) => {
+                console.log("Received server ip: " + serverIp);
+                socket.close();
+                connect(serverIp);
+            });
+        }
+    }).catch(() => {
         console.log('Binding discovery socket failed. Retrying...');
         setTimeout(() => socket.bind(CoreConfig.discoveryPort), CoreConfig.discoveryInterval);
     });
-    socket.bind(CoreConfig.discoveryPort);
 }
 
 const connect = (serverIp: string) => {

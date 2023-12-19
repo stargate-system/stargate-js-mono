@@ -1,5 +1,6 @@
 import dgram from "dgram";
 import {CoreConfig} from "gate-core";
+import express from 'express';
 
 let serverIp: string | undefined;
 let discoveryRunning = false;
@@ -12,6 +13,17 @@ interface DiscoveryService {
 
 const initialize = () => {
     if (!discoveryRunning) {
+        const app = express();
+        const port = CoreConfig.hubDiscoveryPort;
+        app.get('/', function(req, res) {
+            if (serverIp !== undefined) {
+                res.send(serverIp);
+            } else {
+                res.sendStatus(204);
+            }
+        });
+        app.listen(port);
+
         discoveryRunning = true;
         serverIp = undefined;
         const socket = dgram.createSocket('udp4');
