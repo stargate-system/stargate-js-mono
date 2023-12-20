@@ -25,16 +25,24 @@ export class Device {
             connector.connection.close();
             throw new Error('On creating device: connector has incomplete data');
         }
+        this._id = connector.id;
+        this._manifest = connector.manifest;
+        this._connection = connector.connection;
+        this._connection.onValueMessage = this._routeDeviceMessage;
+
+        DeviceContext.deviceRegistry.getValues().forEach((connectedDevice) => {
+            if (connectedDevice.id === this.id) {
+                connectedDevice._connection.close();
+                console.log("Closed existing connection with " + connectedDevice.id);
+            }
+        });
         this._subscriptionBuffer = new SubscriptionBuffer(
             (subscribed) => this._connection.functionalHandler.sendCommand(Keywords.subscribe, subscribed),
             (unsubscribed) => this._connection.functionalHandler.sendCommand(Keywords.unsubscribe, unsubscribed)
         );
-        this._id = connector.id;
-        this._manifest = connector.manifest;
         this._manifest.values.forEach((value) => {
             this._subscriptions.set(value.id, new Map<string, ValueMessageConsumer>)
         });
-        this._connection = connector.connection;
         this._connection.addStateChangeListener((state) => {
             if (state === ConnectionState.closed) {
                 DeviceContext.deviceRegistry.remove(this._id);
@@ -42,7 +50,6 @@ export class Device {
                 console.log("Disconnected: " + this._id);
             }
         });
-        this._connection.onValueMessage = this._routeDeviceMessage;
         try {
             DeviceContext.deviceRegistry.add(this, this._id);
             this._connection.functionalHandler.sendCommand(Keywords.ready);

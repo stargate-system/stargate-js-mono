@@ -7,23 +7,52 @@ import {SystemRepository} from "./SystemRepository";
 let systemImage: SystemImage;
 let saveTimeout: NodeJS.Timeout | undefined;
 
+const generateId = (): string => {
+    if (systemImage.devices.length === 0) {
+        return '0';
+    }
+    const ids = systemImage.devices
+        .map((device) => Number.parseInt(device.id))
+        .sort((a, b) => a - b);
+    if (ids[0] > 0) {
+        return '0';
+    }
+    let previousId: number | undefined = undefined;
+    for(const id of ids) {
+        if (previousId === undefined) {
+            previousId = id;
+        } else {
+            if (id - previousId > 1) {
+                break;
+            } else {
+                previousId = id;
+            }
+        }
+    }
+    // @ts-ignore
+    return (previousId + 1).toString();
+}
+
 const BasicSystemRepository: SystemRepository = {
     getSystemImage: async () => {
         return systemImage;
     },
     createDevice: async (manifest: Manifest) => {
-        manifest.id = crypto.randomUUID();
         const validManifest = manifest as ValidManifest;
+        validManifest.uuid = crypto.randomUUID();
+        validManifest.id = generateId();
         systemImage.devices.push(validManifest);
         saveRepository();
         return validManifest;
     },
     updateDevice: async (manifest: ValidManifest)=> {
-        const index = systemImage.devices.findIndex((storedManifest) => storedManifest.id === manifest.id);
+        const index = systemImage.devices.findIndex((storedManifest) => storedManifest.uuid === manifest.uuid);
         if (index !== -1) {
+            manifest.id = systemImage.devices[index].id;
             manifest.deviceName = systemImage.devices[index].deviceName;
             systemImage.devices[index] = manifest;
         } else {
+            manifest.id = generateId();
             systemImage.devices.push(manifest);
         }
         saveRepository();
