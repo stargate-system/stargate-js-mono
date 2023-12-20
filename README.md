@@ -45,10 +45,20 @@ App to facilitate running multiple devices on one physical device.
 **Capabilities:**
 1. Detecting and connecting boards using SerialGateDevice library to Local Server
 2. Serves as discovery service for all device processes running on the same physical device (multiple devices don't need to wait for discovery port to be released)
-3. **(Not yet implemented)** Runs all devices from autostart list on startup
+3. Runs all processes defined in autostart list on startup
 
 **Setup:** \
 Open terminal under project's root directory and run "npm run hub"
+
+**Autostart** \
+Autostart list is defined in ./autostart.ts in format [\<working directory\>, \<command\>]
+
+Example:
+
+    export const autostart = [
+        ["../my-devices/device1", "node device-one.js"],
+        ["../my-devices/device2", "npm run device-two"]
+    ];
 
 ## Repo structure
 |- **apps**: code meant to be run as standalone applications \
