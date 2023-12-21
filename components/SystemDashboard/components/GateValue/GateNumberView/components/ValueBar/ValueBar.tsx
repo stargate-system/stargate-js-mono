@@ -91,9 +91,10 @@ const ValueBar = (props: ValueBarProps) => {
     }
 
     const onDragStart = (ev: any) => {
-        ev.dataTransfer.setDragImage(new Image(), 0, 0)
+        ev.dataTransfer?.setDragImage(new Image(), 0, 0)
         if (isActive) {
-            setDragStart(ev.clientX);
+            const xPosition = ev.changedTouches ? ev.changedTouches[0].clientX : ev.clientX;
+            setDragStart(xPosition);
             dragInitialValue.current = value;
         }
     }
@@ -104,8 +105,9 @@ const ValueBar = (props: ValueBarProps) => {
 
     const sliderOnDrag = (ev: any) => {
         if (isActive) {
-            if ((!ev.screenX && !ev.screenY) || !dragStart) return;
-            const newValue = calcSliderValue(ev.clientX - dragStart);
+            if ((!ev.changedTouches && !ev.screenX && !ev.screenY) || !dragStart) return;
+            const xPosition = ev.changedTouches ? ev.changedTouches[0].clientX : ev.clientX;
+            const newValue = calcSliderValue(xPosition - dragStart);
             if (newValue) {
                 setValue(Number.parseFloat(newValue.toFixed(barPrecision).toString()));
             }
@@ -134,6 +136,9 @@ const ValueBar = (props: ValueBarProps) => {
                     onDrag={sliderOnDrag}
                     onDragStart={onDragStart}
                     onDragEnd={onDragEnd}
+                    onTouchStart={onDragStart}
+                    onTouchEnd={onDragEnd}
+                    onTouchMove={sliderOnDrag}
                     className={`${styles.slider} ${isActive ? styles.sliderEnabled : styles.sliderDisabled}`}
                     style={{left: sliderPosition}}
                 />
