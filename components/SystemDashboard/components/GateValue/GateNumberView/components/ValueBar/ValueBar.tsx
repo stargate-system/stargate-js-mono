@@ -79,7 +79,7 @@ const ValueBar = (props: ValueBarProps) => {
     }, [min, max]);
 
     const barOnClick = (ev: any) => {
-        if (isActive) {
+        if (isActive && editable) {
             // @ts-ignore
             const fullRange = valueBarRef.current?.offsetWidth;
             if (fullRange) {

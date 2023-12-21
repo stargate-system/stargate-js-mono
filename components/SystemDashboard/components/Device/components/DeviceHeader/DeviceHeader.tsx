@@ -9,7 +9,7 @@ import React, {
     useState
 } from "react";
 import {DeviceModel} from "gate-viewmodel";
-import ModalContext from "../../../../ModalContext";
+import ModalContext from "local-frontend/service/ModalContext";
 import StandardModal from "../../../StandardModal/StandardModal";
 import useModelValue from "../../../../../ReactGateViewModel/hooks/useModelValue";
 

@@ -1,5 +1,5 @@
 import {ReactElement, useContext} from "react";
-import ModalContext from "../../ModalContext";
+import ModalContext from "local-frontend/service/ModalContext";
 import styles from './StandardModal.module.css';
 
 interface StandardModalProps {

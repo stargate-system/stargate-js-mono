@@ -3,21 +3,6 @@
     display: flex;
     flex-direction: column;
 
-    background-color: #303030;
     color: var(--system-color);
-    min-height: 100vh;
 }
 
-.connectionModal {
-    font-size: 2rem;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.connectionSpinner {
-    font-size: 1rem;
-    padding: 1rem;
-}
