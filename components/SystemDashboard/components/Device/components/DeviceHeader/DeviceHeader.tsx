@@ -52,10 +52,11 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
             newNameRef.current = deviceName ?? '';
             modal.openModal(
                 <StandardModal
-                    body={<RenameModalBody nameRef={newNameRef}/>}
                     onApprove={() => deviceModel.rename(newNameRef.current)}
                     approveLabel={'Save'}
-                />
+                >
+                    <RenameModalBody nameRef={newNameRef}/>
+                </StandardModal>
             )
         }
     }
@@ -64,11 +65,12 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
         if (modal) {
             modal.openModal(
                 <StandardModal
-                    body={`Sure you want to remove ${deviceName && deviceName.length
-                        ? deviceName
-                        : 'selected device'}?`}
                     onApprove={() => deviceModel.remove()}
-                />
+                >
+                    Sure you want to remove {deviceName && deviceName.length
+                    ? deviceName
+                    : 'selected device'}?
+                </StandardModal>
             );
         }
     }

@@ -1,0 +1,9 @@
+.newPipeModalBodyContainer {
+    display: flex;
+    flex-direction: column;
+
+    .arrowIcon {
+        font-size: 2rem;
+        margin: 0.5rem;
+    }
+}

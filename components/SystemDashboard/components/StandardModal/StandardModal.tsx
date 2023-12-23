@@ -1,21 +1,27 @@
-import {ReactElement, useContext} from "react";
+import {PropsWithChildren, useContext} from "react";
 import ModalContext from "local-frontend/service/ModalContext";
 import styles from './StandardModal.module.css';
 
-interface StandardModalProps {
-    body: ReactElement | string,
+interface StandardModalProps extends PropsWithChildren{
     onApprove: () => void,
+    approveDisabled?: boolean,
     onDeny?: () => void,
     approveLabel?: string
 }
 
 const StandardModal = (props: StandardModalProps) => {
-    const {body, onApprove, onDeny, approveLabel = 'Yes'} = props;
+    const {
+        children,
+        onApprove,
+        approveDisabled,
+        onDeny,
+        approveLabel = 'Yes'
+    } = props;
     const modal = useContext(ModalContext);
 
     return (
         <div className={styles.standardModalContainer}>
-            {body}
+            {children}
             <div className={styles.buttonsContainer}>
                 <button
                     onClick={() => {
@@ -23,6 +29,7 @@ const StandardModal = (props: StandardModalProps) => {
                         // @ts-ignore
                         modal.closeModal();
                     }}
+                    disabled={approveDisabled ?? false}
                     className={styles.button}
                 >
                     {approveLabel}

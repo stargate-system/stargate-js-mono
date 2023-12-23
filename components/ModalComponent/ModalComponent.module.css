@@ -4,6 +4,7 @@
     border: none;
     outline-color: transparent;
     outline-style: none;
+    overflow: visible;
 }
 
 .childrenContainer {

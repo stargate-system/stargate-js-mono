@@ -42,7 +42,7 @@ const Home = () => {
             case cardNames.devices:
                 return <SystemDashboard systemModel={model}/>
             case cardNames.pipes:
-                return <PipesDashboard/>
+                return <PipesDashboard systemModel={model}/>
         }
     }
 

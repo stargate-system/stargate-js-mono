@@ -1,7 +1,29 @@
-.tempClass {
-    color: white;
-    font-size: 2rem;
-    text-align: center;
-    width: 100%;
-    padding-top: 2rem;
+.pipesDashboard {
+    display: flex;
+    background-color: transparent;
+
+    .addButton {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        width: 3.5rem;
+        height: 3.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 0 3px black;
+        color: white;
+        background-color: #313131;
+        margin: 0.5rem 1rem;
+        cursor: pointer;
+
+        .addIcon {
+            font-size: 2rem;
+            filter:drop-shadow(1px 1px #808080);
+        }
+    }
+
+    .addButton:hover {
+        background-color: #444444;
+    }
 }
