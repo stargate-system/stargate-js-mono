@@ -1,5 +1,6 @@
 import {ValidManifest} from "./ValidManifest";
 
 export interface SystemImage {
-    devices: ValidManifest[]
+    devices: ValidManifest[],
+    pipes: [string, string][]
 }

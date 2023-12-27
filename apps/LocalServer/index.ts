@@ -3,6 +3,7 @@ import {initDiscovery} from "./src/DiscoveryService";
 import getBasicRepository from "./src/persistence/BasicSystemRepository";
 import {initConnectionService} from "./src/ConnectionService";
 import Router from "./src/Router";
+import {initDeviceContext} from "./src/device/DeviceContext";
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -14,5 +15,7 @@ app.get('/', function(req, res) {
 
 app.listen(port);
 Router.systemRepository = getBasicRepository();
-initDiscovery();
-initConnectionService();
+initDeviceContext().then(() => {
+    initDiscovery();
+    initConnectionService();
+})

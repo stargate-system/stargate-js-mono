@@ -68,6 +68,18 @@ const BasicSystemRepository: SystemRepository = {
             device.deviceName = newName;
         }
         saveRepository();
+    },
+    createPipe: (pipe: [string, string]) => {
+        if(!systemImage.pipes.find((storedPipe) => storedPipe[0] === pipe[0] && storedPipe[1] === pipe[1])) {
+            systemImage.pipes.push(pipe);
+            saveRepository();
+            return true;
+        }
+        return false;
+    },
+    removePipe: (pipe: [string, string]) => {
+        systemImage.pipes = systemImage.pipes.filter((storedPipe) => storedPipe[0] !== pipe[0] || storedPipe[1] !== pipe[1]);
+        saveRepository();
     }
 }
 
@@ -77,7 +89,7 @@ const getBasicRepository = () => {
             const systemImageFile = fs.readFileSync('systemImage.json');
             systemImage = JSON.parse(systemImageFile.toString()) as SystemImage;
         } catch (err) {
-            systemImage = {devices: []};
+            systemImage = {devices: [], pipes: []};
         }
     }
     return BasicSystemRepository;

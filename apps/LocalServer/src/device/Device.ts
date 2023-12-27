@@ -46,6 +46,7 @@ export class Device {
         this._connection.addStateChangeListener((state) => {
             if (state === ConnectionState.closed) {
                 DeviceContext.deviceRegistry.remove(this._id);
+                DeviceContext.notifyPipes(EventName.deviceDisconnected, this._id)
                 ControllerContext.forwardDeviceEvent(EventName.deviceDisconnected, [this._id]);
                 console.log("Disconnected: " + this._id);
             }
@@ -54,6 +55,7 @@ export class Device {
             DeviceContext.deviceRegistry.add(this, this._id);
             this._connection.functionalHandler.sendCommand(Keywords.ready);
             this._connection.setReady();
+            DeviceContext.notifyPipes(EventName.deviceConnected, this);
             ControllerContext.forwardDeviceEvent(EventName.deviceConnected, [JSON.stringify(this._manifest)]);
         } catch (err) {
             this._connection.close();

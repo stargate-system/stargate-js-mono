@@ -1,0 +1,15 @@
+{
+  "name": "rangeconverter",
+  "version": "1.0.0",
+  "private": true,
+  "description": "To handle number range conversion",
+  "main": "RangeConverter.js",
+  "scripts": {
+    "start": "node RangeConverter.js"
+  },
+  "author": "Michał Marchel",
+  "license": "ISC",
+  "dependencies": {
+    "gate-device": "^1.0.0"
+  }
+}

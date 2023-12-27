@@ -13,5 +13,7 @@ export interface ControllerConnector extends ValueMessageConsumer{
     onSubscribed: (ids: string[]) => void,
     onUnsubscribed: (ids: string[]) => void,
     onDeviceRemoved: (id: string) => void,
-    onDeviceRenamed: (id: string, newName: string) => void
+    onDeviceRenamed: (id: string, newName: string) => void,
+    onPipeCreated: (pipe: [string, string]) => void,
+    onPipeRemoved: (pipe: [string, string]) => void
 }

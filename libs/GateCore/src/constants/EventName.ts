@@ -2,5 +2,7 @@ export enum EventName {
     deviceConnected = 'deviceConnected',
     deviceDisconnected = 'deviceDisconnected',
     deviceRemoved = 'deviceRemoved',
-    deviceRenamed = 'deviceRenamed'
+    deviceRenamed = 'deviceRenamed',
+    pipeCreated = 'pipeCreated',
+    pipeRemoved = 'pipeRemoved'
 }

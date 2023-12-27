@@ -99,7 +99,7 @@ const ValueSelect = (props: ValueSelectProps) => {
         const device = selected.value ? selected.value as DeviceModel : undefined;
         setSelectedDevice(device);
         setDeviceOption(selected.value ? selected : null);
-        if (valueOption && device && !device.gateValues.values.find((value) => value.id === valueOption.value?.id)) {
+        if (!device || (valueOption && !device.gateValues.values.find((value) => value.id === valueOption.value?.id))) {
             onValueChange(emptyOption);
         }
     }

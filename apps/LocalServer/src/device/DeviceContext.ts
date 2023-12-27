@@ -2,8 +2,18 @@ import {DeviceConnector} from "./DeviceConnector";
 import {Registry, ValueMessage, AddressMapper} from "gate-core";
 import {Device} from "./Device";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
+import {Pipe} from "./Pipe";
+import Router from "../Router";
 
 const deviceRegistry = new Registry<Device>();
+let pipes: Pipe[] = [];
+
+export const initDeviceContext = async () => {
+    const image = await Router.systemRepository.getSystemImage();
+    if (image.pipes) {
+        pipes = image.pipes.map((pipe) => new Pipe(pipe[0], pipe[1]));
+    }
+}
 
 const addDevice = async (deviceConnector: DeviceConnector) => {
     try {
@@ -23,27 +33,27 @@ const forwardValueMessage = (valueMessage: ValueMessage) => {
     });
 }
 
-const handleSubscription = (ids: string[], source: ValueMessageConsumer | string) => {
+const handleSubscription = (subscribe: boolean, ids: string[], source: ValueMessageConsumer) => {
     const devicesMap = new Map<string, string[]>();
     ids.forEach((idWithParent) => {
         const [parentId, valueId] = AddressMapper.extractTargetId(idWithParent);
-        let message = devicesMap.get(parentId);
-        if (message) {
-            message.push(valueId);
+        let valueIds = devicesMap.get(parentId);
+        if (valueIds) {
+            valueIds.push(valueId);
         } else {
             devicesMap.set(parentId, [valueId]);
         }
     });
-    devicesMap.forEach((message, deviceId) => {
+    devicesMap.forEach((valueIds, deviceId) => {
         const targetDevice = deviceRegistry.getByKey(deviceId);
         if (targetDevice) {
-            if (typeof source === 'string') {
-                message.forEach((id) => {
-                    targetDevice.unsubscribe(id, source);
+            if (subscribe) {
+                valueIds.forEach((id) => {
+                    targetDevice.subscribe(id, source);
                 });
             } else {
-                message.forEach((id) => {
-                    targetDevice.subscribe(id, source);
+                valueIds.forEach((id) => {
+                    targetDevice.unsubscribe(id, source.id);
                 });
             }
         }
@@ -51,11 +61,11 @@ const handleSubscription = (ids: string[], source: ValueMessageConsumer | string
 }
 
 const forwardSubscribed = (ids: string[], source: ValueMessageConsumer) => {
-    handleSubscription(ids, source);
+    handleSubscription(true, ids, source);
 }
 
-const forwardUnsubscribed = (ids: string[], sourceId: string) => {
-    handleSubscription(ids, sourceId);
+const forwardUnsubscribed = (ids: string[], source: ValueMessageConsumer) => {
+    handleSubscription(false, ids, source);
 }
 
 const getActiveDeviceIds = (): string[] => {
@@ -66,6 +76,21 @@ const unsubscribeConsumer = (consumerId: string) => {
     deviceRegistry.getValues().forEach((device) => device.unsubscribeConsumer(consumerId));
 }
 
+const addPipe = (pipe: [string, string]) => {
+    pipes.push(new Pipe(pipe[0], pipe[1]));
+}
+
+const removePipe = (pipe: [string, string]) => {
+    const removedId = pipe[0] + pipe[1];
+    pipes = pipes.filter((storedPipe) => storedPipe.id !== removedId);
+}
+
+const notifyPipes = (event: string, device: Device | string) => {
+    pipes.forEach((pipe) => {
+        pipe.handleDeviceEvent(event, device);
+    })
+}
+
 const DeviceContext = {
     deviceRegistry,
     addDevice,
@@ -73,7 +98,10 @@ const DeviceContext = {
     forwardSubscribed,
     forwardUnsubscribed,
     getActiveDeviceIds,
-    unsubscribeConsumer
+    unsubscribeConsumer,
+    addPipe,
+    removePipe,
+    notifyPipes
 }
 
 export default DeviceContext;

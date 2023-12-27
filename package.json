@@ -10,7 +10,8 @@
     "./apps/LocalFrontend",
     "./apps/GateHub",
     "./examples/TestDevice",
-    "./examples/LocalDevice"
+    "./examples/LocalDevice",
+    "./examples/RangeConverter"
   ],
   "scripts": {
     "build:local": "npm -w apps/LocalFrontend run build",
@@ -27,7 +28,8 @@
     "server": "run-s build:server start:server",
     "hub": "run-s build:hub start:hub",
     "device:test": "npm -w examples/TestDevice run start",
-    "device:local": "npm -w examples/LocalDevice run start"
+    "device:local": "npm -w examples/LocalDevice run start",
+    "device:converter": "npm -w examples/RangeConverter run start"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.5.0",

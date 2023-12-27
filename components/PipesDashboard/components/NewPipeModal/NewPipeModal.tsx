@@ -5,7 +5,8 @@ import styles from './NewPipeModal.module.css';
 import ValueSelect from "./components/ValueSelect/ValueSelect";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowDown} from "@fortawesome/free-solid-svg-icons";
-import {AddressMapper} from "gate-core";
+import {AddressMapper, EventName} from "gate-core";
+import LocalServerConnector from "local-frontend/service/LocalServerConnector";
 
 interface NewPipeModalProps {
     systemModel: SystemModel
@@ -31,12 +32,14 @@ const NewPipeModal = (props: NewPipeModalProps) => {
         return filteredDevices;
     }
 
-    const getAvailableValues = (excludedDevice?: DeviceModel) => {
+    const getAvailableValues = (excludedDevice?: DeviceModel, excludedValue?: GateValueModel) => {
         const availableValues: GateValueModel[] = [];
         systemModel.devices.values.forEach((device) => {
             if (!excludedDevice || excludedDevice.id !== device.id) {
                 device.gateValues.values.forEach((value) => {
-                    availableValues.push(value);
+                    if (value.id !== excludedValue?.id) {
+                        availableValues.push(value);
+                    }
                 });
             }
         });
@@ -48,7 +51,7 @@ const NewPipeModal = (props: NewPipeModalProps) => {
         if (sourceValue) {
             excludedDevice = sourceDevices.find((device) => AddressMapper.extractTargetId(sourceValue.id)[0] === device.id);
         }
-        return getAvailableValues(excludedDevice);
+        return getAvailableValues(excludedDevice, targetValue);
     }
 
     const getTargetValues = () => {
@@ -56,7 +59,13 @@ const NewPipeModal = (props: NewPipeModalProps) => {
         if (targetValue) {
             excludedDevice = targetDevices.find((device) => AddressMapper.extractTargetId(targetValue.id)[0] === device.id);
         }
-        return getAvailableValues(excludedDevice);
+        return getAvailableValues(excludedDevice, sourceValue);
+    }
+
+    const onCreatePipe = () => {
+        if (sourceValue && targetValue) {
+            LocalServerConnector.sendDeviceEvent(EventName.pipeCreated, [sourceValue.id, targetValue.id]);
+        }
     }
 
     useEffect(() => {
@@ -81,7 +90,7 @@ const NewPipeModal = (props: NewPipeModalProps) => {
 
     return (
         <StandardModal
-            onApprove={() => {}}
+            onApprove={onCreatePipe}
             approveDisabled={confirmDisabled}
             approveLabel={'Create'}
         >

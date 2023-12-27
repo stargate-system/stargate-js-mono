@@ -16,21 +16,32 @@ const addController = async (controller: ControllerConnector) => {
     controller.onSubscribed = (ids) => {
         DeviceContext.forwardSubscribed(ids, controller)
     };
-    // @ts-ignore
     controller.onUnsubscribed = (ids) => {
-        DeviceContext.forwardUnsubscribed(ids, controller.id);
+        DeviceContext.forwardUnsubscribed(ids, controller);
     };
     controller.onDeviceRemoved = (id: string) => {
         if (DeviceContext.deviceRegistry.getByKey(id)) {
             console.log('Cancelled removing device: device is active');
         } else {
             Router.systemRepository.removeDevice(id);
+            DeviceContext.notifyPipes(EventName.deviceRemoved, id);
             controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRemoved, [id]));
         }
     }
     controller.onDeviceRenamed = (id: string, newName: string) => {
         Router.systemRepository.renameDevice(id, newName);
         controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRenamed, [id, newName]));
+    }
+    controller.onPipeCreated = (pipe: [string, string]) => {
+        if (Router.systemRepository.createPipe(pipe)) {
+            DeviceContext.addPipe(pipe);
+            controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.pipeCreated, pipe));
+        }
+    }
+    controller.onPipeRemoved = (pipe: [string, string]) => {
+        Router.systemRepository.removePipe(pipe);
+        DeviceContext.removePipe(pipe);
+        controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.pipeRemoved, pipe));
     }
 }
 
