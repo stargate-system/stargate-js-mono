@@ -1,20 +1,16 @@
 import {SystemConnector} from "./SystemConnector";
 import {ModelValue} from "../components/ModelValue";
-import {
-    ConnectionState,
-    ValueMessage,
-    EventName,
-    AddressMapper,
-    ValidManifest
-} from "gate-core";
+import {AddressMapper, ConnectionState, EventName, ValidManifest, ValueMessage} from "gate-core";
 import {ModelMap} from "../components/ModelMap/ModelMap";
 import {DeviceModel} from "../components/DeviceModel/DeviceModel";
 import {DeviceState} from "../components/DeviceModel/DeviceState";
+import {PipeModel} from "../components/PipeModel/PipeModel";
 
 export class SystemModel {
     private readonly _systemConnector: SystemConnector;
     private readonly _state: ModelValue<ConnectionState>;
     private readonly _devices: ModelMap<DeviceModel>;
+    private readonly _pipes: ModelMap<PipeModel>
 
     constructor(systemConnector: SystemConnector) {
         this._systemConnector = systemConnector;
@@ -26,13 +22,18 @@ export class SystemModel {
             }
         });
         this._devices = new ModelMap<DeviceModel>();
+        this._pipes = new ModelMap<PipeModel>();
         systemConnector.onJoinEvent = (systemImage, connectedDevices) => {
             systemImage.devices.forEach((manifest) => {
                 const isConnected = !!connectedDevices
-                    .filter((id) => id === manifest.id).length;
+                    .find((id) => id === manifest.id);
                 this._devices.update(manifest.id,
                     new DeviceModel(this._systemConnector, manifest, isConnected));
             });
+            systemImage.pipes.forEach((pipe) => {
+                const pipeModel = new PipeModel(pipe);
+                this._pipes.update(pipeModel.id, pipeModel);
+            })
         }
         systemConnector.onValueMessage = (valueMessage: ValueMessage) => {
             valueMessage.forEach((change) => {
@@ -79,6 +80,17 @@ export class SystemModel {
                         }
                     }
                     break;
+                case EventName.pipeCreated:
+                    if (args[0] && args[1]) {
+                        const pipeModel = new PipeModel(args as [string, string]);
+                        this._pipes.update(pipeModel.id, pipeModel);
+                    }
+                    break;
+                case EventName.pipeRemoved:
+                    if (args[0] && args[1]) {
+                        this._pipes.remove(PipeModel.getPipeId(args as  [string, string]));
+                    }
+                    break;
             }
         }
         systemConnector.joinSystem();
@@ -91,5 +103,9 @@ export class SystemModel {
 
     get devices(): ModelMap<DeviceModel> {
         return this._devices;
+    }
+
+    get pipes(): ModelMap<PipeModel> {
+        return this._pipes;
     }
 }

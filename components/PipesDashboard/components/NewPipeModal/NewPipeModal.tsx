@@ -1,5 +1,5 @@
 import {DeviceModel, GateValueModel, SystemModel} from "gate-viewmodel";
-import StandardModal from "../../../SystemDashboard/components/StandardModal/StandardModal";
+import StandardModal from "../../../ModalComponent/StandardModal/StandardModal";
 import React, {useEffect, useState} from "react";
 import styles from './NewPipeModal.module.css';
 import ValueSelect from "./components/ValueSelect/ValueSelect";

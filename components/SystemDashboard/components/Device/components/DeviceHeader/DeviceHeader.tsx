@@ -10,7 +10,7 @@ import React, {
 } from "react";
 import {DeviceModel} from "gate-viewmodel";
 import ModalContext from "local-frontend/service/ModalContext";
-import StandardModal from "../../../StandardModal/StandardModal";
+import StandardModal from "../../../../../ModalComponent/StandardModal/StandardModal";
 import useModelValue from "../../../../../ReactGateViewModel/hooks/useModelValue";
 
 interface DeviceHeaderProps {
