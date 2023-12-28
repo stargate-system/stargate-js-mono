@@ -58,6 +58,18 @@ connection.functionalHandler.addCommandListener(EventName.deviceRenamed, (params
     }
 });
 
+connection.functionalHandler.addCommandListener(EventName.pipeCreated, (params) => {
+    if (params && LocalServerConnector.onDeviceEvent) {
+        LocalServerConnector.onDeviceEvent(EventName.pipeCreated, params);
+    }
+});
+
+connection.functionalHandler.addCommandListener(EventName.pipeRemoved, (params) => {
+    if (params && LocalServerConnector.onDeviceEvent) {
+        LocalServerConnector.onDeviceEvent(EventName.pipeRemoved, params);
+    }
+});
+
 connection.onValueMessage = (valueMessage) => {
     if (LocalServerConnector.onValueMessage) {
         LocalServerConnector.onValueMessage(valueMessage);

@@ -88,7 +88,7 @@ export class SystemModel {
                     break;
                 case EventName.pipeRemoved:
                     if (args[0] && args[1]) {
-                        this._pipes.remove(PipeModel.getPipeId(args as  [string, string]));
+                        this._pipes.remove(PipeModel.getPipeId(args as [string, string]));
                     }
                     break;
             }

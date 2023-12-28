@@ -1,14 +1,17 @@
 import styles from './PipesDashboard.module.css';
 import {SystemModel} from "gate-viewmodel";
-import {faPlus} from "@fortawesome/free-solid-svg-icons";
+import {faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import React, {useContext, useMemo} from "react";
+import React, {useContext, useMemo, useState} from "react";
 import ModalContext from "local-frontend/service/ModalContext";
 import NewPipeModal from "./components/NewPipeModal/NewPipeModal";
 import useModelMap from "../ReactGateViewModel/hooks/useModelMap";
-import Pipe, {PipeProps} from "./components/Pipe/Pipe";
-import {PipeValueProps} from "./components/Pipe/components/PipeValue";
-import {AddressMapper} from "gate-core";
+import Pipe, {PipeViewModel} from "./components/Pipe/Pipe";
+import {PipeDashboardValue} from "./components/Pipe/components/PipeValue";
+import {AddressMapper, EventName} from "gate-core";
+import {PipeModel} from "gate-viewmodel";
+import StandardModal from "../ModalComponent/StandardModal/StandardModal";
+import LocalServerConnector from "local-frontend/service/LocalServerConnector";
 
 interface PipesDashboardProps {
     systemModel: SystemModel
@@ -24,6 +27,23 @@ const PipesDashboard = (props: PipesDashboardProps) => {
     const {systemModel} = props;
     const modal = useContext(ModalContext);
     const pipes = useModelMap(systemModel.pipes);
+    const [selectedPipes, setSelectedPipes] = useState<PipeModel[]>([]);
+
+    const setSelectedValue = (id: string, selected: boolean) => {
+        if (selected) {
+            const foundPipes = systemModel.pipes.values
+                .filter((pipe) => pipe.source === id || pipe.target === id);
+            const newSelectedPipes = [
+                ...selectedPipes.filter((pipe) =>
+                    !foundPipes.find((foundPipe) => foundPipe.id === pipe.id)),
+                ...foundPipes
+            ]
+            setSelectedPipes(newSelectedPipes);
+        } else {
+            const newSelectedPipes = selectedPipes.filter((pipe) => pipe.source !== id && pipe.target !== id);
+            setSelectedPipes(newSelectedPipes);
+        }
+    }
 
     const createModelTree = () => {
         const pipeTreesMap = new Map<string, PipeTree>();
@@ -63,12 +83,13 @@ const PipesDashboard = (props: PipesDashboardProps) => {
         return {pipeTrees, singlePipes};
     }
 
-    const getPipeValueProps = (valueId: string): PipeValueProps | undefined => {
+    const getPipeValueProps = (valueId: string): PipeDashboardValue | undefined => {
         const device = systemModel.devices.getById(AddressMapper.extractTargetId(valueId)[0]);
         if (device) {
             const value = device.gateValues.getById(valueId);
             if (value) {
                 return {
+                    valueId: valueId,
                     deviceName: device.name.value ?? '',
                     valueName: value.name ?? '',
                     valueType: value.gateValue.type ?? ''
@@ -80,15 +101,15 @@ const PipesDashboard = (props: PipesDashboardProps) => {
 
     const pipingModel = useMemo(() => {
         const {pipeTrees, singlePipes} = createModelTree();
-        const pipeModels: { key: string, props: PipeProps }[] = [];
+        const pipeModels: { key: string, props: PipeViewModel }[] = [];
         pipeTrees.forEach((tree) => {
             const centralValue = getPipeValueProps(tree.centralValue);
             if (centralValue) {
-                const model: PipeProps = {
+                const model: PipeViewModel = {
                     centralValue
                 }
                 if (tree.inputs.length) {
-                    const inputs: PipeValueProps[] = [];
+                    const inputs: PipeDashboardValue[] = [];
                     tree.inputs.forEach((input) => {
                         const value = getPipeValueProps(input);
                         if (value) {
@@ -98,7 +119,7 @@ const PipesDashboard = (props: PipesDashboardProps) => {
                     model.inputs = inputs;
                 }
                 if (tree.outputs.length) {
-                    const outputs: PipeValueProps[] = [];
+                    const outputs: PipeDashboardValue[] = [];
                     tree.outputs.forEach((output) => {
                         const value = getPipeValueProps(output);
                         if (value) {
@@ -132,19 +153,43 @@ const PipesDashboard = (props: PipesDashboardProps) => {
         }
     }
 
+    const removeSelectedPipes = () => {
+        selectedPipes.forEach((pipe) => {
+            LocalServerConnector.sendDeviceEvent(EventName.pipeRemoved, [pipe.source, pipe.target]);
+        });
+        setSelectedPipes([]);
+    }
+
+    const onRemovePipe = () => {
+        if (modal) {
+            modal.openModal(
+                <StandardModal onApprove={removeSelectedPipes} approveLabel={'Yes'}>
+                    Remove selected pipes?
+                </StandardModal>
+            );
+        }
+    }
+
     return (
         <div className={styles.pipesDashboard}>
             {pipingModel.map((pipeModel) =>
                 <Pipe
                     key={pipeModel.key}
-                    centralValue={pipeModel.props.centralValue}
-                    inputs={pipeModel.props.inputs}
-                    outputs={pipeModel.props.outputs}
+                    model={pipeModel.props}
+                    selectedPipes={selectedPipes}
+                    setSelectedValue={setSelectedValue}
                 />
             )}
-            <button className={styles.addButton} onClick={onAddPipe}>
-                <FontAwesomeIcon className={styles.addIcon} icon={faPlus}/>
-            </button>
+            <div>
+                <button className={styles.controlButton} onClick={onAddPipe}>
+                    <FontAwesomeIcon className={styles.addIcon} icon={faPlus}/>
+                </button>
+                {!!selectedPipes.length &&
+                    <button className={styles.controlButton} onClick={onRemovePipe}>
+                        <FontAwesomeIcon className={styles.addIcon} icon={faMinus}/>
+                    </button>
+                }
+            </div>
         </div>
     )
 }

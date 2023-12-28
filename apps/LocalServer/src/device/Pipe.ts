@@ -85,4 +85,10 @@ export class Pipe implements ValueMessageConsumer{
             this.targetDevice.sendValue([this.targetValueId, valueMessage[0][1]])
         }
     }
+
+    disconnect = () => {
+        if (this.sourceDevice && this.targetDevice) {
+            this.sourceDevice.unsubscribe(this.sourceValueId, this._id);
+        }
+    }
 }

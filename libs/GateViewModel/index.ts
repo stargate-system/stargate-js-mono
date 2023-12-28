@@ -6,6 +6,7 @@ import {MapEventName} from "./components/ModelMap/MapEventName";
 import {DeviceModel} from "./components/DeviceModel/DeviceModel";
 import {DeviceState} from "./components/DeviceModel/DeviceState";
 import {GateValueModel} from "./components/GateValueModel/GateValueModel";
+import {PipeModel} from "./components/PipeModel/PipeModel";
 
 export {
     SystemConnector,
@@ -15,5 +16,6 @@ export {
     MapEventName,
     DeviceModel,
     DeviceState,
-    GateValueModel
+    GateValueModel,
+    PipeModel
 };

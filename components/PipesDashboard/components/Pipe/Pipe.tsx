@@ -1,35 +1,63 @@
-import PipeValue, {PipeValueProps} from "./components/PipeValue";
+import PipeValue, {PipeDashboardValue} from "./components/PipeValue";
 import {faArrowDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import React from "react";
 import styles from './Pipe.module.css';
+import {PipeModel} from "gate-viewmodel/dist/components/PipeModel/PipeModel";
 
-export interface PipeProps {
-    centralValue: PipeValueProps,
-    inputs?: PipeValueProps[],
-    outputs?: PipeValueProps[]
+export interface PipeViewModel {
+    centralValue: PipeDashboardValue,
+    inputs?: PipeDashboardValue[],
+    outputs?: PipeDashboardValue[]
+}
+
+interface PipeProps {
+    model: PipeViewModel,
+    selectedPipes: PipeModel[],
+    setSelectedValue: (id: string, selected: boolean) => void
 }
 
 const Pipe = (props: PipeProps) => {
-    const {centralValue, inputs, outputs} = props;
+    const {
+        model,
+        selectedPipes,
+        setSelectedValue
+    } = props;
+
+    const getPipeValueKey = (value: PipeDashboardValue) => {
+        return model.centralValue.valueId + value.valueId;
+    }
 
     return (
         <div className={styles.pipeContainer}>
-            {inputs &&
+            {model.inputs &&
                 <div className={styles.valueContainer}>
                     <div className={styles.valueList}>
-                        {inputs.map((input) => PipeValue(input))}
+                        {model.inputs.map((input) =>
+                            <PipeValue
+                                key={getPipeValueKey(input)}
+                                value={input}
+                                selectedPipes={selectedPipes}
+                                setSelectedValue={setSelectedValue}
+                            />
+                        )}
                     </div>
                     <FontAwesomeIcon className={styles.arrowIcon} icon={faArrowDown}/>
                 </div>
             }
-            <PipeValue deviceName={centralValue.deviceName} valueName={centralValue.valueName}
-                       valueType={centralValue.valueType}/>
-            {outputs &&
+            <PipeValue value={model.centralValue} selectedPipes={selectedPipes} setSelectedValue={setSelectedValue}/>
+            {model.outputs &&
                 <div className={styles.valueContainer}>
                     <FontAwesomeIcon className={styles.arrowIcon} icon={faArrowDown}/>
                     <div className={styles.valueList}>
-                        {outputs.map((output) => PipeValue(output))}
+                        {model.outputs.map((output) =>
+                            <PipeValue
+                                key={getPipeValueKey(output)}
+                                value={output}
+                                selectedPipes={selectedPipes}
+                                setSelectedValue={setSelectedValue}
+                            />
+                        )}
                     </div>
                 </div>
             }

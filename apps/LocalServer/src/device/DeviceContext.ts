@@ -82,7 +82,17 @@ const addPipe = (pipe: [string, string]) => {
 
 const removePipe = (pipe: [string, string]) => {
     const removedId = pipe[0] + pipe[1];
-    pipes = pipes.filter((storedPipe) => storedPipe.id !== removedId);
+    let removedPipe: Pipe | undefined;
+    pipes = pipes.filter((storedPipe) => {
+        const isRemoved = storedPipe.id === removedId;
+        if (isRemoved) {
+            removedPipe = storedPipe;
+        }
+        return !isRemoved;
+    });
+    if (removedPipe) {
+        removedPipe.disconnect();
+    }
 }
 
 const notifyPipes = (event: string, device: Device | string) => {
