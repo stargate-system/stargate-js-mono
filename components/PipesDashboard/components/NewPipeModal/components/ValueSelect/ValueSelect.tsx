@@ -15,7 +15,8 @@ interface ValueSelectProps {
 
 interface SelectedOption {
     value?: DeviceModel | GateValueModel,
-    label: string | React.JSX.Element
+    label: string | React.JSX.Element,
+    name?: string
 }
 
 const ValueSelect = (props: ValueSelectProps) => {
@@ -78,16 +79,9 @@ const ValueSelect = (props: ValueSelectProps) => {
 
     const valueOptions: SelectedOption[] = useMemo(() => {
         let options: SelectedOption[];
-        if (deviceOption) {
-            const availableValues = filterByType((deviceOption.value as DeviceModel).gateValues.values);
-            options = availableValues.map((value) => {
-                return {value: value, label: getTypeLabel(value)}
-            });
-        } else {
-            options = filterByType(values).map((value) => {
-                return {value: value, label: getTypeLabel(value)}
-            });
-        }
+        options = filterByType(values).map((value) => {
+            return {value: value, label: getTypeLabel(value), name: value.name}
+        });
         if (excludeOutput) {
             options = options.filter(option => (option.value as GateValueModel).gateValue.direction !== Directions.output)
         }
@@ -129,6 +123,7 @@ const ValueSelect = (props: ValueSelectProps) => {
                 className={styles.selectInput}
                 options={valueOptions}
                 value={valueOption}
+                getOptionValue={(option) => option.name ?? ''}
                 onChange={(selected) => onValueChange(selected as SelectedOption)}
                 placeholder={'Select value...'}
             />

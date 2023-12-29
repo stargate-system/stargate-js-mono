@@ -180,7 +180,7 @@ const PipesDashboard = (props: PipesDashboardProps) => {
                     setSelectedValue={setSelectedValue}
                 />
             )}
-            <div>
+            <div className={styles.controlButtonContainer}>
                 <button className={styles.controlButton} onClick={onAddPipe}>
                     <FontAwesomeIcon className={styles.addIcon} icon={faPlus}/>
                 </button>

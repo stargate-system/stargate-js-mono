@@ -32,34 +32,45 @@ const NewPipeModal = (props: NewPipeModalProps) => {
         return filteredDevices;
     }
 
-    const getAvailableValues = (excludedDevice?: DeviceModel, excludedValue?: GateValueModel) => {
+    const getAvailableValues = (includedDevice?: DeviceModel, excludedDevice?: DeviceModel, excludedValue?: GateValueModel) => {
         const availableValues: GateValueModel[] = [];
-        systemModel.devices.values.forEach((device) => {
-            if (!excludedDevice || excludedDevice.id !== device.id) {
-                device.gateValues.values.forEach((value) => {
-                    if (value.id !== excludedValue?.id) {
-                        availableValues.push(value);
-                    }
-                });
-            }
-        });
+        if (includedDevice) {
+            includedDevice.gateValues.values.forEach((value) => availableValues.push(value));
+        } else {
+            systemModel.devices.values.forEach((device) => {
+                if (!excludedDevice || excludedDevice.id !== device.id) {
+                    device.gateValues.values.forEach((value) => {
+                        if (value.id !== excludedValue?.id) {
+                            availableValues.push(value);
+                        }
+                    });
+                }
+            });
+        }
+        if (excludedValue) {
+            const relevantPipes = systemModel.pipes.values
+                .filter((pipe) => pipe.source === excludedValue.id || pipe.target === excludedValue.id);
+            return availableValues.filter((value) => {
+                return !relevantPipes.find((pipe) => pipe.source === value.id || pipe.target === value.id);
+            })
+        }
         return availableValues;
     }
 
-    const getSourceValues = () => {
+    const getTargetValues = () => {
         let excludedDevice: DeviceModel | undefined = sourceDevice;
         if (sourceValue) {
             excludedDevice = sourceDevices.find((device) => AddressMapper.extractTargetId(sourceValue.id)[0] === device.id);
         }
-        return getAvailableValues(excludedDevice, targetValue);
+        return getAvailableValues(targetDevice, excludedDevice, sourceValue);
     }
 
-    const getTargetValues = () => {
+    const getSourceValues = () => {
         let excludedDevice: DeviceModel | undefined = targetDevice;
         if (targetValue) {
             excludedDevice = targetDevices.find((device) => AddressMapper.extractTargetId(targetValue.id)[0] === device.id);
         }
-        return getAvailableValues(excludedDevice, sourceValue);
+        return getAvailableValues(sourceDevice, excludedDevice, targetValue);
     }
 
     const onCreatePipe = () => {
@@ -70,23 +81,14 @@ const NewPipeModal = (props: NewPipeModalProps) => {
 
     useEffect(() => {
         setSourceDevices(getDevices(targetDevice));
-        setSourceValues(getSourceValues());
-    }, [targetDevice]);
-
-    useEffect(() => {
         setTargetDevices(getDevices(sourceDevice));
-        setTargetValues(getTargetValues());
-    }, [sourceDevice]);
-
-    useEffect(() => {
-        setConfirmDisabled(!(sourceValue && targetValue));
-        setTargetValues(getTargetValues());
-    }, [sourceValue]);
-
-    useEffect(() => {
-        setConfirmDisabled(!(sourceValue && targetValue));
         setSourceValues(getSourceValues());
-    }, [targetValue]);
+        setTargetValues(getTargetValues());
+    }, [targetDevice, sourceDevice, targetValue, sourceValue]);
+
+    useEffect(() => {
+        setConfirmDisabled(!(sourceValue && targetValue));
+    }, [sourceValue, targetValue]);
 
     return (
         <StandardModal
