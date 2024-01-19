@@ -1,11 +1,12 @@
-import {ConnectionState, ConnectionType, CoreConfig, DefaultConnection, Keywords, SocketWrapper} from "gate-core";
+import {ConnectionState, ConnectionType, DefaultConnection, Keywords, SocketWrapper} from "gate-core";
 import {LocalDeviceConnector} from "./device/LocalDeviceConnector";
 import {LocalControllerConnector} from "./controller/LocalControllerConnector";
 import {WebSocketServer} from "ws";
 import Router from "./Router";
+import config from "../config";
 
 export const initConnectionService = () => {
-    const server = new WebSocketServer({port: CoreConfig.connectionPort});
+    const server = new WebSocketServer({port: config.connectionPort});
     server.on('connection', (socket, request) => {
         console.log("New connection from " + request.socket.remoteAddress);
         socket.on('error', console.log);

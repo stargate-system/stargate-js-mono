@@ -6,19 +6,39 @@ import Router from "./src/Router";
 import {initDeviceContext} from "./src/device/DeviceContext";
 import config from "./config";
 
+if (process.env.HTTP_PORT) {
+    config.httpPort = Number.parseInt(process.env.HTTP_PORT);
+}
+if (process.env.DISCOVERY_KEYWORD) {
+    config.discoveryKeyword = process.env.DISCOVERY_KEYWORD;
+}
+if (process.env.DISCOVERY_INTERVAL) {
+    config.discoveryInterval = Number.parseInt(process.env.DISCOVERY_INTERVAL);
+}
+if (process.env.DISCOVERY_PORT) {
+    config.discoveryPort = Number.parseInt(process.env.DISCOVERY_PORT);
+}
+if (process.env.CONNECTION_PORT) {
+    config.connectionPort = Number.parseInt(process.env.CONNECTION_PORT);
+}
+if (process.env.BROADCASTING_PORT) {
+    config.broadcastingPort = Number.parseInt(process.env.BROADCASTING_PORT);
+}
+if (process.env.ENABLE_DISCOVERY) {
+    config.enableDiscovery = process.env.ENABLE_DISCOVERY.toLowerCase() === 'true';
+}
+
 const app = express();
-const HTTP_PORT = process.env.HTTP_PORT ?? config.httpPort;
 app.use('/ui', express.static(__dirname + '/../out'));
 
 app.get('/', (req, res) => {
     res.redirect('/ui/index.html?connectionPort=' + config.connectionPort);
 });
 
-app.listen(HTTP_PORT);
+app.listen(config.httpPort);
 Router.systemRepository = getBasicRepository();
 initDeviceContext().then(() => {
-    const ENABLE_DISCOVERY = process.env.ENABLE_DISCOVERY ?? config.enableDiscovery;
-    if (ENABLE_DISCOVERY) {
+    if (config.enableDiscovery) {
         initDiscovery();
     }
     initConnectionService();

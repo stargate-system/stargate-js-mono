@@ -6,7 +6,7 @@ const config = {
     discoveryKeyword: CoreConfig.discoveryKeyword,
     discoveryPort: CoreConfig.discoveryPort,
     discoveryInterval: CoreConfig.discoveryInterval,
-    broadcastingSocketPort: 11000,
+    broadcastingPort: 11000,
     enableDiscovery: true
 }
 
