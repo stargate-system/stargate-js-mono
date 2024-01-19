@@ -1,9 +1,10 @@
 import {SerialPort} from "serialport";
 import {ReadlineParser} from "@serialport/parser-readline";
-import {Connection, ConnectionState, CoreConfig, DefaultConnection, SocketWrapper} from "gate-core";
+import {Connection, ConnectionState, DefaultConnection, SocketWrapper} from "gate-core";
 import DiscoveryService from "./DiscoveryService";
 import discoveryService from "./DiscoveryService";
 import {WebSocket} from 'ws';
+import config from "../config";
 
 export class LocalServerConnector {
     private readonly serialPort: SerialPort;
@@ -72,14 +73,16 @@ export class LocalServerConnector {
     }
 
     private connectServer = () => {
-        if (DiscoveryService.getServerIp() === undefined) {
-            this.timeout = setTimeout(this.connectServer, CoreConfig.discoveryInterval);
+        const DISCOVERY_INTERVAL = process.env.DISCOVERY_INTERVAL ? Number.parseInt(process.env.DISCOVERY_INTERVAL) : config.discoveryInterval;
+
+        if (DiscoveryService.getServerAddress() === undefined) {
+            this.timeout = setTimeout(this.connectServer, DISCOVERY_INTERVAL);
         } else {
             if (this.timeout) {
                 clearTimeout(this.timeout);
                 this.timeout = undefined;
             }
-            const socket = new WebSocket('ws://' + discoveryService.getServerIp() + ':' + CoreConfig.connectionPort);
+            const socket = new WebSocket('ws://' + discoveryService.getServerAddress());
             const socketWrapper: SocketWrapper = {
                 send: socket.send.bind(socket),
                 close: socket.close.bind(socket),

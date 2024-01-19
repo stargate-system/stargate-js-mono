@@ -1,50 +1,52 @@
 import {WebSocket} from 'ws';
 import dgram from "dgram";
-import {ConnectionType, CoreConfig, Keywords, SocketWrapper} from "gate-core";
-import {device} from "../api/GateDevice";
-import config from "../api/config";
+import {ConnectionType, Keywords, SocketWrapper} from "gate-core";
+import {device} from "../api/GateDevice.js";
 import fs from 'fs';
+import config from "../../config.js";
 
 let handshakeTimeout: NodeJS.Timeout | undefined;
 
 export const initLocalServer = () => {
+
     const socket = dgram.createSocket('udp4');
 
     socket.on('message', function (message, remote) {
-        if (message.toString() === CoreConfig.discoveryKeyword) {
+        const [keyword, port] = message.toString().split(':');
+        if (keyword === config.discoveryKeyword) {
             const serverIp = remote.address;
-            console.log("Discovered server ip: " + serverIp);
+            console.log("Discovered server ip: " + serverIp + ', port: ' + port);
             socket.close();
-            connect(serverIp);
+            connect(serverIp + ':' + port);
         }
     });
 
     socket.on('error', () => {
         checkHub(socket);
     });
-    socket.bind(CoreConfig.discoveryPort);
+    socket.bind(config.discoveryPort);
 }
 
 const checkHub = (socket: dgram.Socket) => {
-    fetch("http://localhost:" + CoreConfig.hubDiscoveryPort).then((response) => {
+    fetch("http://localhost:" + config.hubDiscoveryPort).then((response) => {
         if (response.status === 204) {
             console.log("Waiting for server ip...")
-            setTimeout(() => checkHub(socket), CoreConfig.discoveryInterval);
+            setTimeout(() => checkHub(socket), config.discoveryInterval);
         } else {
-            response.text().then((serverIp) => {
-                console.log("Received server ip: " + serverIp);
+            response.text().then((serverAddress) => {
+                console.log("Received server address: " + serverAddress);
                 socket.close();
-                connect(serverIp);
+                connect(serverAddress);
             });
         }
     }).catch(() => {
         console.log('Binding discovery socket failed. Retrying...');
-        setTimeout(() => socket.bind(CoreConfig.discoveryPort), CoreConfig.discoveryInterval);
+        setTimeout(() => socket.bind(config.discoveryPort), config.discoveryInterval);
     });
 }
 
-const connect = (serverIp: string) => {
-    const socket = new WebSocket('ws://' + serverIp + ':' + CoreConfig.connectionPort);
+const connect = (serverAddress: string) => {
+    const socket = new WebSocket('ws://' + serverAddress);
     const socketWrapper: SocketWrapper = {
         send: socket.send.bind(socket),
         close: socket.close.bind(socket),
@@ -70,7 +72,7 @@ const setHandshakeListeners = () => {
     handshakeTimeout = setTimeout(() => {
         device.connection.close();
         handshakeTimeout = undefined;
-    }, config.handShakeTimeout);
+    }, config.handshakeTimeout);
 
     const connectionStateListenerKey = device.connection.addStateChangeListener(() => {
         clearHandshakeListeners(connectionStateListenerKey);

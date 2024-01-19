@@ -1,7 +1,6 @@
 import {
     ConnectionState,
     ConnectionType,
-    CoreConfig,
     DefaultConnection,
     GateValue,
     Keywords,
@@ -82,7 +81,8 @@ const joinSystem = () => {
     }
     if (typeof window !== 'undefined') {
         console.log('Connecting...');
-        const socket = new WebSocket('ws://' + window.location.hostname + ':' + CoreConfig.connectionPort);
+        const urlParams = new URLSearchParams(window.location.search);
+        const socket = new WebSocket('ws://' + window.location.hostname + ':' + urlParams.get('connectionPort'));
         socket.onclose = handleConnectionClosed;
         socket.onopen = () => {
             console.log('Socket opened');

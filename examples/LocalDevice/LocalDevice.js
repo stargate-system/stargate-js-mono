@@ -3,7 +3,6 @@ const {
     Directions
 } = require('gate-device');
 
-GateDevice.config.usePing = true;
 GateDevice.setName('Test local');
 const testBool = GateDevice.ValueFactory.createBoolean(Directions.input, 'Test bool');
 testBool.onRemoteUpdate = () => console.log('>>> value', testBool.value);

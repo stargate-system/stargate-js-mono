@@ -12,7 +12,7 @@ import {
     ValueMessage,
     ValueTypes
 } from "gate-core";
-import config from "./config.js";
+import config from "../../config.js";
 import ValueFactory from "../values/ValueFactory.js";
 import {DeviceState} from "./DeviceState.js";
 import {initLocalServer} from "../connection/LocalServer.js";
