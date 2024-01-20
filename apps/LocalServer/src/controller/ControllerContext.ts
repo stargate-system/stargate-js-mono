@@ -39,9 +39,7 @@ const addController = async (controller: ControllerConnector) => {
         }
     }
     controller.onPipeRemoved = (pipe: [string, string]) => {
-        Router.systemRepository.removePipe(pipe);
         DeviceContext.removePipe(pipe);
-        controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.pipeRemoved, pipe));
     }
 }
 

@@ -91,7 +91,7 @@ const removePipe = (pipe: [string, string]) => {
         return !isRemoved;
     });
     if (removedPipe) {
-        removedPipe.disconnect();
+        removedPipe.remove();
     }
 }
 

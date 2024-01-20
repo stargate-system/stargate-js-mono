@@ -1,5 +1,5 @@
 import {Device} from "./Device";
-import {AddressMapper, EventName, ValueMessage} from "gate-core";
+import {AddressMapper, EventName, ValueMessage, ValueTypes} from "gate-core";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
 import Router from "../Router";
 import DeviceContext from "./DeviceContext";
@@ -7,6 +7,7 @@ import ControllerContext from "../controller/ControllerContext";
 
 export class Pipe implements ValueMessageConsumer{
     private readonly _id: string
+    private readonly pipe: [string, string];
     private readonly sourceDeviceId: string;
     private readonly sourceValueId: string;
     private readonly targetDeviceId: string;
@@ -16,12 +17,13 @@ export class Pipe implements ValueMessageConsumer{
 
     constructor(sourceId: string, targetId: string) {
         this._id = sourceId + targetId;
-        const sourceAddress = AddressMapper.extractTargetId(sourceId);
-        this.sourceDeviceId = sourceAddress[0];
-        this.sourceValueId = sourceAddress[1];
-        const targetAddress = AddressMapper.extractTargetId(targetId);
-        this.targetDeviceId = targetAddress[0];
-        this.targetValueId = targetAddress[1];
+        this.pipe = [sourceId, targetId];
+        const [sourceDeviceId, sourceValueId] = AddressMapper.extractTargetId(sourceId);
+        this.sourceDeviceId = sourceDeviceId;
+        this.sourceValueId = sourceValueId;
+        const [targetDeviceId, targetValueId] = AddressMapper.extractTargetId(targetId);
+        this.targetDeviceId = targetDeviceId;
+        this.targetValueId = targetValueId;
         DeviceContext.deviceRegistry.getValues().forEach((device) => {
             if (device.id === this.sourceDeviceId) {
                 this.sourceDevice = device;
@@ -29,9 +31,7 @@ export class Pipe implements ValueMessageConsumer{
                 this.targetDevice = device;
             }
         });
-        if (this.sourceDevice && this.targetDevice) {
-            this.sourceDevice.subscribe(this.sourceValueId, this);
-        }
+        setTimeout(this.activatePipe, 0);
     }
 
     get id() {
@@ -48,14 +48,12 @@ export class Pipe implements ValueMessageConsumer{
                     } else if (this.targetDeviceId === deviceId) {
                         this.targetDevice = device as Device;
                     }
-                    if (this.sourceDevice && this.targetDevice) {
-                        this.sourceDevice.subscribe(this.sourceValueId, this);
-                    }
+                    this.activatePipe();
                 }
                 break;
             case EventName.deviceDisconnected:
                 const disconnectedId = device as string;
-                const wasSubscribed = this.sourceDevice && this.targetDevice;
+                const wasSubscribed = !!this.sourceDevice && !!this.targetDevice;
                 if (this.sourceDeviceId === disconnectedId) {
                     this.sourceDevice = undefined;
                 } else if (this.targetDeviceId === disconnectedId) {
@@ -68,13 +66,7 @@ export class Pipe implements ValueMessageConsumer{
             case EventName.deviceRemoved:
                 const removedId = device as string;
                 if (this.sourceDeviceId === removedId || this.targetDeviceId === removedId) {
-                    const pipe: [string, string] = [
-                        AddressMapper.appendParentId(this.sourceDeviceId, this.sourceValueId),
-                        AddressMapper.appendParentId(this.targetDeviceId, this.targetValueId)
-                    ];
-                    Router.systemRepository.removePipe(pipe);
-                    DeviceContext.removePipe(pipe);
-                    ControllerContext.forwardDeviceEvent(EventName.pipeRemoved, pipe);
+                    DeviceContext.removePipe(this.pipe);
                 }
                 break;
         }
@@ -86,9 +78,36 @@ export class Pipe implements ValueMessageConsumer{
         }
     }
 
-    disconnect = () => {
+    remove = () => {
         if (this.sourceDevice && this.targetDevice) {
             this.sourceDevice.unsubscribe(this.sourceValueId, this._id);
+        }
+        Router.systemRepository.removePipe(this.pipe);
+        ControllerContext.forwardDeviceEvent(EventName.pipeRemoved, this.pipe);
+    }
+
+    private areTypesCompatible = (type1: string, type2: string) => {
+        if (type1 === type2) {
+            return true;
+        }
+        if (type1 === ValueTypes.integer || type1 === ValueTypes.float) {
+            return type2 === ValueTypes.integer || type2 === ValueTypes.float
+        }
+        return false;
+    }
+
+    private activatePipe = () => {
+        if (this.sourceDevice && this.targetDevice) {
+            const sourceValueType = this.sourceDevice.manifest.values
+                .find((value) => value.id === this.sourceValueId)?.type;
+            const targetValueType = this.targetDevice.manifest.values
+                .find((value) => value.id === this.targetValueId)?.type;
+            if (sourceValueType && targetValueType && this.areTypesCompatible(sourceValueType, targetValueType)) {
+                this.sourceDevice.subscribe(this.sourceValueId, this);
+            } else {
+                console.log('Dropping pipe ' + this.pipe[0] + ' -> ' + this.pipe[1] + ' - values incompatible');
+                DeviceContext.removePipe(this.pipe);
+            }
         }
     }
 }
