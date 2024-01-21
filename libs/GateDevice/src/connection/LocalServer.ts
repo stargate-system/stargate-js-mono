@@ -28,7 +28,7 @@ export const initLocalServer = () => {
 }
 
 const checkHub = (socket: dgram.Socket) => {
-    fetch("http://localhost:" + config.hubDiscoveryPort).then((response) => {
+    fetch(`http://localhost:${config.hubDiscoveryPort}?keyword=${config.discoveryKeyword}`).then((response) => {
         if (response.status === 204) {
             console.log("Waiting for server ip...")
             setTimeout(() => checkHub(socket), config.discoveryInterval);

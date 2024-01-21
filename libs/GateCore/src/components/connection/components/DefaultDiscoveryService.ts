@@ -3,21 +3,18 @@ import CoreConfig from "../../../constants/CoreConfig";
 import {Registry} from "../../Registry";
 import dgram from "dgram";
 
-const addressListeners = new Registry<(serverAddress: string | undefined) => void>();
+const addressListeners = new Registry<(keyword: string) => void>();
 
 let discoveryConfig: DiscoveryServiceConfig = {
-    discoveryKeyword: CoreConfig.discoveryKeyword,
     discoveryInterval: CoreConfig.discoveryInterval,
     discoveryPort: CoreConfig.discoveryPort
 }
 
-let serverAddress: string | undefined = undefined;
-let discoveryTimeout: NodeJS.Timeout | undefined = undefined;
+const addressMap = new Map<string, {address: string, timeout: NodeJS.Timeout}>();
 let discoverySocket: dgram.Socket | undefined = undefined;
 
 const setConfig = (config: DiscoveryServiceConfig) => {
     discoveryConfig = {
-        discoveryKeyword: config.discoveryKeyword ?? discoveryConfig.discoveryKeyword,
         discoveryInterval: config.discoveryInterval ?? discoveryConfig.discoveryInterval,
         discoveryPort: config.discoveryPort ?? discoveryConfig.discoveryPort
     };
@@ -25,29 +22,42 @@ const setConfig = (config: DiscoveryServiceConfig) => {
 
 const start = () => {
     if (!discoverySocket) {
-        serverAddress = undefined;
         discoverySocket = dgram.createSocket('udp4');
 
-        discoverySocket.on('message', function (message, remote) {
-            const [keyword, port] = message.toString().split(':');
-            if (keyword === discoveryConfig.discoveryKeyword) {
+        discoverySocket.on('message', (data, remote) => {
+            const message = data.toString();
+            if (message.match(/^.+:[0-9]+$/)) {
+                const [keyword, port] = message.split(':');
                 const newServerAddress = remote.address + ':' + port;
-                if (serverAddress !== newServerAddress) {
-                    serverAddress = newServerAddress;
-                    addressListeners.getValues().forEach((callback) => callback(serverAddress));
+                const storedAddress = addressMap.get(keyword);
+                const notifyListeners = storedAddress?.address !== newServerAddress;
+
+                if (!storedAddress) {
+                    addressMap.set(keyword, {
+                        address: newServerAddress,
+                        timeout: setTimeout(() => {
+                            addressMap.delete(keyword);
+                            addressListeners.getValues().forEach((callback) => callback(keyword));
+                        }, 2 * discoveryConfig.discoveryInterval)
+                    });
+                } else {
+                    storedAddress.address = newServerAddress;
+                    clearTimeout(storedAddress.timeout);
+                    storedAddress.timeout = setTimeout(() => {
+                        addressMap.delete(keyword);
+                        addressListeners.getValues().forEach((callback) => callback(keyword));
+                    }, 2 * discoveryConfig.discoveryInterval);
                 }
-                if (discoveryTimeout) {
-                    clearTimeout(discoveryTimeout);
+                if (notifyListeners) {
+                    addressListeners.getValues().forEach((callback) => callback(keyword));
                 }
-                discoveryTimeout = setTimeout(() => {
-                    serverAddress = undefined;
-                    addressListeners.getValues().forEach((callback) => callback(serverAddress));
-                }, 2 * discoveryConfig.discoveryInterval);
             }
         });
 
-        discoverySocket.on('error', (err) => {
-            throw new Error('Discovery socket error: ' + err);
+        discoverySocket.on('error', () => {
+            console.log('Discovery socket failed. Retrying...');
+            stop();
+            setTimeout(start, discoveryConfig.discoveryInterval);
         });
         discoverySocket.bind(discoveryConfig.discoveryPort);
     }
@@ -58,32 +68,29 @@ const stop = () => {
         discoverySocket.close();
         discoverySocket = undefined;
     }
-    if (discoveryTimeout) {
-        clearTimeout(discoveryTimeout);
-        discoveryTimeout = undefined;
+    addressMap.forEach((address) => clearTimeout(address.timeout));
+    addressMap.clear();
+}
+
+const addServerAddressChangeListener = (callback: (keyword: string) => void) => {
+    if (addressListeners.isEmpty()) {
+        start();
     }
-}
-
-const isStarted = () => {
-    return !!discoverySocket;
-}
-
-const addServerAddressChangeListener = (callback: (serverAddress: string | undefined) => void) => {
     return addressListeners.add(callback);
 }
 
 const removeServerAddressChangeListener = (key: string) => {
     addressListeners.remove(key);
+    if (addressListeners.isEmpty()) {
+        stop();
+    }
 }
 
-const getServerAddress = () => {
-    return serverAddress;
+const getServerAddress = (keyword: string) => {
+    return addressMap.get(keyword)?.address;
 }
 
 const DefaultDiscoveryService: DiscoveryService = {
-    start,
-    stop,
-    isStarted,
     addServerAddressChangeListener,
     removeServerAddressChangeListener,
     getServerAddress,

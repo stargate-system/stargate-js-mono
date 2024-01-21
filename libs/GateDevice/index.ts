@@ -1,6 +1,6 @@
 import {Directions, ConnectionState} from "gate-core";
 import GateDevice from "./src/api/GateDevice.js";
-import {DeviceState} from "./src/api/DeviceState.js";
+import {DeviceState} from "./src/device/DeviceState.js";
 import config from "./config.js";
 
 if (process.env.HUB_DISCOVERY_PORT) {

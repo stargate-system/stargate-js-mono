@@ -14,7 +14,7 @@ import {
 } from "gate-core";
 import config from "../../config.js";
 import ValueFactory from "../values/ValueFactory.js";
-import {DeviceState} from "./DeviceState.js";
+import {DeviceState} from "../device/DeviceState.js";
 import {initLocalServer} from "../connection/LocalServer.js";
 import fs from 'fs';
 
