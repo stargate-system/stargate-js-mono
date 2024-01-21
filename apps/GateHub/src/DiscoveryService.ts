@@ -1,10 +1,6 @@
-import dgram from "dgram";
 import express from 'express';
 import config from "../config";
-
-let serverAddress: string | undefined;
-let discoveryRunning = false;
-let discoveryTimeout: NodeJS.Timeout | undefined;
+import {DefaultDiscoveryService} from 'gate-core';
 
 interface DiscoveryService {
     initialize: () => void,
@@ -17,49 +13,47 @@ const initialize = () => {
     const DISCOVERY_INTERVAL = process.env.DISCOVERY_INTERVAL ? Number.parseInt(process.env.DISCOVERY_INTERVAL) : config.discoveryInterval;
     const DISCOVERY_PORT = process.env.DISCOVERY_PORT ? Number.parseInt(process.env.DISCOVERY_PORT) : config.discoveryPort;
 
-    if (!discoveryRunning) {
+    if (!DefaultDiscoveryService.isStarted()) {
         const app = express();
         const port = HUB_DISCOVERY_PORT;
         app.get('/', function(req, res) {
-            if (serverAddress !== undefined) {
-                res.send(serverAddress);
+            if (DefaultDiscoveryService.getServerAddress() !== undefined) {
+                res.send(DefaultDiscoveryService.getServerAddress());
             } else {
                 res.sendStatus(204);
             }
         });
         app.listen(port);
 
-        discoveryRunning = true;
-        serverAddress = undefined;
-        const socket = dgram.createSocket('udp4');
+        DefaultDiscoveryService.setConfig({
+            discoveryPort: DISCOVERY_PORT,
+            discoveryInterval: DISCOVERY_INTERVAL,
+            discoveryKeyword: DISCOVERY_KEYWORD
+        });
 
-        socket.on('message', function (message, remote) {
-            const [keyword, port] = message.toString().split(':');
-            if (keyword === DISCOVERY_KEYWORD) {
-                if (serverAddress === undefined) {
-                    console.log("Server detected at " + remote.address + ', port ' + port);
-                }
-                if (discoveryTimeout) {
-                    clearTimeout(discoveryTimeout);
-                }
-                serverAddress = remote.address + ':' + port;
-                discoveryTimeout = setTimeout(() => {
-                    serverAddress = undefined;
-                    console.log("Server offline");
-                }, 2 * DISCOVERY_INTERVAL);
+        DefaultDiscoveryService.addServerAddressChangeListener((serverAddress) => {
+            if (serverAddress) {
+                console.log("Server detected at " + serverAddress);
+            } else {
+                console.log("Server offline");
             }
         });
 
-        socket.on('error', () => {
-            console.log('Discovery socket failed. Retrying...');
-            setTimeout(() => socket.bind(DISCOVERY_PORT), DISCOVERY_INTERVAL);
-        });
-        socket.bind(DISCOVERY_PORT);
+        startDiscovery(DISCOVERY_INTERVAL);
+    }
+}
+
+const startDiscovery = (retryInterval: number) => {
+    try {
+        DefaultDiscoveryService.start();
+    } catch (err) {
+        console.log('Discovery socket failed. Retrying...');
+        setTimeout(startDiscovery, retryInterval);
     }
 }
 
 const getServerAddress = () => {
-    return serverAddress;
+    return DefaultDiscoveryService.getServerAddress();
 }
 
 const discoveryService: DiscoveryService = {

@@ -23,6 +23,8 @@ import {SystemImage} from "./src/interfaces/SystemImage";
 import {ValidManifest} from "./src/interfaces/ValidManifest";
 import AddressMapper from "./src/components/AddressMapper";
 import {ConnectionType} from "./src/constants/ConnectionType";
+import {DiscoveryService} from "./src/components/connection/interfaces/DiscoveryService";
+import DefaultDiscoveryService from "./src/components/connection/components/DefaultDiscoveryService";
 
 export {
     CoreConfig,
@@ -49,5 +51,7 @@ export {
     SystemImage,
     ValidManifest,
     AddressMapper,
-    ConnectionType
+    ConnectionType,
+    DiscoveryService,
+    DefaultDiscoveryService
 }
