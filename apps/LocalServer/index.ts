@@ -5,6 +5,8 @@ import {initConnectionService} from "./src/ConnectionService";
 import Router from "./src/Router";
 import {initDeviceContext} from "./src/device/DeviceContext";
 import config from "./config";
+import ip from 'ip';
+import fs from 'fs';
 
 if (process.env.HTTP_PORT) {
     config.httpPort = Number.parseInt(process.env.HTTP_PORT);
@@ -26,6 +28,18 @@ if (process.env.BROADCASTING_PORT) {
 }
 if (process.env.ENABLE_DISCOVERY) {
     config.enableDiscovery = process.env.ENABLE_DISCOVERY.toLowerCase() === 'true';
+}
+
+const serverIp = ip.address();
+if (serverIp) {
+    const serverAddress = 'http://' + serverIp + ':' + config.httpPort;
+    fs.writeFile('ServerLink.txt',
+        serverAddress,
+        (err) => {
+        if (err) {
+            console.log('On saving server link', err);
+        }
+    });
 }
 
 const app = express();
