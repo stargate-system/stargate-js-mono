@@ -5,7 +5,7 @@ import {
     ValueTypes
 } from "gate-core";
 import {DeviceValue} from "./DeviceValue.js";
-import {device} from "../api/GateDevice.js";
+import {device} from "../device/GateDevice.js";
 
 const createManifest = (type: ValueTypes, direction: Directions, name?: string): ValueManifest => {
     if (device.isStarted) {

@@ -20,7 +20,13 @@ const setConfig = (config: DiscoveryServiceConfig) => {
     };
 }
 
+let retryTimeout: NodeJS.Timeout | undefined;
+
 const start = () => {
+    if (retryTimeout) {
+        clearTimeout(retryTimeout);
+        retryTimeout = undefined;
+    }
     if (!discoverySocket) {
         discoverySocket = dgram.createSocket('udp4');
 
@@ -57,13 +63,17 @@ const start = () => {
         discoverySocket.on('error', () => {
             console.log('Discovery socket failed. Retrying...');
             stop();
-            setTimeout(start, discoveryConfig.discoveryInterval);
+            retryTimeout = setTimeout(start, discoveryConfig.discoveryInterval);
         });
         discoverySocket.bind(discoveryConfig.discoveryPort);
     }
 }
 
 const stop = () => {
+    if (retryTimeout) {
+        clearTimeout(retryTimeout);
+        retryTimeout = undefined;
+    }
     if (discoverySocket) {
         discoverySocket.close();
         discoverySocket = undefined;

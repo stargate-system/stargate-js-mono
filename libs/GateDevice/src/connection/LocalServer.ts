@@ -1,51 +1,58 @@
 import {WebSocket} from 'ws';
-import dgram from "dgram";
 import {ConnectionType, Keywords, SocketWrapper} from "gate-core";
-import {device} from "../api/GateDevice.js";
+import {device} from "../device/GateDevice.js";
 import fs from 'fs';
 import config from "../../config.js";
+import {DefaultDiscoveryService} from 'gate-core'
 
 let handshakeTimeout: NodeJS.Timeout | undefined;
+let addressListenerKey: string | undefined;
 
 export const initLocalServer = () => {
-
-    const socket = dgram.createSocket('udp4');
-
-    socket.on('message', function (message, remote) {
-        const [keyword, port] = message.toString().split(':');
+    DefaultDiscoveryService.setConfig(config);
+    if (addressListenerKey) {
+        DefaultDiscoveryService.removeServerAddressChangeListener(addressListenerKey);
+    }
+    addressListenerKey = DefaultDiscoveryService.addServerAddressChangeListener((keyword) => {
         if (keyword === config.discoveryKeyword) {
-            const serverIp = remote.address;
-            console.log("Discovered server ip: " + serverIp + ', port: ' + port);
-            socket.close();
-            connect(serverIp + ':' + port);
+            const serverAddress = DefaultDiscoveryService.getServerAddress(config.discoveryKeyword);
+            if (serverAddress) {
+                console.log('Detected server on ' + serverAddress);
+                connect(serverAddress);
+            }
         }
     });
-
-    socket.on('error', () => {
-        checkHub(socket);
-    });
-    socket.bind(config.discoveryPort);
+    checkHub();
 }
 
-const checkHub = (socket: dgram.Socket) => {
+const checkHub = () => {
     fetch(`http://localhost:${config.hubDiscoveryPort}?keyword=${config.discoveryKeyword}`).then((response) => {
         if (response.status === 204) {
-            console.log("Waiting for server ip...")
-            setTimeout(() => checkHub(socket), config.discoveryInterval);
+            console.log("Waiting for server address from GateHub...");
+            if (addressListenerKey) {
+                DefaultDiscoveryService.removeServerAddressChangeListener(addressListenerKey);
+                addressListenerKey = undefined;
+            }
+            setTimeout(() => checkHub(), config.discoveryInterval);
         } else {
             response.text().then((serverAddress) => {
-                console.log("Received server address: " + serverAddress);
-                socket.close();
+                console.log("Received server address from GateHub: " + serverAddress);
                 connect(serverAddress);
             });
         }
     }).catch(() => {
-        console.log('Binding discovery socket failed. Retrying...');
-        setTimeout(() => socket.bind(config.discoveryPort), config.discoveryInterval);
+        if (!addressListenerKey) {
+            initLocalServer();
+        }
+        console.log('GateHub appears to be offline');
     });
 }
 
 const connect = (serverAddress: string) => {
+    if (addressListenerKey) {
+        DefaultDiscoveryService.removeServerAddressChangeListener(addressListenerKey);
+        addressListenerKey = undefined;
+    }
     const socket = new WebSocket('ws://' + serverAddress);
     const socketWrapper: SocketWrapper = {
         send: socket.send.bind(socket),

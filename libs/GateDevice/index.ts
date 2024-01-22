@@ -1,5 +1,5 @@
 import {Directions, ConnectionState} from "gate-core";
-import GateDevice from "./src/api/GateDevice.js";
+import GateDevice from "./src/device/GateDevice.js";
 import {DeviceState} from "./src/device/DeviceState.js";
 import config from "./config.js";
 
