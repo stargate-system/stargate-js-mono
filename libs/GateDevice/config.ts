@@ -8,7 +8,9 @@ const config = {
   outputBufferDelay: 0,
   queryTimeout: 5000,
   handshakeTimeout: 5000,
-  usePing: false
+  usePing: false,
+  useFixedUrl: false,
+  fixedUrl: 'localhost:10002'
 }
 
 export default config;

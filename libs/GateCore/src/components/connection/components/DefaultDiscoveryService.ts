@@ -100,10 +100,52 @@ const getServerAddress = (keyword: string) => {
     return addressMap.get(keyword)?.address;
 }
 
+const executeWhenServerFound = (keyword: string, callback: (serverAddress: string) => void, hubDiscoveryPort?: number) => {
+    const addressListenerKey = addServerAddressChangeListener((receivedKeyword) => {
+        if (receivedKeyword === keyword) {
+            const serverAddress = getServerAddress(keyword);
+            if (serverAddress) {
+                console.log('Detected server on ' + serverAddress);
+                removeServerAddressChangeListener(addressListenerKey);
+                callback(serverAddress);
+            }
+        }
+    });
+    if (hubDiscoveryPort) {
+        checkHub(keyword, callback, hubDiscoveryPort, addressListenerKey);
+    }
+}
+
+const checkHub = (keyword: string, callback: (serverAddress: string) => void, hubDiscoveryPort: number, addressListenerKey?: string) => {
+    fetch(`http://localhost:${hubDiscoveryPort}?keyword=${keyword}`).then((response) => {
+        if (response.status === 204) {
+            console.log("Waiting for server address from GateHub...");
+            if (addressListenerKey) {
+                removeServerAddressChangeListener(addressListenerKey);
+            }
+            setTimeout(() => checkHub(keyword, callback, hubDiscoveryPort), discoveryConfig.discoveryInterval);
+        } else {
+            response.text().then((serverAddress) => {
+                console.log("Received server address from GateHub: " + serverAddress);
+                if (addressListenerKey) {
+                    removeServerAddressChangeListener(addressListenerKey);
+                }
+                callback(serverAddress);
+            });
+        }
+    }).catch(() => {
+        if (!addressListenerKey) {
+            executeWhenServerFound(keyword, callback, hubDiscoveryPort);
+        }
+        console.log('GateHub appears to be offline');
+    });
+}
+
 const DefaultDiscoveryService: DiscoveryService = {
     addServerAddressChangeListener,
     removeServerAddressChangeListener,
     getServerAddress,
+    executeWhenServerFound,
     setConfig
 }
 

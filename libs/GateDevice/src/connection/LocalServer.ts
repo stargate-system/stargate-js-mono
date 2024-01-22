@@ -6,53 +6,17 @@ import config from "../../config.js";
 import {DefaultDiscoveryService} from 'gate-core'
 
 let handshakeTimeout: NodeJS.Timeout | undefined;
-let addressListenerKey: string | undefined;
 
 export const initLocalServer = () => {
-    DefaultDiscoveryService.setConfig(config);
-    if (addressListenerKey) {
-        DefaultDiscoveryService.removeServerAddressChangeListener(addressListenerKey);
+    if (config.useFixedUrl) {
+        connect(config.fixedUrl);
+    } else {
+        DefaultDiscoveryService.setConfig(config);
+        DefaultDiscoveryService.executeWhenServerFound(config.discoveryKeyword, connect, config.hubDiscoveryPort);
     }
-    addressListenerKey = DefaultDiscoveryService.addServerAddressChangeListener((keyword) => {
-        if (keyword === config.discoveryKeyword) {
-            const serverAddress = DefaultDiscoveryService.getServerAddress(config.discoveryKeyword);
-            if (serverAddress) {
-                console.log('Detected server on ' + serverAddress);
-                connect(serverAddress);
-            }
-        }
-    });
-    checkHub();
-}
-
-const checkHub = () => {
-    fetch(`http://localhost:${config.hubDiscoveryPort}?keyword=${config.discoveryKeyword}`).then((response) => {
-        if (response.status === 204) {
-            console.log("Waiting for server address from GateHub...");
-            if (addressListenerKey) {
-                DefaultDiscoveryService.removeServerAddressChangeListener(addressListenerKey);
-                addressListenerKey = undefined;
-            }
-            setTimeout(() => checkHub(), config.discoveryInterval);
-        } else {
-            response.text().then((serverAddress) => {
-                console.log("Received server address from GateHub: " + serverAddress);
-                connect(serverAddress);
-            });
-        }
-    }).catch(() => {
-        if (!addressListenerKey) {
-            initLocalServer();
-        }
-        console.log('GateHub appears to be offline');
-    });
 }
 
 const connect = (serverAddress: string) => {
-    if (addressListenerKey) {
-        DefaultDiscoveryService.removeServerAddressChangeListener(addressListenerKey);
-        addressListenerKey = undefined;
-    }
     const socket = new WebSocket('ws://' + serverAddress);
     const socketWrapper: SocketWrapper = {
         send: socket.send.bind(socket),
@@ -61,11 +25,12 @@ const connect = (serverAddress: string) => {
         setOnMessage: (callback) => socket.on('message', (ev: any) => callback(ev.toString()))
     }
     socket.onopen = () => {
+        console.log('Connected to ' + serverAddress);
         handleConnection(socketWrapper);
     }
     socket.on('error', console.log);
     socket.on('close', () => {
-        console.log('Reconnecting...');
+        console.log('Connection closed. Reconnecting...');
         setTimeout(initLocalServer, 5000);
     });
 }
@@ -100,6 +65,7 @@ const setHandshakeListeners = () => {
         }
     });
     functionalHandler.addCommandListener(Keywords.ready, () => {
+        console.log('Connection ready');
         device.connection.setReady();
     });
 };

@@ -30,6 +30,12 @@ if (process.env.OUTPUT_BUFFER_DELAY) {
 if (process.env.USE_PING) {
     config.usePing = process.env.USE_PING.toLowerCase() === 'true';
 }
+if (process.env.USE_FIXED_URL) {
+    config.useFixedUrl = process.env.USE_FIXED_URL.toLowerCase() === 'true';
+}
+if (process.env.FIXED_URL) {
+    config.fixedUrl = process.env.FIXED_URL;
+}
 
 export {
     Directions,
