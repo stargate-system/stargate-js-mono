@@ -1,8 +1,8 @@
 {
-  "name": "gate-device",
+  "name": "gate-discovery",
   "version": "1.0.0",
   "private": true,
-  "description": "Library for device end",
+  "description": "Library for discovering server address within local network",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
@@ -11,8 +11,6 @@
   "author": "Michał Marchel",
   "license": "ISC",
   "dependencies": {
-    "gate-core": "^1.0.0",
-    "gate-discovery": "^1.0.0",
-    "ws": "^8.14.2"
+    "gate-core": "^1.0.0"
   }
 }

@@ -5,10 +5,11 @@ import {
     DefaultConnection,
     GateValue,
     Keywords,
-    SocketWrapper
+    SocketWrapper,
+    EventName,
+    SubscriptionBuffer
 } from "gate-core";
 import {SystemConnector} from "gate-viewmodel";
-import {EventName, SubscriptionBuffer} from "gate-core";
 
 const connection = new DefaultConnection(true);
 const subscriptionBuffer = new SubscriptionBuffer(

@@ -1,6 +1,6 @@
 import express from 'express';
 import config from "../config";
-import {DefaultDiscoveryService} from 'gate-core';
+import {DefaultDiscoveryService} from 'gate-discovery';
 
 const HUB_DISCOVERY_PORT = process.env.HUB_DISCOVERY_PORT ? Number.parseInt(process.env.HUB_DISCOVERY_PORT) : config.hubDiscoveryPort;
 const DISCOVERY_KEYWORD = process.env.DISCOVERY_KEYWORD ?? config.discoveryKeyword;

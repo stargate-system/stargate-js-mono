@@ -1,6 +1,5 @@
-import {DiscoveryService, DiscoveryServiceConfig} from "../interfaces/DiscoveryService";
-import CoreConfig from "../../../constants/CoreConfig";
-import {Registry} from "../../Registry";
+import {DiscoveryService, DiscoveryServiceConfig} from "./DiscoveryService";
+import {Registry, CoreConfig} from "gate-core";
 import dgram from "dgram";
 
 const addressListeners = new Registry<(keyword: string) => void>();

@@ -4,7 +4,9 @@
   "description": "Monorepo for js code",
   "workspaces": [
     "./libs/GateCore",
+    "./libs/GateDiscovery",
     "./libs/GateDevice",
+    "./libs/GateController",
     "./libs/GateViewModel",
     "./apps/LocalServer",
     "./apps/LocalFrontend",
@@ -16,11 +18,13 @@
   "scripts": {
     "build:local": "npm -w apps/LocalFrontend run build",
     "build:core": "npm -w libs/GateCore run build",
+    "build:discovery": "npm -w libs/GateDiscovery run build",
     "build:device": "npm -w libs/GateDevice run build",
+    "build:controller": "npm -w libs/GateController run build",
     "build:model": "npm -w libs/GateViewModel run build",
     "build:server": "npm -w apps/LocalServer run build",
     "build:hub": "npm -w apps/GateHub run build",
-    "build:libs": "run-s build:core build:device build:model",
+    "build:libs": "run-s build:core build:discovery build:device build:model build:controller",
     "build": "run-s build:libs build:local build:server",
     "dev:local": "npm -w apps/LocalFrontend run dev",
     "start:server": "npm -w apps/LocalServer run start",
@@ -37,6 +41,8 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.0",
     "@fortawesome/free-solid-svg-icons": "^6.5.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "gate-controller": "^1.0.0",
+    "gate-discovery": "^1.0.0",
     "next": "14.0.0",
     "react": "^18.2.0",
     "react-dom": "^18"

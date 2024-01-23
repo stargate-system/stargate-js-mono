@@ -108,4 +108,8 @@ export class SystemModel {
     get pipes(): ModelMap<PipeModel> {
         return this._pipes;
     }
+
+    close = () => {
+        this._systemConnector.disconnect();
+    }
 }

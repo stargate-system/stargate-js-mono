@@ -1,6 +1,4 @@
 import React, {ReactElement, useEffect, useMemo, useState} from "react";
-import {SystemModel} from "gate-viewmodel";
-import LocalServerConnector from "@/service/LocalServerConnector";
 import SystemDashboard from "../../../components/SystemDashboard/SystemDashboard";
 import CardsComponent from "../../../components/CardsComponent/CardsComponent";
 import styles from "../styles/Home.module.css";
@@ -9,8 +7,9 @@ import ModalComponent from "../../../components/ModalComponent/ModalComponent";
 import Spinner from "../../../components/Spinner/Spinner";
 import ModalContext, {ModalInterface} from "../service/ModalContext";
 import PipesDashboard from "../../../components/PipesDashboard/PipesDashboard";
+import {getSystemModel} from "gate-controller";
 
-const model = new SystemModel(LocalServerConnector);
+const model = getSystemModel();
 const cardNames = {
     devices: "Devices",
     pipes: "Pipes"
@@ -58,8 +57,8 @@ const Home = () => {
     }, [pipesAvailable]);
 
     useEffect(() => {
-        const stateListenerKey = LocalServerConnector.addStateChangeListener((state) => {
-            setConnectionReady(state === ConnectionState.ready);
+        const stateListenerKey = model.state.subscribe(() => {
+            setConnectionReady(model.state.value === ConnectionState.ready);
         });
 
         const devicesListenerKey = model.devices.subscribe(() => {
@@ -67,9 +66,8 @@ const Home = () => {
         });
 
         return () => {
-            LocalServerConnector.removeStateChangeListener(stateListenerKey);
+            model.state.unsubscribe(stateListenerKey);
             model.devices.unsubscribe(devicesListenerKey);
-            LocalServerConnector.disconnect();
         };
     }, []);
 
