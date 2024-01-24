@@ -1,6 +1,6 @@
-export const autostart = [
-    ["../..", "npm run device:local"],
-    ["../..", "npm run device:test"],
-    ["../../examples/PipedDevices/PipeTest1", "npm run start"],
-    ["../../examples/PipedDevices/PipeTest2", "npm run start"]
+export const autostart: Array<[string, string]> = [
+    // Put here processes you want to start together with GateHub in format
+    // [<working directory>, <command to run>]
+    // example:
+    // ['./exampleDir', 'node exampleFile.js']
 ];

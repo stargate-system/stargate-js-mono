@@ -25,7 +25,7 @@
     "build:server": "npm -w apps/LocalServer run build",
     "build:hub": "npm -w apps/GateHub run build",
     "build:libs": "run-s build:core build:discovery build:device build:model build:controller",
-    "build": "run-s build:libs build:local build:server",
+    "build": "run-s build:libs build:local build:server build:hub",
     "dev:local": "npm -w apps/LocalFrontend run dev",
     "start:server": "npm -w apps/LocalServer run start",
     "start:hub": "npm -w apps/GateHub run start",

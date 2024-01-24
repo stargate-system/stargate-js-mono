@@ -46,11 +46,6 @@ export class LocalServerConnector implements SystemConnector {
         );
         this.subscribe = this._subscriptionBuffer.subscribe;
         this.unsubscribe = this._subscriptionBuffer.unsubscribe;
-        this._connection.addStateChangeListener((state) => {
-            if (state === ConnectionState.closed) {
-                this.handleConnectionClosed();
-            }
-        });
 
         this._connection.functionalHandler.addCommandListener(Keywords.joinData, (params) => {
             if (params) {
@@ -129,7 +124,7 @@ export class LocalServerConnector implements SystemConnector {
                 this.connectWs(this._config.fixedUrl);
             } else {
                 LocalServerConnector.discovery?.then(discovery => {
-                    discovery.DefaultDiscoveryService.executeWhenServerFound(this._config.discoveryKeyword, this.connectWs);
+                    discovery.DefaultDiscoveryService.executeWhenServerFound(this._config.discoveryKeyword, this.connectWs, this._config.hubDiscoveryPort);
                 });
             }
         }
