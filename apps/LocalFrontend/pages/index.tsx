@@ -58,6 +58,7 @@ const Home = () => {
 
     useEffect(() => {
         setConnectionReady(model.state.value === ConnectionState.ready);
+        setPipesAvailable(model.devices.values.length > 1);
         const stateListenerKey = model.state.subscribe(() => {
             setConnectionReady(model.state.value === ConnectionState.ready);
         });

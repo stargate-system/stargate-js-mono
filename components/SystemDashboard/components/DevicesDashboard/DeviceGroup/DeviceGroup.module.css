@@ -8,20 +8,27 @@
         display: flex;
         flex-direction: row;
         align-items: center;
-        justify-content: flex-start;
-        padding: 0.3rem 0;
+        justify-content: space-between;
+        padding: 0.3rem 0 0.1rem;
         margin: 0.5rem 1rem;
-        border-bottom: 1px solid #ababab;
 
         .name {
-            text-shadow: 1px 1px #8c8c8c, -1px -1px black;
+            color: #f5debf;
+            text-shadow: 1px 1px #000000, -1px -1px #707070;
         }
 
-        .separator {
-            flex-grow: 10;
-            margin: 0 1rem;
-            border-bottom: 1px solid #f5debf;
+        .iconClass {
+            filter:drop-shadow(1px 1px #000000);
+            padding: 0 0.2rem;
         }
+
+        .iconClass:hover {
+            filter:drop-shadow(0 0 2px #2ef621);
+        }
+    }
+
+    .headerOpen {
+        border-bottom: 1px solid #727272;
     }
 
     .devicesContainer {
@@ -39,6 +46,6 @@
 }
 
 .shadow {
-    box-shadow: 0 0 5px #000000;
+    box-shadow: 0 0 3px #ffffff;
     border-radius: 0.5rem;
 }
