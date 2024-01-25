@@ -1,0 +1,44 @@
+.devicesGroup {
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    margin: 1rem 0.5rem;
+
+    .headerContainer {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: flex-start;
+        padding: 0.3rem 0;
+        margin: 0.5rem 1rem;
+        border-bottom: 1px solid #ababab;
+
+        .name {
+            text-shadow: 1px 1px #8c8c8c, -1px -1px black;
+        }
+
+        .separator {
+            flex-grow: 10;
+            margin: 0 1rem;
+            border-bottom: 1px solid #f5debf;
+        }
+    }
+
+    .devicesContainer {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        flex-wrap: wrap;
+
+        @media only screen and (max-device-width: 480px) and (orientation: portrait) {
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+    }
+}
+
+.shadow {
+    box-shadow: 0 0 5px #000000;
+    border-radius: 0.5rem;
+}

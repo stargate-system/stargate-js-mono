@@ -41,12 +41,14 @@ const addController = async (controller: ControllerConnector) => {
     controller.onPipeRemoved = (pipe: [string, string]) => {
         DeviceContext.removePipe(pipe);
     }
+    console.log('Connected controller ' + controller.id);
 }
 
 const controllerDisconnected = (controller: ControllerConnector) => {
     if (controller.id) {
         controllerRegistry.remove(controller.id);
         DeviceContext.unsubscribeConsumer(controller.id);
+        console.log('Disconnected controller ' + controller.id);
     }
 }
 

@@ -50,6 +50,7 @@ const BasicSystemRepository: SystemRepository = {
         if (index !== -1) {
             manifest.id = systemImage.devices[index].id;
             manifest.deviceName = systemImage.devices[index].deviceName;
+            manifest.group = systemImage.devices[index].group;
             systemImage.devices[index] = manifest;
         } else {
             manifest.id = generateId();

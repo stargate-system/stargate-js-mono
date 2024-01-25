@@ -10,6 +10,7 @@ export class DeviceModel {
     private readonly _state: ModelValue<DeviceState>;
     private readonly _gateValues: ModelMap<GateValueModel>;
     private readonly _name: ModelValue<string>;
+    private readonly _group: ModelValue<string | undefined>;
     private readonly _systemConnector: SystemConnector;
 
     constructor(systemConnector: SystemConnector, manifest: ValidManifest, isConnected: boolean) {
@@ -31,6 +32,7 @@ export class DeviceModel {
             }
         });
         this._name = new ModelValue<string>(manifest.deviceName ?? '');
+        this._group = new ModelValue<string | undefined>(manifest.group);
         this._state.subscribe(() => {
             this._gateValues.values.forEach((value) => {
                 value.state.setValue(this._state.value ?? DeviceState.down);
@@ -61,5 +63,9 @@ export class DeviceModel {
 
     get name(): ModelValue<string>{
         return this._name;
+    }
+
+    get group(): ModelValue<string | undefined> {
+        return this._group;
     }
 }

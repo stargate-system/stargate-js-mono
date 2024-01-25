@@ -48,7 +48,7 @@ export class Device {
                 DeviceContext.deviceRegistry.remove(this._id);
                 DeviceContext.notifyPipes(EventName.deviceDisconnected, this._id)
                 ControllerContext.forwardDeviceEvent(EventName.deviceDisconnected, [this._id]);
-                console.log("Disconnected: " + this._id);
+                console.log("Disconnected device: " + this._id);
             }
         });
         try {
@@ -61,7 +61,7 @@ export class Device {
             this._connection.close();
             throw new Error('Failed registering device: ' + err);
         }
-        console.log("Connected: " + this._id);
+        console.log("Connected device: " + this._id);
     }
 
     get id(): string {

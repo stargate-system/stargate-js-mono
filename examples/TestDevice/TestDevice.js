@@ -43,6 +43,7 @@ testStringIn.onRemoteUpdate = () => {
 }
 
 GateDevice.setName('Test device');
+GateDevice.setGroup('Test devices');
 const deviceState = GateDevice.start();
 
 deviceState.onStateChange = (state) => {

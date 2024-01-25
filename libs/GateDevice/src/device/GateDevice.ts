@@ -28,12 +28,21 @@ interface Device {
 }
 
 let deviceName = "New Device";
+let groupName: string | undefined;
 
 const setName = (name: string) => {
     if (!device.isStarted) {
         deviceName = name;
     } else {
         console.log('WARNING: Attempting to change device name after device started');
+    }
+}
+
+const setGroup = (name: string) => {
+    if (!device.isStarted) {
+        groupName = name;
+    } else {
+        console.log('WARNING: Attempting to change device group after device started');
     }
 }
 
@@ -63,6 +72,9 @@ const start = (): DeviceState => {
             values: [
                 ...device.values.getValues().map((value: GateValue<any>) => value.toManifest())
             ]
+        }
+        if (groupName) {
+            device.manifest.group = groupName;
         }
         startConnection();
     }
@@ -141,6 +153,7 @@ export const device: Device = {
 
 export default {
     setName,
+    setGroup,
     start,
     config,
     ValueFactory
