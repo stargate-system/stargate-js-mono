@@ -43,6 +43,29 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
         )
     }
 
+    const GroupModalBody: React.FC<{nameRef: MutableRefObject<string>}> = (props) => {
+        const {nameRef} = props;
+        const [groupName, setGroupName] = useState(nameRef.current);
+
+        return (
+            <div className={styles.modalBodyContainer}>
+                <div>
+                    -- Existing groups --
+                </div>
+                Group name:
+                <input
+                    type='text'
+                    onInput={(ev: any) => {
+                        nameRef.current = ev.target.value;
+                        setGroupName(ev.target.value);
+                    }}
+                    value={groupName}
+                    className={styles.newNameInput}
+                />
+            </div>
+        )
+    }
+
     const onRename = () => {
         if (modal) {
             newNameRef.current = deviceName ?? '';
@@ -71,11 +94,29 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
         }
     }
 
+    const onGroup = () => {
+        if (modal) {
+            newNameRef.current = deviceModel.group.value ?? '';
+            modal.openModal(
+                <StandardModal
+                    onApprove={() => deviceModel.addToGroup(newNameRef.current)}
+                    approveLabel={'Save'}
+                >
+                    <GroupModalBody nameRef={newNameRef}/>
+                </StandardModal>
+            )
+        }
+    }
+
     const menuItems = useMemo(() => {
         const items = [
             {
                 label: 'Rename',
                 callback: onRename
+            },
+            {
+                label: 'Group',
+                callback: onGroup
             }
         ]
         if (!isActive) {
