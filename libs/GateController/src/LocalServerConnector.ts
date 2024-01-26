@@ -94,6 +94,12 @@ export class LocalServerConnector implements SystemConnector {
             }
         });
 
+        this._connection.functionalHandler.addCommandListener(EventName.addedToGroup, (params) => {
+            if (params && this.onDeviceEvent) {
+                this.onDeviceEvent(EventName.addedToGroup, params);
+            }
+        });
+
         this._connection.onValueMessage = (valueMessage) => {
             if (this.onValueMessage) {
                 this.onValueMessage(valueMessage);
@@ -171,7 +177,10 @@ export class LocalServerConnector implements SystemConnector {
                 send: socket.send.bind(socket),
                 close: socket.close.bind(socket),
                 setOnClose: (callback: () => void) => {
-                    socket.onclose = callback;
+                    socket.onclose = () => {
+                        callback();
+                        this.handleConnectionClosed();
+                    };
                 },
                 setOnMessage: (callback: (message: string) => void) => {
                     socket.onmessage = (ev) => callback(ev.data);

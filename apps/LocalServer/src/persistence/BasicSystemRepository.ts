@@ -81,6 +81,16 @@ const BasicSystemRepository: SystemRepository = {
     removePipe: (pipe: [string, string]) => {
         systemImage.pipes = systemImage.pipes.filter((storedPipe) => storedPipe[0] !== pipe[0] || storedPipe[1] !== pipe[1]);
         saveRepository();
+    },
+    addDevicesToGroup: (groupName: string | undefined, deviceIds: string[]) => {
+        deviceIds.forEach((id) => {
+            const device = systemImage.devices.find((manifest) => manifest.id === id);
+            const groupValue = (groupName !== undefined && groupName.length > 0) ? groupName : undefined;
+            if (device) {
+                device.group = groupValue;
+            }
+        });
+        saveRepository();
     }
 }
 

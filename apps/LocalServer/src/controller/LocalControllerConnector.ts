@@ -13,6 +13,7 @@ export class LocalControllerConnector implements ControllerConnector {
     onDeviceRenamed: (id: string, newName: string) => void = () => {};
     onPipeCreated: (pipe: [string, string]) => void = () => {};
     onPipeRemoved: (pipe: [string, string]) => void = () => {};
+    onAddedToGroup: (groupName: string | undefined, deviceIds: string[]) => void = () => {};
 
     private readonly _connection: Connection;
 
@@ -49,6 +50,11 @@ export class LocalControllerConnector implements ControllerConnector {
         functionalHandler.addCommandListener(EventName.pipeRemoved, (params) => {
             if (params && params[0] && params[1]) {
                 this.onPipeRemoved([params[0], params[1]]);
+            }
+        });
+        functionalHandler.addCommandListener(EventName.addedToGroup, (params) => {
+            if (params && params.length > 1) {
+                this.onAddedToGroup(params[0].length > 0 ? params[0] : undefined, params.slice(1));
             }
         });
         this._connection.setReady();

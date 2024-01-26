@@ -7,5 +7,6 @@ export interface SystemRepository {
     removeDevice: (id: string) => void,
     renameDevice: (id: string, newName: string) => void,
     createPipe: (pipe: [string, string]) => boolean,
-    removePipe: (pipe: [string, string]) => void
+    removePipe: (pipe: [string, string]) => void,
+    addDevicesToGroup: (groupName: string | undefined, deviceIds: string[]) => void
 }

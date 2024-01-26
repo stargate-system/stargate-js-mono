@@ -6,7 +6,6 @@ import ValueSelect from "./components/ValueSelect/ValueSelect";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowDown} from "@fortawesome/free-solid-svg-icons";
 import {AddressMapper, EventName} from "gate-core";
-import LocalServerConnector from "local-frontend/service/LocalServerConnector";
 
 interface NewPipeModalProps {
     systemModel: SystemModel
@@ -75,7 +74,7 @@ const NewPipeModal = (props: NewPipeModalProps) => {
 
     const onCreatePipe = () => {
         if (sourceValue && targetValue) {
-            LocalServerConnector.sendDeviceEvent(EventName.pipeCreated, [sourceValue.id, targetValue.id]);
+            systemModel.systemConnector.sendDeviceEvent(EventName.pipeCreated, [sourceValue.id, targetValue.id]);
         }
     }
 

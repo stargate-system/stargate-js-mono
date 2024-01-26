@@ -1,8 +1,7 @@
-import {Registry, ValueMessage} from "gate-core";
+import {EventName, Registry, ValueMessage} from "gate-core";
 import {ControllerConnector} from "./ControllerConnector";
 import Router from "../Router";
 import DeviceContext from "../device/DeviceContext";
-import {EventName} from "gate-core";
 
 const controllerRegistry = new Registry<ControllerConnector>();
 
@@ -40,6 +39,10 @@ const addController = async (controller: ControllerConnector) => {
     }
     controller.onPipeRemoved = (pipe: [string, string]) => {
         DeviceContext.removePipe(pipe);
+    }
+    controller.onAddedToGroup = (groupName: string | undefined, deviceIds: string[]) => {
+        Router.systemRepository.addDevicesToGroup(groupName, deviceIds);
+        controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.addedToGroup, [groupName ?? '', ...deviceIds]));
     }
     console.log('Connected controller ' + controller.id);
 }

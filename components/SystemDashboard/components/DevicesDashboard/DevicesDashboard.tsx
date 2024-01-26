@@ -15,7 +15,7 @@ const DevicesDashboard = () => {
         const newGroupsMap = new Map<string, DeviceModel[]>();
         const newUngrouped: DeviceModel[] = [];
         devices.forEach((model) => {
-            if (model.group.value !== undefined) {
+            if (model.group.value !== undefined && model.group.value.length > 0) {
                 let models = newGroupsMap.get(model.group.value);
                 if (!models) {
                     models = [model];
@@ -35,7 +35,7 @@ const DevicesDashboard = () => {
         <div>
             {!devices.length && <div className={styles.noDevicesContainer}>No devices available</div>}
             <DeviceGroup devices={ungrouped} />
-            {Array.from(groupsMap).map(([group, devices]) => <DeviceGroup devices={devices} group={group} />)}
+            {Array.from(groupsMap).map(([group, devices]) => <DeviceGroup key={group} devices={devices} group={group} />)}
         </div>
     )
 }

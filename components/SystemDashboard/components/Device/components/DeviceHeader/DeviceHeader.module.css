@@ -21,46 +21,6 @@
         display: flex;
         align-items: flex-end;
     }
-
-    .iconClass {
-        filter:drop-shadow(1px 1px #000000);
-    }
-
-    .iconClass:hover {
-        filter:drop-shadow(0 0 2px #2ef621);
-    }
-
-    .dropdownMenuContainer {
-        width: 0;
-        height: 0;
-    }
-
-    .dropdownMenu {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        background-color: #544e4e;
-        width: 5rem;
-        padding: 0.3rem;
-        justify-content: center;
-        top: 0.3rem;
-        right: 5.5rem;
-        border: 1px solid black;
-        outline-style: none;
-        outline-color: transparent;
-
-        .menuItem {
-            padding: 0.3rem;
-        }
-
-        .menuItem:hover {
-            font-weight: bold;
-        }
-
-        .separator {
-            border-bottom: 1px solid black;
-        }
-    }
 }
 
 .modalBodyContainer {

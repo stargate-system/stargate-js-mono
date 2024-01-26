@@ -17,13 +17,20 @@
             text-shadow: 1px 1px #000000, -1px -1px #707070;
         }
 
-        .iconClass {
-            filter:drop-shadow(1px 1px #000000);
-            padding: 0 0.2rem;
-        }
+        .iconContainer {
+            display: flex;
+            flex-direction: row;
+            align-content: center;
 
-        .iconClass:hover {
-            filter:drop-shadow(0 0 2px #2ef621);
+            .iconClass {
+                filter:drop-shadow(1px 1px #000000);
+                padding: 0 0.2rem;
+                cursor: pointer;
+            }
+
+            .iconClass:hover {
+                filter:drop-shadow(0 0 2px #2ef621);
+            }
         }
     }
 
@@ -48,4 +55,30 @@
 .shadow {
     box-shadow: 0 0 3px #ffffff;
     border-radius: 0.5rem;
+    background-color: #242c24;
+}
+
+.modalBodyContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 80vw;
+
+    .newNameInput {
+        font-size: inherit;
+        background-color: transparent;
+        font-family: inherit;
+        text-align: center;
+        border: 1px solid #f5debf;
+        border-radius: 0.3rem;
+        padding: 0.2rem;
+        margin-top: 1rem;
+        max-width: 80vw;
+        color: white;
+    }
+
+    .newNameInput:focus {
+        outline: none;
+    }
 }

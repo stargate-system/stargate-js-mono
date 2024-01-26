@@ -11,7 +11,6 @@ import {PipeDashboardValue} from "./components/Pipe/components/PipeValue";
 import {AddressMapper, EventName} from "gate-core";
 import {PipeModel} from "gate-viewmodel";
 import StandardModal from "../ModalComponent/StandardModal/StandardModal";
-import LocalServerConnector from "local-frontend/service/LocalServerConnector";
 
 interface PipesDashboardProps {
     systemModel: SystemModel
@@ -155,7 +154,7 @@ const PipesDashboard = (props: PipesDashboardProps) => {
 
     const removeSelectedPipes = () => {
         selectedPipes.forEach((pipe) => {
-            LocalServerConnector.sendDeviceEvent(EventName.pipeRemoved, [pipe.source, pipe.target]);
+            systemModel.systemConnector.sendDeviceEvent(EventName.pipeRemoved, [pipe.source, pipe.target]);
         });
         setSelectedPipes([]);
     }

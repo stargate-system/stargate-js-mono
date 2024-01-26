@@ -91,6 +91,19 @@ export class SystemModel {
                         this._pipes.remove(PipeModel.getPipeId(args as [string, string]));
                     }
                     break;
+                case EventName.addedToGroup:
+                    if (args.length > 1) {
+                        const groupName = args[0].length > 0 ? args[0] : undefined;
+                        const deviceIds = args.slice(1);
+                        deviceIds.forEach((deviceId) => {
+                            const device = this._devices.getById(deviceId);
+                            if (device) {
+                                device.group.setValue(groupName);
+                                this._devices.update(device.id, device);
+                            }
+                        })
+                    }
+                    break;
             }
         }
         systemConnector.joinSystem();
@@ -107,6 +120,10 @@ export class SystemModel {
 
     get pipes(): ModelMap<PipeModel> {
         return this._pipes;
+    }
+
+    get systemConnector(): SystemConnector {
+        return this._systemConnector;
     }
 
     close = () => {
