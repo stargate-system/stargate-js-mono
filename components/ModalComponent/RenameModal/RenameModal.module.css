@@ -1,0 +1,24 @@
+.renameModalBodyContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 80vw;
+
+    .newNameInput {
+        font-size: inherit;
+        background-color: transparent;
+        font-family: inherit;
+        text-align: center;
+        border: 1px solid #f5debf;
+        border-radius: 0.3rem;
+        padding: 0.2rem;
+        margin-top: 1rem;
+        max-width: 80vw;
+        color: white;
+    }
+
+    .newNameInput:focus {
+        outline: none;
+    }
+}

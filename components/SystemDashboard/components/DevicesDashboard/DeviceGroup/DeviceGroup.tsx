@@ -1,7 +1,7 @@
 import {DeviceModel} from "gate-viewmodel";
 import Device from "../../Device/Device";
 import styles from './DeviceGroup.module.css';
-import React, {MutableRefObject, useContext, useMemo, useRef, useState} from "react";
+import React, {useContext, useMemo, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import MenuComponent from "../../../../MenuComponent/MenuComponent";
@@ -9,6 +9,7 @@ import ModalContext from "local-frontend/service/ModalContext";
 import StandardModal from "../../../../ModalComponent/StandardModal/StandardModal";
 import SystemModelContext from "../../../../ReactGateViewModel/SystemModelContext";
 import {EventName} from "gate-core";
+import RenameModal from "../../../../ModalComponent/RenameModal/RenameModal";
 
 interface DeviceGroupProps {
     group?: string,
@@ -20,38 +21,15 @@ const DeviceGroup = (props: DeviceGroupProps) => {
     const [open, setOpen] = useState(true);
     const modal = useContext(ModalContext);
     const systemModel = useContext(SystemModelContext);
-    const newNameRef = useRef('');
-
-    const RenameModalBody: React.FC<{nameRef: MutableRefObject<string>}> = (props) => {
-        const {nameRef} = props;
-        const [newGroupName, setNewGroupName] = useState(nameRef.current);
-
-        return (
-            <div className={styles.modalBodyContainer}>
-                {`New name for ${group && group.length ? group : 'group'}`}
-                <input
-                    type='text'
-                    onInput={(ev: any) => {
-                        nameRef.current = ev.target.value;
-                        setNewGroupName(ev.target.value);
-                    }}
-                    value={newGroupName}
-                    className={styles.newNameInput}
-                />
-            </div>
-        )
-    }
 
     const onRename = () => {
         if (modal) {
-            newNameRef.current = group ?? '';
             modal.openModal(
-                <StandardModal
-                    onApprove={() => sendGroupEvent(newNameRef.current)}
-                    approveLabel={'Save'}
-                >
-                    <RenameModalBody nameRef={newNameRef}/>
-                </StandardModal>
+                <RenameModal
+                    currentName={group ?? ''}
+                    header={`New name for ${group && group.length ? group : 'group'}`}
+                    onApprove={(newName) => sendGroupEvent(newName)}
+                />
             )
         }
     }
@@ -91,7 +69,7 @@ const DeviceGroup = (props: DeviceGroupProps) => {
     }, []);
 
     return (
-        <div className={`${styles.devicesGroup} ${group ? styles.shadow : ''}`}>
+        <div className={`${styles.devicesGroup} ${group ? styles.groupDefined : ''}`}>
             {group &&
                 <div className={`${styles.headerContainer} ${open ? styles.headerOpen : ''}`}>
                     <div className={styles.name}>{group}</div>
