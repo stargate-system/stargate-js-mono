@@ -4,6 +4,7 @@ import useModelMap from "../../../ReactGateViewModel/hooks/useModelMap";
 import styles from './DevicesDashboard.module.css';
 import {DeviceModel} from "gate-viewmodel";
 import DeviceGroup from "./DeviceGroup/DeviceGroup";
+import {ConnectionState} from "gate-core";
 
 const DevicesDashboard = () => {
     const systemModel = useContext(SystemModelContext);
@@ -29,6 +30,16 @@ const DevicesDashboard = () => {
         });
         setUngrouped(newUngrouped);
         setGroupsMap(newGroupsMap);
+
+        if (typeof window !== 'undefined' && systemModel.state.value === ConnectionState.ready) {
+            Object.entries(localStorage)
+                .filter((entry) => entry[1] === 'groupClosed')
+                .forEach((entry) => {
+                    if (!newGroupsMap.get(entry[0])) {
+                        localStorage.removeItem(entry[0]);
+                    }
+                });
+        }
     }, [devices]);
 
     return (
