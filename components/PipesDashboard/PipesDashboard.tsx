@@ -8,7 +8,7 @@ import NewPipeModal from "./components/NewPipeModal/NewPipeModal";
 import useModelMap from "../ReactGateViewModel/hooks/useModelMap";
 import Pipe, {PipeViewModel} from "./components/Pipe/Pipe";
 import {PipeDashboardValue} from "./components/Pipe/components/PipeValue";
-import {AddressMapper, EventName} from "gate-core";
+import {AddressMapper} from "gate-core";
 import {PipeModel} from "gate-viewmodel";
 import StandardModal from "../ModalComponent/StandardModal/StandardModal";
 
@@ -154,7 +154,7 @@ const PipesDashboard = (props: PipesDashboardProps) => {
 
     const removeSelectedPipes = () => {
         selectedPipes.forEach((pipe) => {
-            systemModel.systemConnector.sendDeviceEvent(EventName.pipeRemoved, [pipe.source, pipe.target]);
+            systemModel.removePipe(pipe);
         });
         setSelectedPipes([]);
     }

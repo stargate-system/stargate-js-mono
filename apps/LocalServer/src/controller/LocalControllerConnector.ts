@@ -1,7 +1,7 @@
 import {Connection, ConnectionState, Keywords, ValueMessage} from "gate-core";
 import {ControllerConnector} from "./ControllerConnector";
-import {EventName} from "gate-core";
 import {SystemImage} from "gate-core";
+import keywords from "gate-core/dist/src/constants/Keywords";
 
 export class LocalControllerConnector implements ControllerConnector {
     id: string = '';
@@ -9,11 +9,8 @@ export class LocalControllerConnector implements ControllerConnector {
     onSubscribed: (ids: string[]) => void = () => {};
     onUnsubscribed: (ids: string[]) => void  = () => {};
     onValueMessage: (valueMessage: ValueMessage) => void = () => {};
-    onDeviceRemoved: (id: string) => void = () => {};
-    onDeviceRenamed: (id: string, newName: string) => void = () => {};
-    onPipeCreated: (pipe: [string, string]) => void = () => {};
-    onPipeRemoved: (pipe: [string, string]) => void = () => {};
-    onAddedToGroup: (groupName: string | undefined, deviceIds: string[]) => void = () => {};
+    onDeviceEvent: (event: string, data: string[]) => void = () => {};
+    onPipeEvent: (event: string, data: string[]) => void = () => {};
 
     private readonly _connection: Connection;
 
@@ -32,36 +29,27 @@ export class LocalControllerConnector implements ControllerConnector {
         functionalHandler.addCommandListener(Keywords.unsubscribe, (params) => {
             this.onUnsubscribed(params ?? []);
         });
-        functionalHandler.addCommandListener(EventName.deviceRemoved, (params) => {
+        functionalHandler.addCommandListener(Keywords.deviceEvent, (params) => {
             if (params && params[0]) {
-                this.onDeviceRemoved(params[0]);
+                const eventName = params[0];
+                this.onDeviceEvent(eventName, params.slice(1));
             }
         });
-        functionalHandler.addCommandListener(EventName.deviceRenamed, (params) => {
-            if (params && params[0] && params[1]) {
-                this.onDeviceRenamed(params[0], params[1]);
-            }
-        });
-        functionalHandler.addCommandListener(EventName.pipeCreated, (params) => {
-            if (params && params[0] && params[1]) {
-                this.onPipeCreated([params[0], params[1]]);
-            }
-        });
-        functionalHandler.addCommandListener(EventName.pipeRemoved, (params) => {
-            if (params && params[0] && params[1]) {
-                this.onPipeRemoved([params[0], params[1]]);
-            }
-        });
-        functionalHandler.addCommandListener(EventName.addedToGroup, (params) => {
-            if (params && params.length > 1) {
-                this.onAddedToGroup(params[0].length > 0 ? params[0] : undefined, params.slice(1));
+        functionalHandler.addCommandListener(Keywords.pipeEvent, (params) => {
+            if (params && params[0]) {
+                const eventName = params[0];
+                this.onPipeEvent(eventName, params.slice(1));
             }
         });
         this._connection.setReady();
     }
 
-    sendDeviceEvent = (event: EventName, data: string[]) => {
-        this._connection.functionalHandler.sendCommand(event, data);
+    sendDeviceEvent = (event: string, data: string[]) => {
+        this._connection.functionalHandler.sendCommand(keywords.deviceEvent, [event, ...data]);
+    }
+
+    sendPipeEvent = (event: string, data: string[]) => {
+        this._connection.functionalHandler.sendCommand(keywords.pipeEvent, [event, ...data]);
     }
 
     sendJoinData = (systemImage: SystemImage, connectedDevices: string[]) => {

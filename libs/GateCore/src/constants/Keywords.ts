@@ -6,7 +6,9 @@ const Keywords = {
     assignedId: 'assignedId',
     joinData: 'joinData',
     ping: 'ping',
-    type: 'type'
+    type: 'type',
+    deviceEvent: 'deviceEvent',
+    pipeEvent: 'pipeEvent'
 }
 
 export default Keywords;

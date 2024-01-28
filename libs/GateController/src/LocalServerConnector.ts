@@ -2,13 +2,14 @@ import {SystemConnector} from "gate-viewmodel";
 import {
     ConnectionState, ConnectionType, CoreConfig,
     DefaultConnection,
-    EventName, GateValue,
+    GateValue,
     Keywords, SocketWrapper,
     SubscriptionBuffer,
     SystemImage,
     ValueMessage
 } from "gate-core";
 import config from "../config";
+import keywords from "gate-core/dist/src/constants/Keywords";
 
 export class LocalServerConnector implements SystemConnector {
     private static readonly ws = typeof window === 'undefined' ? import('ws') : undefined;
@@ -19,8 +20,9 @@ export class LocalServerConnector implements SystemConnector {
     private readonly _config;
 
     onJoinEvent: (systemImage: SystemImage, connectedDevices: Array<string>) => void = () => {};
-    onDeviceEvent?: (event: EventName, data: string[]) => void;
-    onValueMessage?: (message: ValueMessage) => void;
+    onDeviceEvent: (event: string, data: string[]) => void = () => {};
+    onPipeEvent: (event: string, data: string[]) => void = () => {};
+    onValueMessage: (message: ValueMessage) => void = () => {};
     readonly subscribe: (id: string) => void;
     readonly unsubscribe: (id: string) => void;
     readonly addStateChangeListener: (callback: (state: ConnectionState) => void) => string;
@@ -58,45 +60,17 @@ export class LocalServerConnector implements SystemConnector {
             }
         });
 
-        this._connection.functionalHandler.addCommandListener(EventName.deviceConnected, (params) => {
-            if (params && this.onDeviceEvent) {
-                this.onDeviceEvent(EventName.deviceConnected, params);
+        this._connection.functionalHandler.addCommandListener(Keywords.deviceEvent, (params) => {
+            if (params && params[0]) {
+                const eventName = params[0];
+                this.onDeviceEvent(eventName, params.slice(1));
             }
         });
 
-        this._connection.functionalHandler.addCommandListener(EventName.deviceDisconnected, (params) => {
-            if (params && this.onDeviceEvent) {
-                this.onDeviceEvent(EventName.deviceDisconnected, params);
-            }
-        });
-
-        this._connection.functionalHandler.addCommandListener(EventName.deviceRemoved, (params) => {
-            if (params && this.onDeviceEvent) {
-                this.onDeviceEvent(EventName.deviceRemoved, params);
-            }
-        });
-
-        this._connection.functionalHandler.addCommandListener(EventName.deviceRenamed, (params) => {
-            if (params && this.onDeviceEvent) {
-                this.onDeviceEvent(EventName.deviceRenamed, params);
-            }
-        });
-
-        this._connection.functionalHandler.addCommandListener(EventName.pipeCreated, (params) => {
-            if (params && this.onDeviceEvent) {
-                this.onDeviceEvent(EventName.pipeCreated, params);
-            }
-        });
-
-        this._connection.functionalHandler.addCommandListener(EventName.pipeRemoved, (params) => {
-            if (params && this.onDeviceEvent) {
-                this.onDeviceEvent(EventName.pipeRemoved, params);
-            }
-        });
-
-        this._connection.functionalHandler.addCommandListener(EventName.addedToGroup, (params) => {
-            if (params && this.onDeviceEvent) {
-                this.onDeviceEvent(EventName.addedToGroup, params);
+        this._connection.functionalHandler.addCommandListener(Keywords.pipeEvent, (params) => {
+            if (params && params[0]) {
+                const eventName = params[0];
+                this.onPipeEvent(eventName, params.slice(1));
             }
         });
 
@@ -146,7 +120,11 @@ export class LocalServerConnector implements SystemConnector {
     }
 
     sendDeviceEvent = (event: string, params: string[]) => {
-        this._connection.functionalHandler.sendCommand(event, params);
+        this._connection.functionalHandler.sendCommand(keywords.deviceEvent, [event, ...params]);
+    }
+
+    sendPipeEvent = (event: string, params: string[]) => {
+        this._connection.functionalHandler.sendCommand(keywords.pipeEvent, [event, ...params]);
     }
 
     readonly getCurrentPing = () => this._connection.ping;

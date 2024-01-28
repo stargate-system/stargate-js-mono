@@ -47,7 +47,7 @@ export class SystemModel {
                 }
             });
         }
-        systemConnector.onDeviceEvent = (event: EventName, args: string[]) => {
+        systemConnector.onDeviceEvent = (event: string, args: string[]) => {
             switch (event) {
                 case EventName.deviceConnected:
                     if (args[0]) {
@@ -80,17 +80,6 @@ export class SystemModel {
                         }
                     }
                     break;
-                case EventName.pipeCreated:
-                    if (args[0] && args[1]) {
-                        const pipeModel = new PipeModel(args as [string, string]);
-                        this._pipes.update(pipeModel.id, pipeModel);
-                    }
-                    break;
-                case EventName.pipeRemoved:
-                    if (args[0] && args[1]) {
-                        this._pipes.remove(PipeModel.getPipeId(args as [string, string]));
-                    }
-                    break;
                 case EventName.addedToGroup:
                     if (args.length > 1) {
                         const groupName = args[0].length > 0 ? args[0] : undefined;
@@ -104,6 +93,25 @@ export class SystemModel {
                         })
                     }
                     break;
+                default:
+                    console.log('Unknown device event: ' + event);
+            }
+            systemConnector.onPipeEvent = (event: string, args: string[]) => {
+                switch (event) {
+                    case EventName.pipeCreated:
+                        if (args[0] && args[1]) {
+                            const pipeModel = new PipeModel(args as [string, string]);
+                            this._pipes.update(pipeModel.id, pipeModel);
+                        }
+                        break;
+                    case EventName.pipeRemoved:
+                        if (args[0] && args[1]) {
+                            this._pipes.remove(PipeModel.getPipeId(args as [string, string]));
+                        }
+                        break;
+                    default:
+                        console.log('Unknown pipe event: ' + event);
+                }
             }
         }
         systemConnector.joinSystem();
@@ -124,6 +132,14 @@ export class SystemModel {
 
     get systemConnector(): SystemConnector {
         return this._systemConnector;
+    }
+
+    createPipe = (pipe: [string, string]) => {
+        this.systemConnector.sendPipeEvent(EventName.pipeCreated, pipe);
+    }
+
+    removePipe = (pipe: PipeModel) => {
+        this.systemConnector.sendPipeEvent(EventName.pipeRemoved, [pipe.source, pipe.target]);
     }
 
     close = () => {

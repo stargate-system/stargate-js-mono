@@ -5,7 +5,7 @@ import styles from './NewPipeModal.module.css';
 import ValueSelect from "./components/ValueSelect/ValueSelect";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowDown} from "@fortawesome/free-solid-svg-icons";
-import {AddressMapper, EventName} from "gate-core";
+import {AddressMapper} from "gate-core";
 
 interface NewPipeModalProps {
     systemModel: SystemModel
@@ -38,7 +38,7 @@ const NewPipeModal = (props: NewPipeModalProps) => {
         } else {
             systemModel.devices.values.forEach((device) => {
                 if (!excludedDevice || excludedDevice.id !== device.id) {
-                    device.gateValues.values.forEach((value) => {
+                    device.gateValues.values.forEach((value: GateValueModel) => {
                         if (value.id !== excludedValue?.id) {
                             availableValues.push(value);
                         }
@@ -74,7 +74,7 @@ const NewPipeModal = (props: NewPipeModalProps) => {
 
     const onCreatePipe = () => {
         if (sourceValue && targetValue) {
-            systemModel.systemConnector.sendDeviceEvent(EventName.pipeCreated, [sourceValue.id, targetValue.id]);
+            systemModel.createPipe([sourceValue.id, targetValue.id]);
         }
     }
 

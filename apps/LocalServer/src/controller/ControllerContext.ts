@@ -18,31 +18,56 @@ const addController = async (controller: ControllerConnector) => {
     controller.onUnsubscribed = (ids) => {
         DeviceContext.forwardUnsubscribed(ids, controller);
     };
-    controller.onDeviceRemoved = (id: string) => {
-        if (DeviceContext.deviceRegistry.getByKey(id)) {
-            console.log('Cancelled removing device: device is active');
-        } else {
-            Router.systemRepository.removeDevice(id);
-            DeviceContext.notifyPipes(EventName.deviceRemoved, id);
-            controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRemoved, [id]));
+    controller.onDeviceEvent = (event, data) => {
+        switch (event) {
+            case EventName.deviceRemoved:
+                if (data[0]) {
+                    const [id] = data;
+                    if (DeviceContext.deviceRegistry.getByKey(id)) {
+                        console.log('Cancelled removing device: device is active');
+                    } else {
+                        Router.systemRepository.removeDevice(id);
+                        DeviceContext.notifyPipes(EventName.deviceRemoved, id);
+                        controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRemoved, [id]));
+                    }
+                }
+                break;
+            case EventName.deviceRenamed:
+                if (data[0] && data[1]) {
+                    const [id, newName] = data;
+                    Router.systemRepository.renameDevice(id, newName);
+                    controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRenamed, [id, newName]));
+                }
+                break;
+            case EventName.addedToGroup:
+                if (data[0]) {
+                    const groupName = data[0];
+                    const deviceIds = data.slice(1);
+                    Router.systemRepository.addDevicesToGroup(groupName, deviceIds);
+                    controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.addedToGroup, [groupName ?? '', ...deviceIds]));
+                }
+                break;
+            default:
+                console.log('Unknown device event: ' + event);
         }
     }
-    controller.onDeviceRenamed = (id: string, newName: string) => {
-        Router.systemRepository.renameDevice(id, newName);
-        controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRenamed, [id, newName]));
-    }
-    controller.onPipeCreated = (pipe: [string, string]) => {
-        if (Router.systemRepository.createPipe(pipe)) {
-            DeviceContext.addPipe(pipe);
-            controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.pipeCreated, pipe));
+    controller.onPipeEvent = (event, data) => {
+        if (data[0] && data[1]) {
+            const pipe = data as [string, string];
+            switch (event) {
+                case EventName.pipeCreated:
+                    if (Router.systemRepository.createPipe(pipe)) {
+                        DeviceContext.addPipe(pipe);
+                        controllerRegistry.getValues().forEach((ctrl) => ctrl.sendPipeEvent(EventName.pipeCreated, pipe));
+                    }
+                    break;
+                case EventName.pipeRemoved:
+                    DeviceContext.removePipe(pipe);
+                    break;
+                default:
+                    console.log('Unknown pipe event: ' + event);
+            }
         }
-    }
-    controller.onPipeRemoved = (pipe: [string, string]) => {
-        DeviceContext.removePipe(pipe);
-    }
-    controller.onAddedToGroup = (groupName: string | undefined, deviceIds: string[]) => {
-        Router.systemRepository.addDevicesToGroup(groupName, deviceIds);
-        controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.addedToGroup, [groupName ?? '', ...deviceIds]));
     }
     console.log('Connected controller ' + controller.id);
 }
@@ -60,6 +85,11 @@ const forwardDeviceEvent = (eventName: EventName, data: string[]) => {
         .forEach((controller) => controller.sendDeviceEvent(eventName, data));
 }
 
+const forwardPipeEvent = (eventName: EventName, data: string[]) => {
+    controllerRegistry.getValues()
+        .forEach((controller) => controller.sendPipeEvent(eventName, data));
+}
+
 const forwardValueMessage = (valueMessage: ValueMessage) => {
     controllerRegistry.getValues().forEach((controller) => {
         controller.sendValueMessage(valueMessage);
@@ -70,6 +100,7 @@ const ControllerContext = {
     controllerRegistry,
     addController,
     forwardDeviceEvent,
+    forwardPipeEvent,
     forwardValueMessage
 }
 

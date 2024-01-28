@@ -83,7 +83,7 @@ export class Pipe implements ValueMessageConsumer{
             this.sourceDevice.unsubscribe(this.sourceValueId, this._id);
         }
         Router.systemRepository.removePipe(this.pipe);
-        ControllerContext.forwardDeviceEvent(EventName.pipeRemoved, this.pipe);
+        ControllerContext.forwardPipeEvent(EventName.pipeRemoved, this.pipe);
     }
 
     private areTypesCompatible = (type1: string, type2: string) => {
