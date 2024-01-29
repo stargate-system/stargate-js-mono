@@ -1,4 +1,4 @@
-import {EventName, Registry, ValueMessage} from "gate-core";
+import {EventName, Registry, ValidManifest, ValueMessage} from "gate-core";
 import {ControllerConnector} from "./ControllerConnector";
 import Router from "../Router";
 import DeviceContext from "../device/DeviceContext";
@@ -47,6 +47,22 @@ const addController = async (controller: ControllerConnector) => {
                     controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.addedToGroup, [groupName ?? '', ...deviceIds]));
                 }
                 break;
+            case EventName.deviceModified:
+                if (data[0]) {
+                    try {
+                        const manifest: ValidManifest = JSON.parse(data[0]);
+                        Router.systemRepository.overwriteDevice(manifest).then((success) => {
+                            if (success) {
+                                controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceModified, data));
+                            } else {
+                                console.log('Failed to modify device', data);
+                            }
+                        });
+                    } catch (err) {
+                        console.log('On device modified', err);
+                    }
+                }
+                break;
             default:
                 console.log('Unknown device event: ' + event);
         }
@@ -56,10 +72,14 @@ const addController = async (controller: ControllerConnector) => {
             const pipe = data as [string, string];
             switch (event) {
                 case EventName.pipeCreated:
-                    if (Router.systemRepository.createPipe(pipe)) {
-                        DeviceContext.addPipe(pipe);
-                        controllerRegistry.getValues().forEach((ctrl) => ctrl.sendPipeEvent(EventName.pipeCreated, pipe));
-                    }
+                    Router.systemRepository.createPipe(pipe).then((success) => {
+                        if (success) {
+                            DeviceContext.addPipe(pipe);
+                            controllerRegistry.getValues().forEach((ctrl) => ctrl.sendPipeEvent(EventName.pipeCreated, pipe));
+                        } else {
+                            console.log('Failed to create pipe', data);
+                        }
+                    })
                     break;
                 case EventName.pipeRemoved:
                     DeviceContext.removePipe(pipe);

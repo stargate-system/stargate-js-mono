@@ -88,9 +88,14 @@ export class DefaultConnection implements Connection{
     private _checkPing = async () => {
         if (this._state !== ConnectionState.closed) {
             const startTime = Date.now();
-            const response = await this._functionalHandler.createQuery(Keywords.ping, 1000)
-                .catch(() => this._failedPings += 1);
-            this.ping = (Date.now() - startTime)/2;
+            let response;
+            try {
+                response = await this._functionalHandler.createQuery(Keywords.ping, 1000)
+                    .catch(() => this._failedPings += 1);
+            } catch (err) {
+                console.log('On checking ping', err);
+            }
+            this.ping = (Date.now() - startTime) / 2;
             if (this._failedPings === 3) {
                 this.close();
             } else {

@@ -32,6 +32,7 @@ const MenuComponent = (props: MenuComponentProps) => {
                     {items.map((item, index) => {
                         return (
                             <span
+                                key={item.label}
                                 onClick={item.callback}
                                 className={index > 0 ? `${styles.menuItem} ${styles.separator}` : styles.menuItem}
                             >

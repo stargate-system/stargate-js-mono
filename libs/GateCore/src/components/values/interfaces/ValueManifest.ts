@@ -4,6 +4,7 @@ export interface ValueManifest {
     id: string,
     type?: string,
     direction?: Directions,
+    visibility?: string,
     valueName?: string,
     options?: object
 }

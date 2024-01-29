@@ -1,18 +1,20 @@
 import {PropsWithChildren} from "react";
-import {SystemModel} from "gate-viewmodel";
 import SystemModelContext from "./SystemModelContext";
+import {getSystemModel} from "gate-controller";
 
-interface ReactGateViewModelProps extends PropsWithChildren{
-    systemModel: SystemModel
-}
+const model = typeof window !== 'undefined' ? getSystemModel() : null;
 
-const ReactGateViewModel = (props: ReactGateViewModelProps) => {
-    const {systemModel, children} = props;
+const ReactGateViewModel = (props: PropsWithChildren) => {
+    const {children} = props;
 
     return (
-        <SystemModelContext.Provider value={systemModel}>
-            {children}
-        </SystemModelContext.Provider>
+        <div>
+            {model !== null &&
+                <SystemModelContext.Provider value={model}>
+                    {children}
+                </SystemModelContext.Provider>
+            }
+        </div>
     )
 }
 

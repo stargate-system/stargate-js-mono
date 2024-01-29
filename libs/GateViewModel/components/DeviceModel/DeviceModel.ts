@@ -12,10 +12,12 @@ export class DeviceModel {
     private readonly _name: ModelValue<string>;
     private readonly _group: ModelValue<string | undefined>;
     private readonly _systemConnector: SystemConnector;
+    private readonly _manifest: ValidManifest;
 
     constructor(systemConnector: SystemConnector, manifest: ValidManifest, isConnected: boolean) {
         this._systemConnector = systemConnector;
         this._id = manifest.id;
+        this._manifest = manifest;
         this._state = new ModelValue<DeviceState>(isConnected ? DeviceState.up : DeviceState.down);
         this._gateValues = new ModelMap<GateValueModel>();
         manifest.values.forEach((valueManifest) => {
@@ -54,6 +56,10 @@ export class DeviceModel {
         this._systemConnector.sendDeviceEvent(EventName.addedToGroup, [groupName, this._id]);
     }
 
+    modify = (modifiedManifest: ValidManifest) => {
+        this._systemConnector.sendDeviceEvent(EventName.deviceModified, [JSON.stringify(modifiedManifest)]);
+    }
+
     get id(): string {
         return this._id;
     }
@@ -72,5 +78,9 @@ export class DeviceModel {
 
     get group(): ModelValue<string | undefined> {
         return this._group;
+    }
+
+    get manifest(): ValidManifest {
+        return JSON.parse(JSON.stringify(this._manifest));
     }
 }

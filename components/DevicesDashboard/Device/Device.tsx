@@ -3,8 +3,9 @@ import DeviceHeader from "./components/DeviceHeader/DeviceHeader";
 import styles from './Device.module.css';
 import GateValueWrapper from "../GateValue/GateValueWrapper";
 import {DeviceModel, DeviceState} from "gate-viewmodel";
-import useModelValue from "../../../ReactGateViewModel/hooks/useModelValue";
-import useModelMap from "../../../ReactGateViewModel/hooks/useModelMap";
+import useModelValue from "../../ReactGateViewModel/hooks/useModelValue";
+import useModelMap from "../../ReactGateViewModel/hooks/useModelMap";
+import {ValueVisibility} from "gate-core";
 
 interface DeviceProps {
     deviceModel: DeviceModel
@@ -22,9 +23,15 @@ const Device = (props: DeviceProps) => {
     }, [isActive]);
 
     const generateValues = useCallback((isActive: boolean) => {
-        return values.map((valueModel) => {
-            return <GateValueWrapper key={valueModel.id + Date.now()} valueModel={valueModel} isActive={isActive}/>
-        });
+        return values
+            .filter((value) => {
+                const isSettings = value.gateValue.visibility === ValueVisibility.settings.toString();
+                const isHidden = value.gateValue.visibility === ValueVisibility.hidden.toString();
+                return !(isSettings || isHidden);
+            })
+            .map((valueModel) => {
+                return <GateValueWrapper key={valueModel.id + Date.now()} valueModel={valueModel} isActive={isActive}/>
+            });
     }, []);
 
     useEffect(() => {

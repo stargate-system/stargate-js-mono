@@ -59,6 +59,15 @@ const BasicSystemRepository: SystemRepository = {
         saveRepository();
         return manifest
     },
+    overwriteDevice: async (manifest: ValidManifest) => {
+        const index = systemImage.devices.findIndex((storedManifest) => storedManifest.uuid === manifest.uuid);
+        if (index !== -1) {
+            systemImage.devices[index] = manifest;
+            saveRepository();
+            return true;
+        }
+        return false;
+    },
     removeDevice: (id: string) => {
         systemImage.devices = systemImage.devices.filter((device) => device.id !== id);
         saveRepository();
@@ -70,7 +79,7 @@ const BasicSystemRepository: SystemRepository = {
         }
         saveRepository();
     },
-    createPipe: (pipe: [string, string]) => {
+    createPipe: async (pipe: [string, string]) => {
         if(!systemImage.pipes.find((storedPipe) => storedPipe[0] === pipe[0] && storedPipe[1] === pipe[1])) {
             systemImage.pipes.push(pipe);
             saveRepository();

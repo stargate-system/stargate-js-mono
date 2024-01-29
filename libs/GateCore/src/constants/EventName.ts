@@ -4,6 +4,7 @@ export enum EventName {
     deviceRemoved = 'deviceRemoved',
     deviceRenamed = 'deviceRenamed',
     addedToGroup = 'addedToGroup',
+    deviceModified = 'deviceModified',
     pipeCreated = 'pipeCreated',
     pipeRemoved = 'pipeRemoved'
 }

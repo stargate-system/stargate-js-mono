@@ -1,6 +1,6 @@
 import {GateValueProps} from "../GateValueWrapper";
 import {Directions, GateString} from "gate-core";
-import useModelValue from "../../../../ReactGateViewModel/hooks/useModelValue";
+import useModelValue from "../../../ReactGateViewModel/hooks/useModelValue";
 import {CSSProperties, useEffect, useState} from "react";
 import styles from './GateStringView.module.css';
 

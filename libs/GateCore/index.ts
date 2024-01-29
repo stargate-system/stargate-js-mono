@@ -23,6 +23,7 @@ import {SystemImage} from "./src/interfaces/SystemImage";
 import {ValidManifest} from "./src/interfaces/ValidManifest";
 import AddressMapper from "./src/components/AddressMapper";
 import {ConnectionType} from "./src/constants/ConnectionType";
+import {ValueVisibility} from "./src/components/values/constants/ValueVisibility";
 
 export {
     CoreConfig,
@@ -49,5 +50,6 @@ export {
     SystemImage,
     ValidManifest,
     AddressMapper,
-    ConnectionType
+    ConnectionType,
+    ValueVisibility
 }

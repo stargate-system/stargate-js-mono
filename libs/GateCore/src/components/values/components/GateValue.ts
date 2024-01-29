@@ -1,15 +1,18 @@
 import {Directions} from "../constants/Directions.js";
 import {ValueManifest} from "../interfaces/ValueManifest";
+import {ValueVisibility} from "../constants/ValueVisibility";
 
 export abstract class GateValue<T> {
     private static nextId = 1;
     protected static setCommonsFromManifest(manifest: ValueManifest, target: GateValue<any>) {
         target.valueName = manifest.valueName;
         target.direction = manifest.direction;
+        target.visibility = manifest.visibility;
     };
 
     valueName?: string;
     direction?: Directions;
+    visibility?: string;
     onLocalUpdate?: (wasChanged: boolean) => void;
     onRemoteUpdate?: (wasChanged: boolean) => void;
     onSubscriptionChange?: (subscribed: boolean) => void;
@@ -98,6 +101,9 @@ export abstract class GateValue<T> {
         }
         if (this.direction !== undefined) {
             manifest.direction = this.direction;
+        }
+        if (this.visibility && this.visibility !== ValueVisibility.main) {
+            manifest.visibility = this.visibility;
         }
         return manifest;
     }

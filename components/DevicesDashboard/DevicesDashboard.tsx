@@ -1,6 +1,6 @@
 import {useContext, useEffect, useState} from "react";
-import SystemModelContext from "../../../ReactGateViewModel/SystemModelContext";
-import useModelMap from "../../../ReactGateViewModel/hooks/useModelMap";
+import SystemModelContext from "../ReactGateViewModel/SystemModelContext";
+import useModelMap from "../ReactGateViewModel/hooks/useModelMap";
 import styles from './DevicesDashboard.module.css';
 import {DeviceModel} from "gate-viewmodel";
 import DeviceGroup from "./DeviceGroup/DeviceGroup";
@@ -43,7 +43,7 @@ const DevicesDashboard = () => {
     }, [devices]);
 
     return (
-        <div>
+        <div className={styles.devicesDashboard}>
             {!devices.length && <div className={styles.noDevicesContainer}>No devices available</div>}
             <DeviceGroup devices={ungrouped} />
             {Array.from(groupsMap).map(([group, devices]) => <DeviceGroup key={group} devices={devices} group={group} />)}

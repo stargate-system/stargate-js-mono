@@ -4,7 +4,7 @@ import styles from './GateNumberView.module.css'
 import ValueBar from "./components/ValueBar/ValueBar";
 import NumberDisplay from "./components/NumberDisplay/NumberDisplay";
 import {GateValueProps} from "../GateValueWrapper";
-import useModelValue from "../../../../ReactGateViewModel/hooks/useModelValue";
+import useModelValue from "../../../ReactGateViewModel/hooks/useModelValue";
 
 const valueSize = 1.2;
 

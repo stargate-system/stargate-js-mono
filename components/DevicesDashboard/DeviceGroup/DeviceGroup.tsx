@@ -1,15 +1,15 @@
 import {DeviceModel} from "gate-viewmodel";
-import Device from "../../Device/Device";
+import Device from "../Device/Device";
 import styles from './DeviceGroup.module.css';
 import React, {useContext, useMemo, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
-import MenuComponent from "../../../../MenuComponent/MenuComponent";
+import MenuComponent from "../../MenuComponent/MenuComponent";
 import ModalContext from "local-frontend/service/ModalContext";
-import StandardModal from "../../../../ModalComponent/StandardModal/StandardModal";
-import SystemModelContext from "../../../../ReactGateViewModel/SystemModelContext";
+import StandardModal from "../../ModalComponent/StandardModal/StandardModal";
+import SystemModelContext from "../../ReactGateViewModel/SystemModelContext";
 import {EventName} from "gate-core";
-import RenameModal from "../../../../ModalComponent/RenameModal/RenameModal";
+import RenameModal from "../../ModalComponent/RenameModal/RenameModal";
 
 const getFromLocalStorage = (key: string) => {
     if (typeof window !== 'undefined') {

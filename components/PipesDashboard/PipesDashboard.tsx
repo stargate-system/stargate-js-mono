@@ -1,5 +1,4 @@
 import styles from './PipesDashboard.module.css';
-import {SystemModel} from "gate-viewmodel";
 import {faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import React, {useContext, useMemo, useState} from "react";
@@ -11,10 +10,7 @@ import {PipeDashboardValue} from "./components/Pipe/components/PipeValue";
 import {AddressMapper} from "gate-core";
 import {PipeModel} from "gate-viewmodel";
 import StandardModal from "../ModalComponent/StandardModal/StandardModal";
-
-interface PipesDashboardProps {
-    systemModel: SystemModel
-}
+import SystemModelContext from "../ReactGateViewModel/SystemModelContext";
 
 interface PipeTree {
     centralValue: string,
@@ -22,8 +18,8 @@ interface PipeTree {
     outputs: string[]
 }
 
-const PipesDashboard = (props: PipesDashboardProps) => {
-    const {systemModel} = props;
+const PipesDashboard = () => {
+    const systemModel = useContext(SystemModelContext);
     const modal = useContext(ModalContext);
     const pipes = useModelMap(systemModel.pipes);
     const [selectedPipes, setSelectedPipes] = useState<PipeModel[]>([]);

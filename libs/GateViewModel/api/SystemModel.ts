@@ -51,9 +51,13 @@ export class SystemModel {
             switch (event) {
                 case EventName.deviceConnected:
                     if (args[0]) {
-                        const manifest = JSON.parse(args[0]) as ValidManifest;
-                        this._devices.update(manifest.id,
-                            new DeviceModel(this._systemConnector, manifest, true));
+                        try {
+                            const manifest: ValidManifest = JSON.parse(args[0]);
+                            this._devices.update(manifest.id,
+                                new DeviceModel(this._systemConnector, manifest, true));
+                        } catch (err) {
+                            console.log('On device connected', err);
+                        }
                     }
                     break;
                 case EventName.deviceDisconnected:
@@ -91,6 +95,20 @@ export class SystemModel {
                                 this._devices.update(device.id, device);
                             }
                         })
+                    }
+                    break;
+                case EventName.deviceModified:
+                    if (args[0]) {
+                        try {
+                            const manifest: ValidManifest = JSON.parse(args[0]);
+                            const deviceToUpdate = this._devices.getById(manifest.id);
+                            if (deviceToUpdate) {
+                                const currentState = deviceToUpdate.state.value === DeviceState.up;
+                                this._devices.update(manifest.id, new DeviceModel(this._systemConnector, manifest, currentState));
+                            }
+                        } catch (err) {
+                            console.log('On device modified', err);
+                        }
                     }
                     break;
                 default:
