@@ -3,37 +3,50 @@ import ModalContext from "local-frontend/service/ModalContext";
 import styles from './StandardModal.module.css';
 
 interface StandardModalProps extends PropsWithChildren{
-    onApprove: () => void,
+    header?: string,
+    onApprove?: () => void,
     approveDisabled?: boolean,
+    approveVisible?: boolean,
+    approveLabel?: string,
     onDeny?: () => void,
-    approveLabel?: string
+    denyLabel?: string
 }
 
 const StandardModal = (props: StandardModalProps) => {
     const {
+        header,
         children,
         onApprove,
         approveDisabled,
+        approveVisible = true,
+        approveLabel = 'Yes',
         onDeny,
-        approveLabel = 'Yes'
+        denyLabel = 'Cancel'
     } = props;
     const modal = useContext(ModalContext);
 
     return (
         <div className={styles.standardModalContainer}>
-            {children}
+            {header && <div className={styles.headerContainer}>{header}</div>}
+            <div className={styles.childrenContainer}>
+                {children}
+            </div>
             <div className={styles.buttonsContainer}>
-                <button
-                    onClick={() => {
-                        onApprove();
-                        // @ts-ignore
-                        modal.closeModal();
-                    }}
-                    disabled={approveDisabled ?? false}
-                    className={styles.button}
-                >
-                    {approveLabel}
-                </button>
+                {approveVisible &&
+                    <button
+                        onClick={() => {
+                            if (onApprove) {
+                                onApprove();
+                            }
+                            // @ts-ignore
+                            modal.closeModal();
+                        }}
+                        disabled={approveDisabled ?? false}
+                        className={styles.button}
+                    >
+                        {approveLabel}
+                    </button>
+                }
                 <button
                     onClick={() => {
                         if (onDeny) {
@@ -44,7 +57,7 @@ const StandardModal = (props: StandardModalProps) => {
                     }}
                     className={styles.button}
                 >
-                    Cancel
+                    {denyLabel}
                 </button>
             </div>
         </div>

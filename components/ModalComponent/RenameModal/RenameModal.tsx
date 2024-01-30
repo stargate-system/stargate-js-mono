@@ -16,9 +16,9 @@ const RenameModal = (props: RenameModalProps) => {
         <StandardModal
             onApprove={() => onApprove(newDeviceName)}
             approveLabel={'Save'}
+            header={header}
         >
             <div className={styles.renameModalBodyContainer}>
-                {header}
                 <input
                     type='text'
                     onInput={(ev: any) => {

@@ -2,7 +2,7 @@ import {DeviceModel} from "gate-viewmodel";
 import StandardModal from "../StandardModal/StandardModal";
 import React, {useState} from "react";
 import styles from './ModifyDeviceValuesModal.module.css';
-import {ValueVisibility} from "gate-core";
+import {Directions, ValueVisibility} from "gate-core";
 
 interface ModifyDeviceValuesModalProps {
     deviceModel: DeviceModel
@@ -16,8 +16,8 @@ const ModifyDeviceValuesModal = (props: ModifyDeviceValuesModalProps) => {
         <StandardModal
             onApprove={() => deviceModel.modify(manifest)}
             approveLabel={'Save'}
+            header={'Values visibility'}
         >
-            <div className={styles.header}>Values visibility</div>
             <div className={styles.valuesContainer}>
                 <div className={styles.valueRow}>
                     <div/>
@@ -27,7 +27,9 @@ const ModifyDeviceValuesModal = (props: ModifyDeviceValuesModalProps) => {
                         <div>hidden</div>
                     </div>
                 </div>
-                {manifest.values.map((value) => {
+                {manifest.values
+                    .filter((value) => value.direction === Directions.input)
+                    .map((value) => {
                     return (
                         <div key={value.id} className={styles.valueRow}>
                             {value.valueName}

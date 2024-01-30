@@ -11,6 +11,8 @@ import MenuComponent from "../../../../MenuComponent/MenuComponent";
 import RenameModal from "../../../../ModalComponent/RenameModal/RenameModal";
 import AddToGroupModal from "../../../../ModalComponent/AddToGroupModal/AddToGroupModal";
 import ModifyDeviceValuesModal from "../../../../ModalComponent/ModifyDeviceValuesModal/ModifyDeviceValuesModal";
+import {ValueVisibility} from "gate-core";
+import DeviceSettingsModal from "../../../../ModalComponent/DeviceSettingsModal/DeviceSettingsModal";
 
 interface DeviceHeaderProps {
     deviceModel: DeviceModel,
@@ -64,6 +66,14 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
         }
     }
 
+    const onSettings = () => {
+        if (modal) {
+            modal.openModal(
+                <DeviceSettingsModal deviceModel={deviceModel}/>
+            )
+        }
+    }
+
     const menuItems = useMemo(() => {
         const items = [
             {
@@ -79,6 +89,12 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
                 callback: onValues
             }
         ]
+        if (deviceModel.gateValues.values.find((value) => value.gateValue.visibility === ValueVisibility.settings.toString())) {
+            items.push({
+                label: 'Settings',
+                callback: onSettings
+            })
+        }
         if (!isActive) {
             items.push({
                 label: 'Delete',

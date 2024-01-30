@@ -48,9 +48,16 @@ const BasicSystemRepository: SystemRepository = {
     updateDevice: async (manifest: ValidManifest)=> {
         const index = systemImage.devices.findIndex((storedManifest) => storedManifest.uuid === manifest.uuid);
         if (index !== -1) {
-            manifest.id = systemImage.devices[index].id;
-            manifest.deviceName = systemImage.devices[index].deviceName;
-            manifest.group = systemImage.devices[index].group;
+            const storedDevice = systemImage.devices[index];
+            manifest.id = storedDevice.id;
+            manifest.deviceName = storedDevice.deviceName;
+            manifest.group = storedDevice.group;
+            storedDevice.values.forEach((storedValue) => {
+                const newValue = manifest.values.find((value) => storedValue.id === value.id);
+                if (newValue && storedValue.type === newValue.type) {
+                    newValue.visibility = storedValue.visibility;
+                }
+            });
             systemImage.devices[index] = manifest;
         } else {
             manifest.id = generateId();

@@ -40,7 +40,7 @@ const addController = async (controller: ControllerConnector) => {
                 }
                 break;
             case EventName.addedToGroup:
-                if (data[0]) {
+                if (data.length > 1) {
                     const groupName = data[0];
                     const deviceIds = data.slice(1);
                     Router.systemRepository.addDevicesToGroup(groupName, deviceIds);

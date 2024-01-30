@@ -6,6 +6,15 @@
     text-align: center;
     color: #f5debf;
 
+    .headerContainer {
+        padding-bottom: 0.5rem;
+    }
+
+    .childrenContainer {
+        max-height: 60vh;
+        overflow: auto;
+    }
+
     .buttonsContainer {
         display: flex;
         flex-direction: row;

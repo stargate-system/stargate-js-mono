@@ -1,18 +1,24 @@
-import React, {ReactNode, useMemo} from "react";
+import React, {ReactNode, useEffect, useMemo, useState} from "react";
 import {ValueTypes} from "gate-core";
 import styles from './GateValueWrapper.module.css';
 import GateNumberView from "./GateNumberView/GateNumberView";
-import {GateValueModel} from "gate-viewmodel";
+import {DeviceState, GateValueModel} from "gate-viewmodel";
 import GateBooleanView from "./GateBooleanView/GateBooleanView";
 import GateStringView from "./GateStringView/GateStringView";
+import useModelValue from "../../ReactGateViewModel/hooks/useModelValue";
 
-export interface GateValueProps {
-    valueModel: GateValueModel,
+interface ValueWrapperProps {
+    valueModel: GateValueModel
+}
+
+export interface GateValueProps extends ValueWrapperProps{
     isActive: boolean
 }
 
-const GateValueWrapper = (props: GateValueProps) => {
-    const {valueModel, isActive} = props;
+const GateValueWrapper = (props: ValueWrapperProps) => {
+    const {valueModel} = props;
+    const state = useModelValue(valueModel.state);
+    const [isActive, setIsActive] = useState(state === DeviceState.up);
 
     const gateValueClass = useMemo(() => {
         return `${styles.gateValueContainer} ${isActive ? styles.active : styles.inactive}`;
@@ -30,6 +36,10 @@ const GateValueWrapper = (props: GateValueProps) => {
             // TODO handle custom views
         }
     }, [valueModel, isActive]);
+
+    useEffect(() => {
+        setIsActive(state === DeviceState.up);
+    }, [state]);
 
     return (
         <div className={gateValueClass}>

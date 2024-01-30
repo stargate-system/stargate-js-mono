@@ -28,7 +28,7 @@ const MenuComponent = (props: MenuComponentProps) => {
         >
             <FontAwesomeIcon className={styles.iconClass} icon={faEllipsis} rotation={90}/>
             <div hidden={!menuOpen} className={styles.dropdownMenuContainer}>
-                <div className={styles.dropdownMenu} style={{height: `${items.length * 1.5}rem`}}>
+                <div className={styles.dropdownMenu} style={{height: `${items.length * 1.6}rem`}}>
                     {items.map((item, index) => {
                         return (
                             <span

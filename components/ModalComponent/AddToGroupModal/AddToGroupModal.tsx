@@ -25,6 +25,7 @@ const AddToGroupModal = (props: AddToGroupModalProps) => {
         <StandardModal
             onApprove={() => deviceModel.addToGroup(groupName)}
             approveLabel={'Save'}
+            header={'Add to group'}
         >
             <div className={styles.groupModalBodyContainer}>
                 <div className={styles.blockContainer}>

@@ -14,7 +14,7 @@ interface DeviceProps {
 const Device = (props: DeviceProps) => {
     const {deviceModel} = props;
 
-    const deviceState = useModelValue<DeviceState>(deviceModel.state);
+    const deviceState = useModelValue(deviceModel.state);
     const [isActive, setIsActive] = useState(deviceState === DeviceState.up);
     const values = useModelMap(deviceModel.gateValues);
 
@@ -22,7 +22,7 @@ const Device = (props: DeviceProps) => {
         return `${styles.deviceContainer} ${isActive ? styles.active : styles.inactive}`
     }, [isActive]);
 
-    const generateValues = useCallback((isActive: boolean) => {
+    const generateValues = useCallback(() => {
         return values
             .filter((value) => {
                 const isSettings = value.gateValue.visibility === ValueVisibility.settings.toString();
@@ -30,7 +30,7 @@ const Device = (props: DeviceProps) => {
                 return !(isSettings || isHidden);
             })
             .map((valueModel) => {
-                return <GateValueWrapper key={valueModel.id + Date.now()} valueModel={valueModel} isActive={isActive}/>
+                return <GateValueWrapper key={valueModel.id + Date.now()} valueModel={valueModel}/>
             });
     }, []);
 
@@ -42,7 +42,7 @@ const Device = (props: DeviceProps) => {
         <div className={deviceContainerClass}>
             <DeviceHeader deviceModel={deviceModel} isActive={isActive}/>
             <div className={styles.valuesContainer}>
-                {generateValues(isActive)}
+                {generateValues()}
             </div>
         </div>
     )
