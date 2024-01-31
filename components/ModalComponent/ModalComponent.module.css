@@ -9,7 +9,7 @@
 }
 
 .childrenContainer {
-    padding: 2rem;
+    padding: 2rem 1rem;
     border: 1px solid #f5debf;
     border-radius: 0.5rem;
     max-width: 90vw;

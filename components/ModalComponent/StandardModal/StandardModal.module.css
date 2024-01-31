@@ -11,6 +11,9 @@
     }
 
     .childrenContainer {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
         max-height: 60vh;
         overflow: auto;
     }

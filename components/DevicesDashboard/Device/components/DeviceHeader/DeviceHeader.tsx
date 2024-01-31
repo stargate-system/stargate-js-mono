@@ -106,7 +106,7 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
 
     return (
         <div className={styles.deviceHeader}>
-            <div className={styles.sidePanel}/>
+            <div className={`${styles.activeLamp} ${isActive ? styles.activeLampOn : styles.activeLampOff}`}/>
             <div className={styles.nameContainer}>
                 {deviceName}
             </div>

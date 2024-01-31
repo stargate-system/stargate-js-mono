@@ -15,11 +15,21 @@
         padding: 0 0.2rem;
     }
 
-    .sidePanel {
-        width: 1rem;
-        cursor: pointer;
-        display: flex;
-        align-items: flex-end;
+    .activeLamp {
+        margin-left: 0.5rem;
+        width: 0.7rem;
+        height: 0.7rem;
+        border-radius: 0.35rem;
+    }
+
+    .activeLampOn {
+        background-color: #0ee50e;
+        box-shadow: 0 0 5px #0ee50e;
+    }
+
+    .activeLampOff {
+        background-color: #ff0000;
+        box-shadow: 0 0 5px #ff0000;
     }
 }
 

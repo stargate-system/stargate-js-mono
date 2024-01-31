@@ -34,7 +34,7 @@ const AddToGroupModal = (props: AddToGroupModalProps) => {
                         {Array.from(existingGroups).sort().map((name) => {
                             return (
                                 <div key={name} className={styles.existingGroupInputContainer}>
-                                    {name.length > 0 ? name : '-- none --'}
+                                    <div className={styles.groupLabel}>{name.length > 0 ? name : '-- none --'}</div>
                                     <input
                                         type="radio"
                                         name="existingGroup"

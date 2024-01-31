@@ -59,7 +59,9 @@ const DeviceGroup = (props: DeviceGroupProps) => {
         const deviceIds = systemModel.devices.values
             .filter((device) => device.group.value === group)
             .map((device) => device.id);
-        systemModel.systemConnector.sendDeviceEvent(EventName.addedToGroup, [newGroupName, ...deviceIds]);
+        if (systemModel.systemConnector) {
+            systemModel.systemConnector.sendDeviceEvent(EventName.addedToGroup, [newGroupName, ...deviceIds]);
+        }
     }
 
     const menuItems = useMemo(() => {
