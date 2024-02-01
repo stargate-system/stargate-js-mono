@@ -28,7 +28,7 @@ const addController = async (controller: ControllerConnector) => {
                     } else {
                         Router.systemRepository.removeDevice(id);
                         DeviceContext.notifyPipes(EventName.deviceRemoved, id);
-                        controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRemoved, [id]));
+                        forwardDeviceEvent(EventName.deviceRemoved, [id]);
                     }
                 }
                 break;
@@ -36,7 +36,7 @@ const addController = async (controller: ControllerConnector) => {
                 if (data[0] && data[1]) {
                     const [id, newName] = data;
                     Router.systemRepository.renameDevice(id, newName);
-                    controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceRenamed, [id, newName]));
+                    forwardDeviceEvent(EventName.deviceRenamed, [id, newName]);
                 }
                 break;
             case EventName.addedToGroup:
@@ -44,7 +44,7 @@ const addController = async (controller: ControllerConnector) => {
                     const groupName = data[0];
                     const deviceIds = data.slice(1);
                     Router.systemRepository.addDevicesToGroup(groupName, deviceIds);
-                    controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.addedToGroup, [groupName ?? '', ...deviceIds]));
+                    forwardDeviceEvent(EventName.addedToGroup, [groupName ?? '', ...deviceIds]);
                 }
                 break;
             case EventName.deviceModified:
@@ -53,7 +53,7 @@ const addController = async (controller: ControllerConnector) => {
                         const manifest: ValidManifest = JSON.parse(data[0]);
                         Router.systemRepository.overwriteDevice(manifest).then((success) => {
                             if (success) {
-                                controllerRegistry.getValues().forEach((ctrl) => ctrl.sendDeviceEvent(EventName.deviceModified, data));
+                                forwardDeviceEvent(EventName.deviceModified, data);
                             } else {
                                 console.log('Failed to modify device', data);
                             }
@@ -75,7 +75,7 @@ const addController = async (controller: ControllerConnector) => {
                     Router.systemRepository.createPipe(pipe).then((success) => {
                         if (success) {
                             DeviceContext.addPipe(pipe);
-                            controllerRegistry.getValues().forEach((ctrl) => ctrl.sendPipeEvent(EventName.pipeCreated, pipe));
+                            forwardPipeEvent(EventName.pipeCreated, pipe);
                         } else {
                             console.log('Failed to create pipe', data);
                         }

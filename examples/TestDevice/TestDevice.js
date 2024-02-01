@@ -1,29 +1,51 @@
 const {Directions, GateDevice} = require('gate-device');
 const {ValueFactory} = GateDevice;
 
-const smallInteger = ValueFactory.createInteger(Directions.output, 'Small integer', [0, 200]);
-const bigInteger = ValueFactory.createInteger(Directions.output, 'Big integer', [-5000, 50000]);
-const unlimitedInteger = ValueFactory.createInteger(Directions.output, 'Unlimited integer');
+const smallInteger = ValueFactory.createInteger(Directions.output);
+smallInteger.valueName = 'Small integer';
+smallInteger.setRange([0, 200]);
 
-const increment = ValueFactory.createInteger(Directions.input, 'Increment amount', [1, 10]);
+const bigInteger = ValueFactory.createInteger(Directions.output);
+bigInteger.valueName = 'Big integer';
+bigInteger.setRange([-5000, 50000]);
+
+const unlimitedInteger = ValueFactory.createInteger(Directions.output);
+unlimitedInteger.valueName = 'Unlimited integer';
+
+const increment = ValueFactory.createInteger(Directions.input);
+increment.valueName = 'Increment amount';
+increment.setRange([1, 10]);
 increment.onRemoteUpdate = () => incrementValue = increment.value;
 
-const frequency = ValueFactory.createFloat(Directions.input, 'Frequency', [1, 100]);
+const frequency = ValueFactory.createFloat(Directions.input);
+frequency.valueName = 'Frequency';
+frequency.setRange([1, 100]);
 frequency.setValue(4.5);
 
-const testBool = ValueFactory.createBoolean(Directions.output, 'Counter direction', 'Positive', 'Negative');
+const testBool = ValueFactory.createBoolean(Directions.output);
+testBool.valueName = 'Counter direction';
+testBool.labelTrue = 'Positive';
+testBool.labelFalse = 'Negative';
 testBool.setValue(true);
 
 const countRunning = ValueFactory.createBoolean(Directions.input, 'Counter', 'Running', 'Stopped');
-countRunning.onRemoteUpdate = () => {
+countRunning.valueName = 'Counter';
+countRunning.labelTrue = 'Running';
+countRunning.labelFalse = 'Stopped';
+const onCountChange = () => {
     if (countRunning.value) {
         alterValue();
     }
 }
-countRunning.onLocalUpdate = countRunning.onRemoteUpdate;
+countRunning.onRemoteUpdate = onCountChange;
+countRunning.onLocalUpdate = onCountChange;
 
-const testStringOut = ValueFactory.createString(Directions.output, 'Test text', 20);
-const testStringIn = ValueFactory.createString(Directions.input, 'Test command');
+const testStringOut = ValueFactory.createString(Directions.output);
+testStringOut.valueName = 'Test text';
+testStringOut.minimumLength = 20;
+
+const testStringIn = ValueFactory.createString(Directions.input);
+testStringIn.valueName = 'Test command';
 testStringIn.onRemoteUpdate = () => {
     switch (testStringIn.value) {
         case 'stop':
@@ -56,11 +78,11 @@ let incrementValue = increment.value;
 let counter = 0;
 
 const alterValue = () => {
-    if (counter > smallInteger.settings.range[1]) {
+    if (counter > smallInteger.range[1]) {
         dir = -1;
         testBool.setValue(false);
         testStringOut.setValue('Counter runs reverse');
-    } else if (counter < smallInteger.settings.range[0]) {
+    } else if (counter < smallInteger.range[0]) {
         dir = 1;
         testBool.setValue(true);
         testStringOut.setValue('Counter runs forward');

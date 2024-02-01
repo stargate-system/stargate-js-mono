@@ -115,22 +115,22 @@ export class SystemModel {
                     default:
                         console.log('Unknown device event: ' + event);
                 }
-                systemConnector.onPipeEvent = (event: string, args: string[]) => {
-                    switch (event) {
-                        case EventName.pipeCreated:
-                            if (args[0] && args[1]) {
-                                const pipeModel = new PipeModel(args as [string, string]);
-                                this._pipes.update(pipeModel.id, pipeModel);
-                            }
-                            break;
-                        case EventName.pipeRemoved:
-                            if (args[0] && args[1]) {
-                                this._pipes.remove(PipeModel.getPipeId(args as [string, string]));
-                            }
-                            break;
-                        default:
-                            console.log('Unknown pipe event: ' + event);
-                    }
+            }
+            systemConnector.onPipeEvent = (event: string, args: string[]) => {
+                switch (event) {
+                    case EventName.pipeCreated:
+                        if (args[0] && args[1]) {
+                            const pipeModel = new PipeModel(args as [string, string]);
+                            this._pipes.update(pipeModel.id, pipeModel);
+                        }
+                        break;
+                    case EventName.pipeRemoved:
+                        if (args[0] && args[1]) {
+                            this._pipes.remove(PipeModel.getPipeId(args as [string, string]));
+                        }
+                        break;
+                    default:
+                        console.log('Unknown pipe event: ' + event);
                 }
             }
             systemConnector.joinSystem();
@@ -140,7 +140,6 @@ export class SystemModel {
             this._devices = new ModelMap<DeviceModel>();
         }
     }
-
 
     get state(): ModelValue<ConnectionState> {
         return this._state;

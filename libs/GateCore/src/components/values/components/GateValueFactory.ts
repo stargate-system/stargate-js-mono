@@ -3,8 +3,9 @@ import {GateString} from "./GateString.js";
 import {GateNumber} from "./GateNumber.js";
 import {ValueTypes} from "../constants/ValueTypes.js";
 import {ValueManifest} from "../interfaces/ValueManifest";
+import {GateValue} from "./GateValue";
 
-const fromManifest = (manifest: ValueManifest) => {
+const fromManifest = (manifest: ValueManifest): GateValue<any> => {
     switch (manifest.type) {
         case ValueTypes.boolean:
             return GateBoolean.fromManifest(manifest);

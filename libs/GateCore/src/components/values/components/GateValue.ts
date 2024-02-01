@@ -4,6 +4,9 @@ import {ValueVisibility} from "../constants/ValueVisibility";
 
 export abstract class GateValue<T> {
     private static nextId = 1;
+    private readonly _onLocalUpdate: Array<(wasChanged: boolean) => void> = [];
+    private readonly _onRemoteUpdate: Array<(wasChanged: boolean) => void> = [];
+    private readonly _onSubscriptionChange: Array<(subscribed: boolean) => void> = [];
     protected static setCommonsFromManifest(manifest: ValueManifest, target: GateValue<any>) {
         target.valueName = manifest.valueName;
         target.direction = manifest.direction;
@@ -13,9 +16,6 @@ export abstract class GateValue<T> {
     valueName?: string;
     direction?: Directions;
     visibility?: string;
-    onLocalUpdate?: (wasChanged: boolean) => void;
-    onRemoteUpdate?: (wasChanged: boolean) => void;
-    onSubscriptionChange?: (subscribed: boolean) => void;
     protected _type?: string;
     private _value?: T;
     private _subscribed: boolean = false;
@@ -46,15 +46,49 @@ export abstract class GateValue<T> {
         return this._subscribed;
     }
 
+    get onLocalUpdate() {
+        return (wasChanged: boolean) => {
+            this._onLocalUpdate.forEach((callback) => {
+                callback(wasChanged);
+            })
+        }
+    }
+
+    get onRemoteUpdate() {
+        return (wasChanged: boolean) => {
+            this._onRemoteUpdate.forEach((callback) => {
+                callback(wasChanged);
+            })
+        }
+    }
+
+    get onSubscriptionChange() {
+        return (subscribed: boolean) => {
+            this._onSubscriptionChange.forEach((callback) => {
+                callback(subscribed);
+            })
+        }
+    }
+
+    set onLocalUpdate(callback: (wasChanged: boolean) => void) {
+        this._onLocalUpdate.push(callback);
+    }
+
+    set onRemoteUpdate(callback: (wasChanged: boolean) => void) {
+        this._onRemoteUpdate.push(callback);
+    }
+
+    set onSubscriptionChange(callback: (subscribed: boolean) => void) {
+        this._onSubscriptionChange.push(callback);
+    }
+
     setValue = (value: T | undefined) => {
         this._setLocalValue(value);
     }
 
     setSubscribed = (subscribed: boolean) => {
         this._subscribed = subscribed;
-        if (this.onSubscriptionChange) {
-            this.onSubscriptionChange(subscribed);
-        }
+        this.onSubscriptionChange(subscribed);
     }
 
     abstract toString(): string;
@@ -73,9 +107,7 @@ export abstract class GateValue<T> {
             this._value = value;
             wasChanged = true;
         }
-        if (this.onLocalUpdate) {
-            this.onLocalUpdate(wasChanged);
-        }
+        this.onLocalUpdate(wasChanged);
     }
 
     protected _setRemoteValue = (value: T | undefined) => {
@@ -84,9 +116,7 @@ export abstract class GateValue<T> {
             this._value = value;
             wasChanged = true;
         }
-        if (this.onRemoteUpdate) {
-            this.onRemoteUpdate(wasChanged);
-        }
+        this.onRemoteUpdate(wasChanged);
     }
 
     protected _getBasicManifest = (): ValueManifest => {

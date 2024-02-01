@@ -31,17 +31,27 @@ const saveSettings = () => {
     }
 }
 
-const inputMin = ValueFactory.createFloat(Directions.input, 'Input min');
+const inputMin = ValueFactory.createFloat(Directions.input);
+inputMin.valueName = 'Input min';
 inputMin.setValue(settings.inputMin);
-const inputMax = ValueFactory.createFloat(Directions.input, 'Input max');
-inputMax.setValue(settings.inputMax);
-const input = ValueFactory.createFloat(Directions.input, 'Input');
 
-const outputMin = ValueFactory.createFloat(Directions.input, 'Output min');
+const inputMax = ValueFactory.createFloat(Directions.input);
+inputMax.valueName = 'Input max';
+inputMax.setValue(settings.inputMax);
+
+const input = ValueFactory.createFloat(Directions.input);
+input.valueName = 'Input';
+
+const outputMin = ValueFactory.createFloat(Directions.input);
+outputMin.valueName = 'Output min';
 outputMin.setValue(settings.outputMin);
-const outputMax = ValueFactory.createFloat(Directions.input, 'Output max');
+
+const outputMax = ValueFactory.createFloat(Directions.input);
+outputMax.valueName = 'Output max';
 outputMax.setValue(settings.outputMax);
-const output = ValueFactory.createFloat(Directions.output, 'Output');
+
+const output = ValueFactory.createFloat(Directions.output);
+output.valueName = 'Output';
 
 const convert = () => {
     const inputRange = inputMax.value - inputMin.value;

@@ -2,60 +2,59 @@ import {
     GateValueFactory,
     Directions,
     ValueManifest,
-    ValueTypes
+    ValueTypes,
+    GateBoolean,
+    GateString,
+    GateNumber
 } from "gate-core";
-import {DeviceValue} from "./DeviceValue.js";
 import {device} from "../device/GateDevice.js";
 
-const createManifest = (type: ValueTypes, direction: Directions, name?: string): ValueManifest => {
+const createValue = (type: ValueTypes, direction: Directions) => {
     if (device.isStarted) {
-        console.log(`WARNING: Value with name "${name}" created after device was started`);
+        console.log(`WARNING: Value created while device is running`);
     }
-    return {
-        type: type,
-        direction: direction,
-        valueName: name
+
+    const manifest = {
+        type,
+        direction
     } as ValueManifest
-}
 
-const createAndWrap = <V>(manifest: ValueManifest) => {
     const gateValue = GateValueFactory.fromManifest(manifest);
-    return new DeviceValue<V>(gateValue);
-}
+    device.values.add(gateValue, gateValue.id);
 
-const createBoolean = (direction: Directions, name?: string, labelTrue?: string, labelFalse?: string): DeviceValue<boolean> => {
-    const manifest = createManifest(ValueTypes.boolean, direction, name);
-    manifest.options = {
-        labelTrue,
-        labelFalse
-    }
-    return createAndWrap(manifest);
-}
-
-const createString = (direction: Directions, name?: string, minimumLength?: number): DeviceValue<string> => {
-    const manifest = createManifest(ValueTypes.string, direction, name);
-    manifest.options = {
-        minimumLength
+    gateValue.onLocalUpdate = (wasChanged) => {
+        if (wasChanged && gateValue.subscribed) {
+            device.connection.sendGateValue(gateValue);
+        }
     };
-    return createAndWrap(manifest);
-}
-
-const createInteger = (direction: Directions, name?: string, range?: [number | undefined, number | undefined]): DeviceValue<number> => {
-    const manifest = createManifest(ValueTypes.integer, direction, name);
-    manifest.options = {
-        range: range
+    gateValue.onRemoteUpdate = (wasChanged) => {
+        if (gateValue.direction === Directions.input && wasChanged) {
+            device.connection.sendGateValue(gateValue);
+        }
     }
-    return createAndWrap(manifest);
-}
-
-const createFloat = (direction: Directions, name?: string, range?: [number | undefined, number | undefined]): DeviceValue<number> => {
-    const manifest = createManifest(ValueTypes.float, direction, name);
-    manifest.options = {
-        range: range
+    gateValue.onSubscriptionChange = (subscribed) => {
+        if (subscribed) {
+            device.connection.sendGateValue(gateValue);
+        }
     }
-    return createAndWrap(manifest);
+    return gateValue;
 }
 
+const createBoolean = (direction: Directions) => {
+    return createValue(ValueTypes.boolean, direction) as GateBoolean;
+}
+
+const createString = (direction: Directions) => {
+    return createValue(ValueTypes.string, direction) as GateString;
+}
+
+const createInteger = (direction: Directions) => {
+    return createValue(ValueTypes.integer, direction) as GateNumber;
+}
+
+const createFloat = (direction: Directions) => {
+    return createValue(ValueTypes.float, direction) as GateNumber;
+}
 
 const ValueFactory = {
     createBoolean,
