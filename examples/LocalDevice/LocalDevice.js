@@ -9,6 +9,9 @@ GateDevice.setGroup('Test devices');
 const testBool = GateDevice.ValueFactory.createBoolean(Directions.input);
 testBool.valueName = 'Test bool';
 testBool.onRemoteUpdate = () => console.log('>>> value', testBool.value);
+testBool.isButton = true;
+testBool.labelFalse = '>>';
+testBool.labelTrue = 'Running...'
 
 const testNum = GateDevice.ValueFactory.createInteger(Directions.output);
 testNum.valueName = 'Test int';

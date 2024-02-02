@@ -5,6 +5,7 @@ import {ValueManifest} from "../interfaces/ValueManifest.js";
 export class GateBoolean extends GateValue<boolean> {
     labelTrue?: string;
     labelFalse?: string;
+    isButton?: boolean;
 
     static fromManifest(manifest: ValueManifest): GateBoolean {
         const gateBoolean = new GateBoolean(manifest.id);
@@ -13,6 +14,8 @@ export class GateBoolean extends GateValue<boolean> {
         gateBoolean.labelTrue = manifest.options?.labelTrue;
         // @ts-ignore
         gateBoolean.labelFalse = manifest.options?.labelFalse;
+        // @ts-ignore
+        gateBoolean.isButton = manifest.options?.isButton;
         return gateBoolean;
     }
 
@@ -34,7 +37,8 @@ export class GateBoolean extends GateValue<boolean> {
         const manifest = this._getBasicManifest();
         manifest.options = {
             labelTrue: this.labelTrue,
-            labelFalse: this.labelFalse
+            labelFalse: this.labelFalse,
+            isButton: this.isButton
         }
         return manifest;
     }

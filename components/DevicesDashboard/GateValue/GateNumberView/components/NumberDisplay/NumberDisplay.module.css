@@ -13,7 +13,7 @@
 .editable {
     border: 1px solid var(--gatevalue-name-color);
     border-radius: var(--device-border-radius);
-    margin-top: 0.2rem;
+    margin-top: 2px;
 }
 
 .readonly {

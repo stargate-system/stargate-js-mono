@@ -1,0 +1,32 @@
+.gateButton {
+    color: white;
+    border-radius: 0.5rem;
+    min-width: 2rem;
+    min-height: 2rem;
+    padding: 0 0.5rem;
+    font: inherit;
+}
+
+.buttonEnabled {
+    background-color: #363535;
+    border: 1px solid #9d6e47;
+    cursor: pointer;
+}
+
+.buttonUp {
+    box-shadow: -1px -1px #e0d3c9, 1px 1px #603b0e;
+}
+
+.buttonDown {
+    box-shadow: -1px -1px #603b0e, 1px 1px #e0d3c9;
+}
+
+.buttonEnabled:hover {
+    background-color: #4d4d4d;
+}
+
+.buttonDisabled {
+    background-color: #545454;
+    border: 2px solid #8f8f8f;
+    box-shadow: -1px -1px #bebebe, 1px 1px #505050;
+}

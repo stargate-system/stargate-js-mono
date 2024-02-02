@@ -16,7 +16,7 @@
     }
 
     .activeLamp {
-        margin-left: 0.5rem;
+        margin: 0 0.5rem;
         width: 0.7rem;
         height: 0.7rem;
         border-radius: 0.35rem;
