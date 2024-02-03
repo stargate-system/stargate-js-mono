@@ -1,5 +1,9 @@
 const {Directions, GateDevice} = require('gate-device');
+const {ValueVisibility} = require("gate-core");
 const {ValueFactory} = GateDevice;
+
+GateDevice.setName('Test device');
+GateDevice.setGroup('Test devices');
 
 const smallInteger = ValueFactory.createInteger(Directions.output);
 smallInteger.valueName = 'Small integer';
@@ -14,11 +18,13 @@ unlimitedInteger.valueName = 'Unlimited integer';
 
 const increment = ValueFactory.createInteger(Directions.input);
 increment.valueName = 'Increment amount';
+increment.visibility = ValueVisibility.settings;
 increment.setRange([1, 10]);
 increment.onRemoteUpdate = () => incrementValue = increment.value;
 
 const frequency = ValueFactory.createFloat(Directions.input);
 frequency.valueName = 'Frequency';
+frequency.visibility = ValueVisibility.settings;
 frequency.setRange([1, 100]);
 frequency.setValue(4.5);
 
@@ -28,10 +34,26 @@ testBool.labelTrue = 'Positive';
 testBool.labelFalse = 'Negative';
 testBool.setValue(true);
 
-const countRunning = ValueFactory.createBoolean(Directions.input, 'Counter', 'Running', 'Stopped');
+const countRunning = ValueFactory.createBoolean(Directions.input);
 countRunning.valueName = 'Counter';
 countRunning.labelTrue = 'Running';
 countRunning.labelFalse = 'Stopped';
+
+const runCounter = ValueFactory.createBoolean(Directions.input);
+runCounter.valueName = 'Run counter';
+runCounter.labelFalse = 'Run';
+runCounter.isButton = true;
+runCounter.onRemoteUpdate = () => {
+    countRunning.setValue(runCounter.value);
+}
+
+const testSelect = ValueFactory.createSelect(Directions.input);
+testSelect.valueName = 'Counted values';
+testSelect.visibility = 'settings';
+testSelect.nothingSelectedLabel = 'None';
+testSelect.values = ['Small integer', 'Big integer', 'Unlimited integer', 'All'];
+testSelect.setSelectedOption('All');
+
 const onCountChange = () => {
     if (countRunning.value) {
         alterValue();
@@ -64,8 +86,6 @@ testStringIn.onRemoteUpdate = () => {
     }
 }
 
-GateDevice.setName('Test device');
-GateDevice.setGroup('Test devices');
 const deviceState = GateDevice.start();
 
 deviceState.onStateChange = (state) => {
@@ -88,10 +108,23 @@ const alterValue = () => {
         testStringOut.setValue('Counter runs forward');
     }
     counter += dir * incrementValue;
-    // logger.info('Set to: ' + counter);
-    smallInteger.setValue(counter);
-    bigInteger.setValue(counter * 200);
-    unlimitedInteger.setValue(counter);
+    switch (testSelect.value) {
+        case 0:
+            smallInteger.setValue(counter);
+            break;
+        case 1:
+            bigInteger.setValue(counter * 200);
+            break;
+        case 2:
+            unlimitedInteger.setValue(counter);
+            break;
+        case 3:
+            smallInteger.setValue(counter);
+            bigInteger.setValue(counter * 200);
+            unlimitedInteger.setValue(counter);
+            break;
+    }
+
     if (countRunning.value) {
         setTimeout(() => alterValue(), 1000 / frequency.value);
     }

@@ -5,6 +5,7 @@ import {CSSProperties, useEffect, useMemo, useState} from "react";
 import BooleanDisplay from "../../../BooleanDisplay/BooleanDisplay";
 import GateButton from "../../../GateButton/GateButton";
 import {getMaxWidth} from "../../../fontHelper";
+import styles from './GateBooleanView.module.css';
 
 const GateBooleanView = (props: GateValueProps) => {
     const {valueModel, isActive} = props;
@@ -56,6 +57,7 @@ const GateBooleanView = (props: GateValueProps) => {
                     onMouseDown={() => setValue(true)}
                     disabled={!isActive}
                     style={buttonStyle}
+                    className={styles.button}
                 />
             }
         </div>

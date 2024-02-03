@@ -6,6 +6,7 @@ import {DeviceState, GateValueModel} from "gate-viewmodel";
 import GateBooleanView from "./GateBooleanView/GateBooleanView";
 import GateStringView from "./GateStringView/GateStringView";
 import useModelValue from "../../ReactGateViewModel/hooks/useModelValue";
+import GateSelectView from "./GateSelectView/GateSelectView";
 
 interface ValueWrapperProps {
     valueModel: GateValueModel
@@ -33,7 +34,8 @@ const GateValueWrapper = (props: ValueWrapperProps) => {
                 return <GateBooleanView valueModel={valueModel} isActive={isActive}/>
             case ValueTypes.string:
                 return <GateStringView valueModel={valueModel} isActive={isActive}/>
-            // TODO handle custom views
+            case ValueTypes.select:
+                return <GateSelectView isActive={isActive} valueModel={valueModel}/>
         }
     }, [valueModel, isActive]);
 

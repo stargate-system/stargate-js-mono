@@ -32,7 +32,7 @@ const ModifyDeviceValuesModal = (props: ModifyDeviceValuesModalProps) => {
                     .map((value) => {
                     return (
                         <div key={value.id} className={styles.valueRow}>
-                            {value.valueName}
+                            {value.valueName ?? `Unnamed ${value.type}`}
                             <div className={styles.options}>
                                 <input
                                     type="radio"

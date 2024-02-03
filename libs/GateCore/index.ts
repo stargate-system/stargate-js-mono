@@ -11,6 +11,7 @@ import {ValueManifest} from "./src/components/values/interfaces/ValueManifest.js
 import {GateBoolean} from "./src/components/values/components/GateBoolean.js";
 import {GateNumber} from "./src/components/values/components/GateNumber.js";
 import {GateString} from "./src/components/values/components/GateString.js";
+import {GateSelect} from "./src/components/values/components/GateSelect.js";
 import {ValueTypes} from "./src/components/values/constants/ValueTypes.js";
 import {Connection} from "./src/components/connection/interfaces/Connection.js";
 import {ConnectionConfig} from "./src/interfaces/ConnectionConfig.js";
@@ -39,6 +40,7 @@ export {
     GateNumber,
     GateString,
     GateBoolean,
+    GateSelect,
     ValueTypes,
     Connection,
     ConnectionConfig,

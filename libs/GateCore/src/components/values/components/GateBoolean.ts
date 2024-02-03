@@ -9,7 +9,7 @@ export class GateBoolean extends GateValue<boolean> {
 
     static fromManifest(manifest: ValueManifest): GateBoolean {
         const gateBoolean = new GateBoolean(manifest.id);
-        GateBoolean.setCommonsFromManifest(manifest, gateBoolean);
+        GateValue.setCommonsFromManifest(manifest, gateBoolean);
         // @ts-ignore
         gateBoolean.labelTrue = manifest.options?.labelTrue;
         // @ts-ignore
@@ -26,7 +26,7 @@ export class GateBoolean extends GateValue<boolean> {
     }
 
     toString = () => {
-        return super.value ? '1' : '0';
+        return this.value ? '1' : '0';
     }
 
     fromRemote = (textValue: string) => {

@@ -6,7 +6,6 @@ import styles from './GateStringView.module.css';
 
 const GateStringView = (props: GateValueProps) => {
     const {valueModel, isActive} = props;
-    // @ts-ignore
     const gateValue = valueModel.gateValue as GateString;
     const value = useModelValue(valueModel.value);
 

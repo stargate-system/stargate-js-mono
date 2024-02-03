@@ -5,7 +5,8 @@ import {
     ValueTypes,
     GateBoolean,
     GateString,
-    GateNumber
+    GateNumber,
+    GateSelect
 } from "gate-core";
 import {device} from "../device/GateDevice.js";
 
@@ -56,11 +57,16 @@ const createFloat = (direction: Directions) => {
     return createValue(ValueTypes.float, direction) as GateNumber;
 }
 
+const createSelect = (direction: Directions) => {
+    return createValue(ValueTypes.select, direction) as GateSelect;
+}
+
 const ValueFactory = {
     createBoolean,
     createFloat,
     createInteger,
-    createString
+    createString,
+    createSelect
 };
 
 export default ValueFactory;
