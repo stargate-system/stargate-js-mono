@@ -28,7 +28,7 @@ const GateBooleanView = (props: GateValueProps) => {
             if (gateValue.labelFalse) {
                 labels.push(gateValue.labelFalse)
             }
-            return {'minWidth': `calc(${getMaxWidth(labels)}px + 1.3rem)`}
+            return {'minWidth': `calc(${getMaxWidth(labels)}px + 2.3rem)`}
         }
     }, [gateValue]);
 

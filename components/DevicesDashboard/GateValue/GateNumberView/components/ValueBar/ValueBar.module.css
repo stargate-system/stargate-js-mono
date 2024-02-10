@@ -11,8 +11,15 @@
 
         width: 100%;
         height: var(--bar-size);
-        box-shadow: 0 1px #937952, 0 -1px #d7ccbb;
         border-radius: calc(var(--bar-size) / 2);
+    }
+
+    .barEnabled {
+        box-shadow: 0 1px #937952, 0 -1px #d7ccbb;
+    }
+
+    .barDisabled {
+        box-shadow: 0 1px #606060, 0 -1px #919191;
     }
 
     .slider {

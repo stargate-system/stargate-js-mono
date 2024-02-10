@@ -127,7 +127,7 @@ const ValueBar = (props: ValueBarProps) => {
             <div
                 ref={valueBarRef}
                 onClick={barOnClick}
-                className={styles.bar}
+                className={`${styles.bar} ${isActive ? styles.barEnabled : styles.barDisabled}`}
                 style={backgroundImage}
             />
             {editable &&
