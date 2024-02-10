@@ -1,5 +1,5 @@
 import {GateValueProps} from "../GateValueWrapper";
-import {GateSelect} from "gate-core";
+import {Directions, GateSelect} from "gate-core";
 import useModelValue from "../../../ReactGateViewModel/hooks/useModelValue";
 import Select from "react-select";
 import React, {CSSProperties, useEffect, useMemo, useState} from "react";
@@ -48,11 +48,16 @@ const GateSelectView = (props: GateValueProps) => {
         <div style={selectStyle}>
             <Select
                 className={styles.selectInput}
+                classNames={{
+                        control: (state) => `${state.isDisabled ? styles.selectControlDisabled : styles.selectControl}`,
+                        singleValue: () => `${styles.selectValue}`,
+                        indicatorSeparator: (state) => `${state.isDisabled ? styles.selectIndicatorDisabled : styles.selectIndicator}`
+                    }}
                 options={options}
                 value={selectedOption}
                 onChange={(selected) => onSelectionChange(selected as SelectedOption)}
                 placeholder={gateValue.nothingSelectedLabel}
-                isDisabled={!isActive}
+                isDisabled={!isActive || gateValue.direction === Directions.output}
             />
         </div>
     )

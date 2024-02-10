@@ -34,6 +34,11 @@ testBool.labelTrue = 'Positive';
 testBool.labelFalse = 'Negative';
 testBool.setValue(true);
 
+const directionSelectOutput = ValueFactory.createSelect(Directions.output);
+directionSelectOutput.valueName = 'Counter direction';
+directionSelectOutput.values = ['Positive', 'Negative'];
+directionSelectOutput.setValue(0);
+
 const countRunning = ValueFactory.createBoolean(Directions.input);
 countRunning.valueName = 'Counter';
 countRunning.labelTrue = 'Running';
@@ -101,10 +106,12 @@ const alterValue = () => {
     if (counter > smallInteger.range[1]) {
         dir = -1;
         testBool.setValue(false);
+        directionSelectOutput.setSelectedOption('Negative');
         testStringOut.setValue('Counter runs reverse');
     } else if (counter < smallInteger.range[0]) {
         dir = 1;
         testBool.setValue(true);
+        directionSelectOutput.setSelectedOption('Positive');
         testStringOut.setValue('Counter runs forward');
     }
     counter += dir * incrementValue;

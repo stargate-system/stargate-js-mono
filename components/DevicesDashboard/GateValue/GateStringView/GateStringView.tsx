@@ -33,7 +33,7 @@ const GateStringView = (props: GateValueProps) => {
             setEditable(true);
         }
         setDisplayValue(value.toString());
-        setStringStyle({width: `min(90vw, ${gateValue.minimumLength ? gateValue.minimumLength : 10}rem`})
+        setStringStyle({width: `min(85vw, ${gateValue.minimumLength ? gateValue.minimumLength : 10}rem`})
     }, [valueModel]);
 
     useEffect(() => {

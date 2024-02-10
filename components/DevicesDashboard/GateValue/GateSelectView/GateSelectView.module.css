@@ -4,3 +4,31 @@
     padding: 0.1rem 0;
     font-size: 1rem;
 }
+
+.selectControl {}
+.selectControlDisabled {}
+.selectValue {}
+.selectIndicator {}
+.selectIndicatorDisabled {}
+
+div.selectControl {
+    background-color: transparent;
+    border-color: #f5debf;
+}
+
+div.selectControlDisabled {
+    background-color: transparent;
+    border-color: #7c7c7c;
+}
+
+div.selectValue {
+    color: white;
+}
+
+span.selectIndicator {
+    background-color: #f5debf;
+}
+
+span.selectIndicatorDisabled {
+    background-color: #7c7c7c;
+}
