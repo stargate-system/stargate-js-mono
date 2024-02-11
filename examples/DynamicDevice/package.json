@@ -1,0 +1,15 @@
+{
+  "name": "dynamicdevice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Device with capability to add values dynamically",
+  "main": "DynamicDevice.js",
+  "scripts": {
+    "start": "node DynamicDevice.js"
+  },
+  "author": "Michał Marchel",
+  "license": "ISC",
+  "dependencies": {
+    "gate-device": "^1.0.0"
+  }
+}

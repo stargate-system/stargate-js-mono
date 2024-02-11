@@ -71,8 +71,11 @@ export class DefaultConnection implements Connection{
     }
 
     close = () => {
-        this._socket?.close();
-        this._handleClosed();
+        if (this._socket) {
+            this._socket.close();
+        } else {
+            this._handleClosed();
+        }
     }
 
     sendGateValue = (gateValue: GateValue<any>) => {
@@ -130,6 +133,7 @@ export class DefaultConnection implements Connection{
         this._buffer.close();
         this._functionalHandler.close();
         this._changeState(ConnectionState.closed);
+        this._socket = undefined;
     }
 
     private _handleIncomingMessage = (message: string) => {

@@ -1,4 +1,4 @@
-import {Directions, ConnectionState} from "gate-core";
+import {Directions, ConnectionState, ValueVisibility} from "gate-core";
 import GateDevice from "./src/device/GateDevice.js";
 import {DeviceState} from "./src/device/DeviceState.js";
 import config from "./config.js";
@@ -41,5 +41,6 @@ export {
     Directions,
     ConnectionState,
     DeviceState,
+    ValueVisibility,
     GateDevice
 };

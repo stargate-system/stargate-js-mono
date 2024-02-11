@@ -21,6 +21,7 @@ import fs from 'fs';
 
 interface Device {
     isStarted: boolean,
+    isStopped: boolean,
     manifest: Manifest | undefined,
     values: Registry<GateValue<any>>,
     deviceState: DeviceState,
@@ -49,8 +50,15 @@ const setGroup = (name: string) => {
 const start = (): DeviceState => {
     if (device.isStarted) {
         console.log("WARNING: Attempting to start already running device");
+    } else if (device.connection.state !== ConnectionState.closed) {
+        const listenerKey = device.connection.addStateChangeListener(() => {
+            if (device.connection.state === ConnectionState.closed) {
+                device.connection.removeStateChangeListener(listenerKey);
+                start();
+            }
+        });
     } else {
-        if (config.usePing) {
+        if (config.usePing && !device.values.getValues().find((value) => value.id === SystemIds.ping)) {
             const ping = GateValueFactory.fromManifest({
                 id: SystemIds.ping,
                 type: ValueTypes.integer,
@@ -65,7 +73,6 @@ const start = (): DeviceState => {
             }
             device.values.add(ping, ping.id);
         }
-        device.isStarted = true;
         device.manifest = {
             id: getDeviceId(),
             deviceName,
@@ -81,15 +88,25 @@ const start = (): DeviceState => {
     return device.deviceState;
 }
 
+const stop = () => {
+    device.isStarted = false;
+    device.isStopped = true;
+    device.connection.close();
+}
+
 const startConnection = () => {
-    device.connection.onValueMessage = onValueMessage;
-    device.connection.addStateChangeListener(onStateChange);
-    device.connection.functionalHandler.addCommandListener(Keywords.subscribe, (ids) => {
-        handleSubscriptionChange(true, ids);
-    });
-    device.connection.functionalHandler.addCommandListener(Keywords.unsubscribe, (ids) => {
-        handleSubscriptionChange(false, ids);
-    });
+    if (!device.isStopped) {
+        device.connection.onValueMessage = onValueMessage;
+        device.connection.addStateChangeListener(onStateChange);
+        device.connection.functionalHandler.addCommandListener(Keywords.subscribe, (ids) => {
+            handleSubscriptionChange(true, ids);
+        });
+        device.connection.functionalHandler.addCommandListener(Keywords.unsubscribe, (ids) => {
+            handleSubscriptionChange(false, ids);
+        });
+    }
+    device.isStarted = true;
+    device.isStopped = false;
     initLocalServer();
 }
 
@@ -142,6 +159,7 @@ const getDeviceId = () => {
 
 export const device: Device = {
     isStarted: false,
+    isStopped: false,
     manifest: undefined,
     values: new Registry<GateValue<any>>(),
     deviceState: {
@@ -155,6 +173,7 @@ export default {
     setName,
     setGroup,
     start,
+    stop,
     config,
     ValueFactory
 }

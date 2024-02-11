@@ -13,6 +13,7 @@
     "./apps/GateHub",
     "./examples/TestDevice",
     "./examples/LocalDevice",
+    "./examples/DynamicDevice",
     "./examples/RangeConverter"
   ],
   "scripts": {
@@ -33,6 +34,7 @@
     "hub": "run-s build:hub start:hub",
     "device:test": "npm -w examples/TestDevice run start",
     "device:local": "npm -w examples/LocalDevice run start",
+    "device:dynamic": "npm -w examples/DynamicDevice run start",
     "device:converter": "npm -w examples/RangeConverter run start"
   },
   "dependencies": {

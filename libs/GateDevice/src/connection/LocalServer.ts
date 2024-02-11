@@ -6,10 +6,14 @@ import config from "../../config.js";
 import {DefaultDiscoveryService} from 'gate-discovery'
 
 let handshakeTimeout: NodeJS.Timeout | undefined;
+let lastKnownServerAddress: string | undefined;
 
 export const initLocalServer = () => {
     if (config.useFixedUrl) {
         connect(config.fixedUrl);
+    } else if (lastKnownServerAddress !== undefined) {
+        connect(lastKnownServerAddress);
+        lastKnownServerAddress = undefined;
     } else {
         DefaultDiscoveryService.setConfig(config);
         DefaultDiscoveryService.executeWhenServerFound(config.discoveryKeyword, connect, config.hubDiscoveryPort);
@@ -30,8 +34,12 @@ const connect = (serverAddress: string) => {
     }
     socket.on('error', console.log);
     socket.on('close', () => {
-        console.log('Connection closed. Reconnecting...');
-        setTimeout(initLocalServer, 5000);
+        if (device.isStopped) {
+            lastKnownServerAddress = serverAddress;
+        } else {
+            console.log('Connection closed. Reconnecting...');
+            setTimeout(initLocalServer, 5000);
+        }
     });
 }
 

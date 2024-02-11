@@ -2,7 +2,7 @@
   "name": "rangeconverter",
   "version": "1.0.0",
   "private": true,
-  "description": "To handle number range conversion",
+  "description": "To handle number range conversion with persisted settings",
   "main": "RangeConverter.js",
   "scripts": {
     "start": "node RangeConverter.js"
