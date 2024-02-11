@@ -69,7 +69,7 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
     const onSettings = () => {
         if (modal) {
             modal.openModal(
-                <DeviceSettingsModal deviceModel={deviceModel}/>
+                <DeviceSettingsModal deviceId={deviceModel.id}/>
             )
         }
     }

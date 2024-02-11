@@ -1,4 +1,4 @@
-const {Directions, GateDevice} = require('gate-device');
+const {Directions, GateDevice, ValueVisibility} = require('gate-device');
 const {ValueFactory} = GateDevice;
 const fs = require('fs');
 
@@ -34,10 +34,12 @@ const saveSettings = () => {
 const inputMin = ValueFactory.createFloat(Directions.input);
 inputMin.valueName = 'Input min';
 inputMin.setValue(settings.inputMin);
+inputMin.visibility = ValueVisibility.settings;
 
 const inputMax = ValueFactory.createFloat(Directions.input);
 inputMax.valueName = 'Input max';
 inputMax.setValue(settings.inputMax);
+inputMax.visibility = ValueVisibility.settings;
 
 const input = ValueFactory.createFloat(Directions.input);
 input.valueName = 'Input';
@@ -45,10 +47,12 @@ input.valueName = 'Input';
 const outputMin = ValueFactory.createFloat(Directions.input);
 outputMin.valueName = 'Output min';
 outputMin.setValue(settings.outputMin);
+outputMin.visibility = ValueVisibility.settings;
 
 const outputMax = ValueFactory.createFloat(Directions.input);
 outputMax.valueName = 'Output max';
 outputMax.setValue(settings.outputMax);
+outputMax.visibility = ValueVisibility.settings;
 
 const output = ValueFactory.createFloat(Directions.output);
 output.valueName = 'Output';

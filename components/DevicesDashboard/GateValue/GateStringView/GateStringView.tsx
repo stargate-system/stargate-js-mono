@@ -51,7 +51,7 @@ const GateStringView = (props: GateValueProps) => {
                     className={`${styles.valueDisplay} ${styles.editable}`}
                     onKeyDown={onKeyDown}
                     style={stringStyle}
-                    onBlur={() => setDisplayValue(value.toString())}
+                    onBlur={() => gateValue.setValue(displayValue)}
                 />
             }
             {!editable &&

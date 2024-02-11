@@ -2,7 +2,7 @@ import {DeviceModel} from "gate-viewmodel";
 import StandardModal from "../StandardModal/StandardModal";
 import React, {useState} from "react";
 import styles from './ModifyDeviceValuesModal.module.css';
-import {Directions, ValueVisibility} from "gate-core";
+import {ValueVisibility} from "gate-core";
 
 interface ModifyDeviceValuesModalProps {
     deviceModel: DeviceModel
@@ -27,17 +27,7 @@ const ModifyDeviceValuesModal = (props: ModifyDeviceValuesModalProps) => {
                         <div className={styles.optionLabel}>hidden</div>
                     </div>
                 </div>
-                {manifest.values
-                    .sort((a, b) => {
-                        if (a.direction === b.direction) {
-                            return 0;
-                        }
-                        if (a.direction === Directions.input) {
-                            return -1;
-                        }
-                        return 1;
-                    })
-                    .map((value) => {
+                {manifest.values.map((value) => {
                     return (
                         <div key={value.id} className={styles.valueRow}>
                             <div className={styles.label}>{value.valueName ?? `Unnamed ${value.type}`}</div>
@@ -53,20 +43,17 @@ const ModifyDeviceValuesModal = (props: ModifyDeviceValuesModalProps) => {
                                     }}
                                     className={styles.groupInput}
                                 />
-                                {value.direction === Directions.input ?
-                                    <input
-                                        type="radio"
-                                        name={value.id}
-                                        value={ValueVisibility.settings}
-                                        checked={value.visibility === ValueVisibility.settings}
-                                        onChange={(event) => {
-                                            value.visibility = event.target.value;
-                                            setManifest({...manifest});
-                                        }}
-                                        className={styles.groupInput}
-                                    />
-                                    : <div className={styles.groupInput}/>
-                                }
+                                <input
+                                    type="radio"
+                                    name={value.id}
+                                    value={ValueVisibility.settings}
+                                    checked={value.visibility === ValueVisibility.settings}
+                                    onChange={(event) => {
+                                        value.visibility = event.target.value;
+                                        setManifest({...manifest});
+                                    }}
+                                    className={styles.groupInput}
+                                />
                                 <input
                                     type="radio"
                                     name={value.id}
