@@ -48,8 +48,10 @@ const runCounter = ValueFactory.createBoolean(Directions.input);
 runCounter.valueName = 'Run counter';
 runCounter.labelFalse = 'Run';
 runCounter.isButton = true;
-runCounter.onRemoteUpdate = () => {
-    countRunning.setValue(runCounter.value);
+runCounter.onRemoteUpdate = (wasChanged) => {
+    if (wasChanged) {
+        countRunning.setValue(runCounter.value);
+    }
 }
 
 const testSelect = ValueFactory.createSelect(Directions.input);
@@ -89,6 +91,21 @@ testStringIn.onRemoteUpdate = () => {
         default:
             testStringOut.setValue('Unknown command received. Allowed commands are only "start", "stop" and "longword"');
     }
+}
+
+const modeDtoInput = GateDevice.ValueFactory.createString(Directions.input);
+modeDtoInput.valueName = 'ModeDTO';
+modeDtoInput.visibility = ValueVisibility.hidden;
+modeDtoInput.onRemoteUpdate = () => {
+    try {
+        const dto = JSON.parse(modeDtoInput.value);
+        if (dto?.frequency) {
+            frequency.setValue(dto.frequency);
+        }
+        if (dto?.increment) {
+            increment.setValue(dto.increment);
+        }
+    } catch (err) {}
 }
 
 const deviceState = GateDevice.start();

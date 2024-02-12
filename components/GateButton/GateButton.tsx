@@ -55,6 +55,8 @@ const GateButton = (props: GateButtonProps) => {
     useEffect(() => {
         if (buttonRef.current) {
             buttonRef.current.addEventListener('touchstart', onButtonDown, {passive: false});
+
+            return () => buttonRef.current?.removeEventListener('touchstart', onButtonDown);
         }
     }, []);
 

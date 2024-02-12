@@ -23,8 +23,8 @@ const createValue = (type: ValueTypes, direction: Directions) => {
     const gateValue = GateValueFactory.fromManifest(manifest);
     device.values.add(gateValue, gateValue.id);
 
-    gateValue.onLocalUpdate = (wasChanged) => {
-        if (wasChanged && gateValue.subscribed) {
+    gateValue.onLocalUpdate = () => {
+        if (gateValue.subscribed) {
             device.connection.sendGateValue(gateValue);
         }
     };

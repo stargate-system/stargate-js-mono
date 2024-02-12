@@ -14,6 +14,7 @@
     "./examples/TestDevice",
     "./examples/LocalDevice",
     "./examples/DynamicDevice",
+    "./examples/DtoSender",
     "./examples/RangeConverter"
   ],
   "scripts": {
@@ -35,6 +36,7 @@
     "device:test": "npm -w examples/TestDevice run start",
     "device:local": "npm -w examples/LocalDevice run start",
     "device:dynamic": "npm -w examples/DynamicDevice run start",
+    "device:dto": "npm -w examples/DtoSender run start",
     "device:converter": "npm -w examples/RangeConverter run start"
   },
   "dependencies": {
