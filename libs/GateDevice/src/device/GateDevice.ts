@@ -18,6 +18,7 @@ import ValueFactory from "../values/ValueFactory.js";
 import {DeviceState} from "./DeviceState.js";
 import {initLocalServer} from "../connection/LocalServer.js";
 import fs from 'fs';
+import ServerStorage from "./ServerStorage";
 
 interface Device {
     isStarted: boolean,
@@ -175,5 +176,6 @@ export default {
     start,
     stop,
     config,
-    ValueFactory
+    ValueFactory,
+    ServerStorage
 }

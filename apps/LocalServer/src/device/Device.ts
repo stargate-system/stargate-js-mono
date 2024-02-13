@@ -12,6 +12,7 @@ import {
 import ControllerContext from "../controller/ControllerContext";
 import DeviceContext from "../device/DeviceContext";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
+import {setServerStorageRequestListeners} from "../common/ServerStorageRequestListener";
 
 export class Device {
     private readonly _id: string;
@@ -36,6 +37,7 @@ export class Device {
                 console.log("Closed existing connection with " + connectedDevice.id);
             }
         });
+        setServerStorageRequestListeners(this._connection, this._id);
         this._subscriptionBuffer = new SubscriptionBuffer(
             (subscribed) => this._connection.functionalHandler.sendCommand(Keywords.subscribe, subscribed),
             (unsubscribed) => this._connection.functionalHandler.sendCommand(Keywords.unsubscribe, unsubscribed)

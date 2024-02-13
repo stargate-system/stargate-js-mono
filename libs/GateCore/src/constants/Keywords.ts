@@ -8,7 +8,10 @@ const Keywords = {
     ping: 'ping',
     type: 'type',
     deviceEvent: 'deviceEvent',
-    pipeEvent: 'pipeEvent'
+    pipeEvent: 'pipeEvent',
+    storageGet: 'storageGet',
+    storageSet: 'storageSet',
+    storageRemove: 'storageRemove'
 }
 
 export default Keywords;

@@ -27,6 +27,7 @@ const addController = async (controller: ControllerConnector) => {
                         console.log('Cancelled removing device: device is active');
                     } else {
                         Router.systemRepository.removeDevice(id);
+                        Router.serverStorage.remove(id);
                         DeviceContext.notifyPipes(EventName.deviceRemoved, id);
                         forwardDeviceEvent(EventName.deviceRemoved, [id]);
                     }

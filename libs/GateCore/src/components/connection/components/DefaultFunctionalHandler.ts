@@ -12,7 +12,7 @@ interface PendingQuery {
 export class DefaultFunctionalHandler implements FunctionalHandler{
     private _sendFunction?: (message: string) => void;
     private readonly _pendingQueries = new Registry<PendingQuery>();
-    private readonly _queryListeners = new Registry<(respond: (response: string) => void) => void>();
+    private readonly _queryListeners = new Registry<(respond: (response: string) => void, params?: string[]) => void>();
     private readonly _commandListeners = new Registry<(params?: Array<string>) => void>();
     private readonly _queryTimeout: number;
 
@@ -29,7 +29,7 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
         this._pendingQueries.getValues().forEach((pendingQuery) => pendingQuery.rejectQuery('Connection closed'));
     }
 
-    createQuery = (keyword: string, timeout?: number): Promise<string> => {
+    createQuery = (keyword: string, timeout?: number, params?: string[]): Promise<string> => {
         if (!this._sendFunction) {
             throw new Error('Query creation failed: connection closed');
         }
@@ -53,7 +53,7 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
             });
             // @ts-ignore
             this._pendingQueries.add({resolveQuery, rejectQuery}, keyword);
-            const query = MessageMapper.query(keyword);
+            const query = MessageMapper.query(keyword, params);
             this._sendFunction(query);
             return result;
         } else {
@@ -61,7 +61,7 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
         }
     }
 
-    addQueryListener = (keyword: string, onQuery: (respond: (response: string) => void) => void) => {
+    addQueryListener = (keyword: string, onQuery: (respond: (response: string) => void, params?: string[]) => void) => {
         this._queryListeners.add(onQuery, keyword);
     }
 
@@ -84,15 +84,20 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
     }
 
     private handleQueryRequest = (queryMessage: string) => {
-        const keyword = queryMessage.substring(2);
+        const separatorIndex = queryMessage.indexOf(Markers.mainSeparator);
+        const keyword = separatorIndex !== -1 ? queryMessage.substring(2, separatorIndex) : queryMessage.substring(2);
         const listener = this._queryListeners.getByKey(keyword);
         if (listener) {
+            let params;
+            if (separatorIndex !== -1) {
+                params = MessageMapper.parseArray(queryMessage.substring(separatorIndex + 1));
+            }
             const respond = (msg: string) => {
                 if (this._sendFunction) {
                     this._sendFunction(MessageMapper.answer(queryMessage, msg));
                 }
             };
-            listener(respond);
+            listener(respond, params);
         }
     }
 

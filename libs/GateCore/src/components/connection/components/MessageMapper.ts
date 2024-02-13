@@ -81,12 +81,18 @@ const command = (keyword: string, params?: Array<string>) => {
     return functionalMessage(message);
 }
 
-const query = (msg: string) => {
-    return functionalMessage(queryPrefix + msg);
+const query = (msg: string, params?: string[]) => {
+    let message = queryPrefix + msg;
+    if (params !== undefined && params.length) {
+        message += mainSeparator + serializeArray(params);
+    }
+    return functionalMessage(message);
 }
 
 const answer = (query: string, msg: string) => {
-    return functionalMessage(answerPrefix + query.substring(2) + mainSeparator + msg);
+    const separatorIndex = query.indexOf(Markers.mainSeparator);
+    const keyword = separatorIndex !== -1 ? query.substring(2, separatorIndex) : query.substring(2);
+    return functionalMessage(answerPrefix + keyword + mainSeparator + msg);
 }
 
 export default {

@@ -1,8 +1,7 @@
-const {Directions, GateDevice, ValueVisibility} = require('gate-device');
+const {Directions, GateDevice, ValueVisibility, ConnectionState} = require('gate-device');
 const {ValueFactory} = GateDevice;
-const fs = require('fs');
 
-const FILENAME = 'settings.json';
+const SETTINGS_KEY = 'settings';
 
 let settings = {
     inputMin: 0,
@@ -11,34 +10,23 @@ let settings = {
     outputMax: 1
 };
 
-try {
-    settings = JSON.parse(fs.readFileSync(FILENAME).toString());
-} catch (err) {}
-
-let saveFlag = false;
+const applySettings = () => {
+    inputMin.setValue(settings.inputMin);
+    inputMax.setValue(settings.inputMax);
+    outputMin.setValue(settings.outputMin);
+    outputMax.setValue(settings.outputMax);
+}
 
 const saveSettings = () => {
-    if (!saveFlag) {
-        saveFlag = true;
-        setTimeout(() => {
-            saveFlag = false;
-            fs.writeFile(FILENAME, JSON.stringify(settings), (err) => {
-                if (err) {
-                    console.log('On saving settings', err);
-                }
-            });
-        }, 2000);
-    }
+    GateDevice.ServerStorage.set(SETTINGS_KEY, JSON.stringify(settings));
 }
 
 const inputMin = ValueFactory.createFloat(Directions.input);
 inputMin.valueName = 'Input min';
-inputMin.setValue(settings.inputMin);
 inputMin.visibility = ValueVisibility.settings;
 
 const inputMax = ValueFactory.createFloat(Directions.input);
 inputMax.valueName = 'Input max';
-inputMax.setValue(settings.inputMax);
 inputMax.visibility = ValueVisibility.settings;
 
 const input = ValueFactory.createFloat(Directions.input);
@@ -46,12 +34,10 @@ input.valueName = 'Input';
 
 const outputMin = ValueFactory.createFloat(Directions.input);
 outputMin.valueName = 'Output min';
-outputMin.setValue(settings.outputMin);
 outputMin.visibility = ValueVisibility.settings;
 
 const outputMax = ValueFactory.createFloat(Directions.input);
 outputMax.valueName = 'Output max';
-outputMax.setValue(settings.outputMax);
 outputMax.visibility = ValueVisibility.settings;
 
 const output = ValueFactory.createFloat(Directions.output);
@@ -93,5 +79,20 @@ outputMax.onRemoteUpdate = () => {
 };
 output.onRemoteUpdate = convert;
 
+applySettings();
 GateDevice.setName('Range converter');
-GateDevice.start();
+const deviceState = GateDevice.start();
+deviceState.onStateChange = (state) => {
+    if (state === ConnectionState.ready) {
+        GateDevice.ServerStorage.get(SETTINGS_KEY).then((result) => {
+            if (result !== undefined) {
+                try {
+                    settings = JSON.parse(result);
+                    applySettings();
+                } catch (err) {
+                    console.log(err, result);
+                }
+            }
+        })
+    }
+};

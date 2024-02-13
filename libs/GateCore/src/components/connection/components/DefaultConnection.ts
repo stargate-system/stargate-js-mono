@@ -11,6 +11,7 @@ import {Registry} from "../../Registry.js";
 import {Connection} from "../interfaces/Connection.js";
 import {FunctionalHandler} from "../interfaces/FunctionalHandler.js";
 import Keywords from "../../../constants/Keywords";
+import {clearTimeout} from "timers";
 
 export class DefaultConnection implements Connection{
     private _socket?: SocketWrapper;
@@ -55,6 +56,10 @@ export class DefaultConnection implements Connection{
         this._functionalHandler.setConnected(this._socket.send);
         this._changeState(ConnectionState.connected);
         if (this._leader) {
+            if (this._pingTimeout) {
+                clearTimeout(this._pingTimeout);
+                this._pingTimeout = undefined;
+            }
             this._checkPing();
         } else {
             this._functionalHandler.addQueryListener(Keywords.ping, (respond) => {
@@ -108,7 +113,7 @@ export class DefaultConnection implements Connection{
                         this.onPingChange(this.ping);
                     }
                 }
-                setTimeout(this._checkPing, 3000);
+                this._pingTimeout = setTimeout(this._checkPing, 3000);
             }
         }
     }
