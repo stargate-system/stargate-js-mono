@@ -11,6 +11,7 @@ const Keywords = {
     pipeEvent: 'pipeEvent',
     storageGet: 'storageGet',
     storageSet: 'storageSet',
+    storageAppend: 'storageAppend',
     storageRemove: 'storageRemove'
 }
 

@@ -25,6 +25,7 @@ import {ValidManifest} from "./src/interfaces/ValidManifest";
 import AddressMapper from "./src/components/AddressMapper";
 import {ConnectionType} from "./src/constants/ConnectionType";
 import {ValueVisibility} from "./src/components/values/constants/ValueVisibility";
+import {ServerStorage} from "./src/components/ServerStorage";
 
 export {
     CoreConfig,
@@ -53,5 +54,6 @@ export {
     ValidManifest,
     AddressMapper,
     ConnectionType,
-    ValueVisibility
+    ValueVisibility,
+    ServerStorage
 }

@@ -93,6 +93,7 @@ deviceState.onStateChange = (state) => {
                     console.log(err, result);
                 }
             }
-        })
+        });
+        deviceState.onStateChange = undefined;
     }
 };

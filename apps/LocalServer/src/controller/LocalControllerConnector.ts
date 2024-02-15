@@ -2,6 +2,7 @@ import {Connection, ConnectionState, Keywords, ValueMessage} from "gate-core";
 import {ControllerConnector} from "./ControllerConnector";
 import {SystemImage} from "gate-core";
 import keywords from "gate-core/dist/src/constants/Keywords";
+import {setServerStorageRequestListeners} from "../common/ServerStorageRequestListener";
 
 export class LocalControllerConnector implements ControllerConnector {
     id: string = '';
@@ -41,6 +42,7 @@ export class LocalControllerConnector implements ControllerConnector {
                 this.onPipeEvent(eventName, params.slice(1));
             }
         });
+        setServerStorageRequestListeners(this._connection, 'controller');
         this._connection.setReady();
     }
 

@@ -11,14 +11,14 @@ import {
     Registry,
     SystemIds,
     ValueMessage,
-    ValueTypes
+    ValueTypes,
+    ServerStorage
 } from "gate-core";
 import config from "../../config.js";
 import ValueFactory from "../values/ValueFactory.js";
 import {DeviceState} from "./DeviceState.js";
 import {initLocalServer} from "../connection/LocalServer.js";
 import fs from 'fs';
-import ServerStorage from "./ServerStorage";
 
 interface Device {
     isStarted: boolean,
@@ -177,5 +177,5 @@ export default {
     stop,
     config,
     ValueFactory,
-    ServerStorage
+    ServerStorage: new ServerStorage(device.connection)
 }

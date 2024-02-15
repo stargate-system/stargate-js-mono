@@ -10,6 +10,24 @@ export const setServerStorageRequestListeners = (connection: Connection, default
         }
     });
 
+    connection.functionalHandler.addCommandListener(keywords.storageAppend, (params) => {
+        if (params && params.length > 1) {
+            const [key, value, directory] = params;
+            Router.serverStorage.append(directory ?? defaultDirectory, key, value);
+        }
+    });
+
+    connection.functionalHandler.addCommandListener(keywords.storageRemove, (params) => {
+        if (params && params.length > 1) {
+            const [key, directory] = params;
+            Router.serverStorage.remove(
+                (directory && directory.length > 0) ? directory : defaultDirectory,
+                (key && key.length > 0) ? key : undefined,
+                true
+            );
+        }
+    });
+
     connection.functionalHandler.addQueryListener(keywords.storageGet, (respond, params) => {
         if (params && params.length > 0) {
             const [key, directory] = params;
