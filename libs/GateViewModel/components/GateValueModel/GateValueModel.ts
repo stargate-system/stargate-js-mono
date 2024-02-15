@@ -45,7 +45,7 @@ export class GateValueModel {
         this._gateValue.onLocalUpdate = (wasChanged) => {
             this._value.setValue(this._gateValue.value);
             if (wasChanged || this._gateValue.type === ValueTypes.string) {
-                systemConnector.sendValue(this._gateValue);
+                systemConnector.connection.sendGateValue(this._gateValue);
             }
         }
     }

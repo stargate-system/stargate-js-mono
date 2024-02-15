@@ -56,10 +56,6 @@ export class DefaultConnection implements Connection{
         this._functionalHandler.setConnected(this._socket.send);
         this._changeState(ConnectionState.connected);
         if (this._leader) {
-            if (this._pingTimeout) {
-                clearTimeout(this._pingTimeout);
-                this._pingTimeout = undefined;
-            }
             this._checkPing();
         } else {
             this._functionalHandler.addQueryListener(Keywords.ping, (respond) => {
@@ -94,6 +90,12 @@ export class DefaultConnection implements Connection{
     onValueMessage?: (valueMessage: ValueMessage) => void
 
     private _checkPing = async () => {
+        if (this._pingTimeout) {
+            try {
+                clearTimeout(this._pingTimeout);
+            } catch (err) {}
+            this._pingTimeout = undefined;
+        }
         if (this._state !== ConnectionState.closed) {
             const startTime = Date.now();
             let response;
@@ -105,6 +107,7 @@ export class DefaultConnection implements Connection{
             }
             this.ping = (Date.now() - startTime) / 2;
             if (this._failedPings === 3) {
+                console.log('>>> close leader');
                 this.close();
             } else {
                 if (response) {
@@ -113,16 +116,24 @@ export class DefaultConnection implements Connection{
                         this.onPingChange(this.ping);
                     }
                 }
-                this._pingTimeout = setTimeout(this._checkPing, 3000);
+                this._pingTimeout = setTimeout(() => {
+                    this._pingTimeout = undefined;
+                    this._checkPing();
+                }, 3000);
             }
         }
     }
 
     private _watchPing = () => {
         if (this._pingTimeout) {
-            clearTimeout(this._pingTimeout);
+            try {
+                clearTimeout(this._pingTimeout);
+            } catch (err) {}
+            this._pingTimeout = undefined;
         }
         this._pingTimeout = setTimeout(() => {
+            console.log('>>> close follower');
+            this._pingTimeout = undefined;
             this.close();
         }, 10000);
     }
@@ -139,6 +150,12 @@ export class DefaultConnection implements Connection{
         this._functionalHandler.close();
         this._changeState(ConnectionState.closed);
         this._socket = undefined;
+        if (this._pingTimeout) {
+            try {
+                clearTimeout(this._pingTimeout);
+            } catch (err) {}
+            this._pingTimeout = undefined;
+        }
     }
 
     private _handleIncomingMessage = (message: string) => {

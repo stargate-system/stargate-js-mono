@@ -2,11 +2,9 @@ import {SystemConnector} from "gate-viewmodel";
 import {
     ConnectionState, ConnectionType, CoreConfig,
     DefaultConnection,
-    GateValue,
     Keywords, SocketWrapper,
     SubscriptionBuffer,
-    SystemImage,
-    ValueMessage
+    SystemImage
 } from "gate-core";
 import config from "../config";
 import keywords from "gate-core/dist/src/constants/Keywords";
@@ -22,11 +20,8 @@ export class LocalServerConnector implements SystemConnector {
     onJoinEvent: (systemImage: SystemImage, connectedDevices: Array<string>) => void = () => {};
     onDeviceEvent: (event: string, data: string[]) => void = () => {};
     onPipeEvent: (event: string, data: string[]) => void = () => {};
-    onValueMessage: (message: ValueMessage) => void = () => {};
     readonly subscribe: (id: string) => void;
     readonly unsubscribe: (id: string) => void;
-    readonly addStateChangeListener: (callback: (state: ConnectionState) => void) => string;
-    readonly removeStateChangeListener: (listenerKey: string) => void;
 
     constructor(customConfig?: Object) {
         if (customConfig) {
@@ -38,8 +33,6 @@ export class LocalServerConnector implements SystemConnector {
             this._config = {...config};
         }
         this._connection = new DefaultConnection(true, this._config);
-        this.addStateChangeListener = this._connection.addStateChangeListener;
-        this.removeStateChangeListener = this._connection.removeStateChangeListener;
         this._subscriptionBuffer = new SubscriptionBuffer(
             (subscribed) => this._connection.functionalHandler
                 .sendCommand(Keywords.subscribe, subscribed),
@@ -73,16 +66,10 @@ export class LocalServerConnector implements SystemConnector {
                 this.onPipeEvent(eventName, params.slice(1));
             }
         });
-
-        this._connection.onValueMessage = (valueMessage) => {
-            if (this.onValueMessage) {
-                this.onValueMessage(valueMessage);
-            }
-        }
     }
 
-    get state(): ConnectionState {
-        return this._connection.state;
+    get connection() {
+        return this._connection;
     }
 
     joinSystem = () => {
@@ -108,10 +95,6 @@ export class LocalServerConnector implements SystemConnector {
                 });
             }
         }
-    }
-
-    sendValue = (gateValue: GateValue<any>) => {
-        this._connection.sendGateValue(gateValue);
     }
 
     disconnect = () => {

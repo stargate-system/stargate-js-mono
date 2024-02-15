@@ -1,24 +1,18 @@
 import {
-    GateValue,
-    ConnectionState,
-    ValueMessage,
-    SystemImage
+    SystemImage,
+    Connection
 } from "gate-core";
 
 export interface SystemConnector {
-    state: ConnectionState,
-    sendValue: (gateValue: GateValue<any>) => void,
-    unsubscribe: (id: string) => void,
-    subscribe: (id: string) => void,
-    sendDeviceEvent: (event: string, params: string[]) => void,
-    sendPipeEvent: (event: string, params: string[]) => void,
+    connection: Connection,
     joinSystem: () => void,
     disconnect: () => void,
+    subscribe: (id: string) => void,
+    unsubscribe: (id: string) => void,
+    sendDeviceEvent: (event: string, params: string[]) => void,
+    sendPipeEvent: (event: string, params: string[]) => void,
     getCurrentPing: () => number | undefined
-    addStateChangeListener: (callback: (state: ConnectionState) => void) => string,
-    removeStateChangeListener: (listenerKey: string) => void,
     onDeviceEvent: (event: string, data: string[]) => void,
     onPipeEvent: (event: string, data: string[]) => void,
-    onValueMessage: (message: ValueMessage) => void,
-    onJoinEvent: (systemImage: SystemImage, connectedDevices: Array<string>) => void,
+    onJoinEvent: (systemImage: SystemImage, connectedDevices: string[]) => void
 }

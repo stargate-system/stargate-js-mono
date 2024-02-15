@@ -1,6 +1,6 @@
 import {SystemConnector} from "./SystemConnector";
 import {ModelValue} from "../components/ModelValue";
-import {AddressMapper, ConnectionState, EventName, ValidManifest, ValueMessage} from "gate-core";
+import {AddressMapper, ConnectionState, EventName, ServerStorage, ValidManifest, ValueMessage} from "gate-core";
 import {ModelMap} from "../components/ModelMap/ModelMap";
 import {DeviceModel} from "../components/DeviceModel/DeviceModel";
 import {DeviceState} from "../components/DeviceModel/DeviceState";
@@ -10,13 +10,15 @@ export class SystemModel {
     private readonly _systemConnector?: SystemConnector;
     private readonly _state: ModelValue<ConnectionState>;
     private readonly _devices: ModelMap<DeviceModel>;
-    private readonly _pipes: ModelMap<PipeModel>
+    private readonly _pipes: ModelMap<PipeModel>;
+    readonly serverStorage: ServerStorage;
 
     constructor(systemConnector?: SystemConnector) {
         if (systemConnector) {
             this._systemConnector = systemConnector;
-            this._state = new ModelValue<ConnectionState>(systemConnector.state);
-            systemConnector.addStateChangeListener((state) => {
+            this.serverStorage = new ServerStorage(systemConnector.connection);
+            this._state = new ModelValue<ConnectionState>(systemConnector.connection.state);
+            systemConnector.connection.addStateChangeListener((state) => {
                 this._state.setValue(state);
                 if (state !== ConnectionState.ready) {
                     this._devices.values.forEach((device) => device.state.setValue(DeviceState.down));
@@ -36,7 +38,7 @@ export class SystemModel {
                     this._pipes.update(pipeModel.id, pipeModel);
                 })
             }
-            systemConnector.onValueMessage = (valueMessage: ValueMessage) => {
+            systemConnector.connection.onValueMessage = (valueMessage: ValueMessage) => {
                 valueMessage.forEach((change) => {
                     const deviceId = AddressMapper.extractTargetId(change[0])[0];
                     const device = this._devices.getById(deviceId);
@@ -138,6 +140,7 @@ export class SystemModel {
             this._state = new ModelValue<ConnectionState>(ConnectionState.closed);
             this._pipes = new ModelMap<PipeModel>();
             this._devices = new ModelMap<DeviceModel>();
+            this.serverStorage = {} as ServerStorage;
         }
     }
 

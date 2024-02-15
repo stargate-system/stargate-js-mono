@@ -27,6 +27,7 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
     close = () => {
         this._sendFunction = undefined;
         this._pendingQueries.getValues().forEach((pendingQuery) => pendingQuery.rejectQuery('Connection closed'));
+        this._pendingQueries.clear();
     }
 
     createQuery = (keyword: string, timeout?: number, params?: string[]): Promise<string> => {

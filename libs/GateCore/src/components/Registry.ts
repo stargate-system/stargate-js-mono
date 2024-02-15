@@ -36,4 +36,8 @@ export class Registry<T> {
     isEmpty = (): boolean => {
         return !this._registry.size;
     }
+
+    clear = () => {
+        this._registry.clear();
+    }
 }
