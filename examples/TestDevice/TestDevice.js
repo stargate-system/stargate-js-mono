@@ -106,12 +106,11 @@ modeDtoInput.onRemoteUpdate = () => {
         }
     } catch (err) {}
 }
-
-const deviceState = GateDevice.start();
-
-deviceState.onStateChange = (state) => {
+GateDevice.state.onStateChange = (state) => {
     console.log('Connection state: ' + state);
 };
+
+GateDevice.start();
 console.log('Waiting for connection...');
 
 let dir = 1;

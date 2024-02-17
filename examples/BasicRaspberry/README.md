@@ -4,7 +4,7 @@ Contains one number input to control PWM on pin GPIO22.
 If input is not subscribed, pin output is automatically set to 0 and
 restored to current input value if subscribed again. Uses ping.
 
-**Setup:** \
+### Setup
 *Point 2 is temporary as libraries are not yet published to npm*
 
 1. Copy entire BasicRaspberry folder to Raspberry,

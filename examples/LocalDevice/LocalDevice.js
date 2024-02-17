@@ -5,6 +5,9 @@ const {
 
 GateDevice.setName('Test local');
 GateDevice.setGroup('Test devices');
+GateDevice.state.onStateChange = (state) => {
+    console.log('State: ' + state);
+}
 
 const testBool = GateDevice.ValueFactory.createBoolean(Directions.input);
 testBool.valueName = 'Test bool';
@@ -27,8 +30,5 @@ setInterval(() => {
     testNum.setValue(testNum.value + dir);
 }, 200);
 
-const state = GateDevice.start();
-state.onStateChange = (state) => {
-    console.log('State: ' + state);
-}
+GateDevice.start();
 console.log('Waiting for connection...');

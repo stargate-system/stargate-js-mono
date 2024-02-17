@@ -81,8 +81,7 @@ output.onRemoteUpdate = convert;
 
 applySettings();
 GateDevice.setName('Range converter');
-const deviceState = GateDevice.start();
-deviceState.onStateChange = (state) => {
+GateDevice.state.onStateChange = (state) => {
     if (state === ConnectionState.ready) {
         GateDevice.ServerStorage.get(SETTINGS_KEY).then((result) => {
             if (result !== undefined) {
@@ -94,6 +93,8 @@ deviceState.onStateChange = (state) => {
                 }
             }
         });
-        deviceState.onStateChange = undefined;
+        GateDevice.state.onStateChange = undefined;
     }
 };
+
+GateDevice.start();

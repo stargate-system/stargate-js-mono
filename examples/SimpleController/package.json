@@ -1,0 +1,17 @@
+{
+  "name": "simplecontroller",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Example of controller usage",
+  "main": "SimpleController.js",
+  "scripts": {
+    "start": "node SimpleController.js"
+  },
+  "author": "Michał Marchel",
+  "license": "ISC",
+  "dependencies": {
+    "gate-device": "^1.0.0",
+    "gate-viewmodel": "^1.0.0",
+    "gate-controller": "^1.0.0"
+  }
+}

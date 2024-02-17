@@ -48,7 +48,7 @@ const setGroup = (name: string) => {
     }
 }
 
-const start = (): DeviceState => {
+const start = () => {
     if (device.isStarted) {
         console.log("WARNING: Attempting to start already running device");
     } else if (device.connection.state !== ConnectionState.closed) {
@@ -86,7 +86,6 @@ const start = (): DeviceState => {
         }
         startConnection();
     }
-    return device.deviceState;
 }
 
 const stop = () => {
@@ -140,7 +139,7 @@ const handleSubscriptionChange = (subscribed: boolean, ids?: string[]) => {
 }
 
 const onStateChange = (state: ConnectionState) => {
-    device.deviceState.state = state;
+    device.deviceState.current = state;
     if (device.deviceState.onStateChange) {
         device.deviceState.onStateChange(state);
     }
@@ -168,7 +167,7 @@ export const device: Device = {
     manifest: undefined,
     values: new Registry<GateValue<any>>(),
     deviceState: {
-        state: ConnectionState.closed,
+        current: ConnectionState.closed,
         onStateChange: undefined
     },
     connection: new DefaultConnection(true, config)
@@ -182,5 +181,6 @@ export default {
     stop,
     config,
     ValueFactory,
-    ServerStorage: new ServerStorage(device.connection)
+    ServerStorage: new ServerStorage(device.connection),
+    state: device.deviceState
 }
