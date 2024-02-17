@@ -35,13 +35,21 @@ cp "./apps/GateHub/package.json" "${appsDir}/GateHub"
 cp -r "./libs/GateCore" "${appsDir}/GateHub/libs"
 cp -r "./libs/GateDiscovery" "${appsDir}/GateHub/libs"
 
-cp -r "./examples/BlankProject" "${appsDir}"
-mkdir "${appsDir}/BlankProject/libs"
-cp -r "./libs/GateCore" "${appsDir}/BlankProject/libs"
-cp -r "./libs/GateDiscovery" "${appsDir}/BlankProject/libs"
-cp -r "./libs/GateDevice" "${appsDir}/BlankProject/libs"
-cp -r "./libs/GateController" "${appsDir}/BlankProject/libs"
-cp -r "./libs/GateViewModel" "${appsDir}/BlankProject/libs"
+cp -r "./examples/BlankProjectJS" "${appsDir}"
+mkdir "${appsDir}/BlankProjectJS/libs"
+cp -r "./libs/GateCore" "${appsDir}/BlankProjectJS/libs"
+cp -r "./libs/GateDiscovery" "${appsDir}/BlankProjectJS/libs"
+cp -r "./libs/GateDevice" "${appsDir}/BlankProjectJS/libs"
+cp -r "./libs/GateController" "${appsDir}/BlankProjectJS/libs"
+cp -r "./libs/GateViewModel" "${appsDir}/BlankProjectJS/libs"
+
+cp -r "./examples/BlankProjectTS" "${appsDir}"
+mkdir "${appsDir}/BlankProjectTS/libs"
+cp -r "./libs/GateCore" "${appsDir}/BlankProjectTS/libs"
+cp -r "./libs/GateDiscovery" "${appsDir}/BlankProjectTS/libs"
+cp -r "./libs/GateDevice" "${appsDir}/BlankProjectTS/libs"
+cp -r "./libs/GateController" "${appsDir}/BlankProjectTS/libs"
+cp -r "./libs/GateViewModel" "${appsDir}/BlankProjectTS/libs"
 
 echo -e "\nInstalling LocalServer"
 cd "${appsDir}/LocalServer" || echo "Error accessing path" exit
@@ -51,6 +59,10 @@ echo -e "\n\nInstalling GateHub"
 cd "../GateHub"  || echo "Error accessing path" exit
 npm link ./libs/GateCore ./libs/GateDiscovery
 
-echo -e "\n\nInstalling BlankProject"
-cd "../BlankProject"  || echo "Error accessing path" exit
+echo -e "\n\nInstalling BlankProjectJS"
+cd "../BlankProjectJS"  || echo "Error accessing path" exit
+npm link ./libs/GateCore ./libs/GateDiscovery ./libs/GateDevice ./libs/GateController ./libs/GateViewModel
+
+echo -e "\n\nInstalling BlankProjectTS"
+cd "../BlankProjectTS"  || echo "Error accessing path" exit
 npm link ./libs/GateCore ./libs/GateDiscovery ./libs/GateDevice ./libs/GateController ./libs/GateViewModel

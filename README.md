@@ -6,38 +6,22 @@
 3. Run "npm install"
 4. Run "npm build"
 
-To start local server - "npm run server" (available on localhost:8080)
+- To start local server - "npm run server" (available on localhost:8080)
+- To start development server for frontend - "npm run dev" (available on localhost:3000)
+- To create apps ready to use outside this repository - "bash CreateStandaloneApps.sh"
+(will create StargateApps directory next to repository root directory)
 
 ## Example devices
 Device can optionally display it's current ping. To turn on this feature,
 add following line in code (before invoking GateDevice.start()):
 
-    GateDevice.config.usePing = true;
+    GateDevice.usePing();
 
-### Test device
-Containing all types of GateValues configured both as input and output,
-with some logic to generate changes (can be started/stopped from UI using "Counter" switch)
+### BlankProjectJS, BlankProjectTS
+Templates for CreateStandaloneApps script, not meant to be used
 
-**Setup:** \
-Open terminal under project's root directory and run "npm run device:test"
-
-### Local device
-Simple test device for use with Local Server
-
-**Setup:** \
-Open terminal under project's root directory and run "npm run device:local"
-
-### BasicRaspberry
-Minimalistic example of Raspberry Pi device.
-Contains one number input to control PWM on pin GPIO22
-
-**Setup:** \
-*Point 2 is temporary as libraries are not yet published to npm*
-
-1. Copy entire BasicRaspberry folder to Raspberry,
-2. Copy GateCore and GateDevice from ./libs into BasicRaspberry folder
-3. Within BasicRaspberry folder, open terminal and run "npm install"
-4. When finished successfully, run "sudo node BasicRaspberry.js"
+### Other examples
+Other examples contains their own README files, explaining purpose and usage
 
 ## GateHub
 App to facilitate running multiple devices on one physical device.
@@ -61,7 +45,7 @@ Example:
     ];
 
 ## Repo structure
-|- **apps**: code meant to be run as standalone applications \
-|- **components**: common FE components \
-|- **examples**: example implementations \
-|- **libs**: code shared between apps and/or meant to be published to npm
+**apps**: code meant to be run as standalone applications \
+**components**: possibly reusable FE components \
+**examples**: example implementations \
+**libs**: code shared between apps and/or meant to be published to npm

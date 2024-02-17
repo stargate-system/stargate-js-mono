@@ -158,6 +158,10 @@ const getDeviceId = () => {
     }
 }
 
+const usePing = () => {
+    config.usePing = true;
+}
+
 export const device: Device = {
     isStarted: false,
     isStopped: false,
@@ -173,6 +177,7 @@ export const device: Device = {
 export default {
     setName,
     setGroup,
+    usePing,
     start,
     stop,
     config,

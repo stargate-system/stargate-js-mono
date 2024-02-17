@@ -20,7 +20,6 @@ const increment = ValueFactory.createInteger(Directions.input);
 increment.valueName = 'Increment amount';
 increment.visibility = ValueVisibility.settings;
 increment.setRange([1, 10]);
-increment.onRemoteUpdate = () => incrementValue = increment.value;
 
 const frequency = ValueFactory.createFloat(Directions.input);
 frequency.valueName = 'Frequency';
@@ -116,7 +115,6 @@ deviceState.onStateChange = (state) => {
 console.log('Waiting for connection...');
 
 let dir = 1;
-let incrementValue = increment.value;
 let counter = 0;
 
 const alterValue = () => {
@@ -131,7 +129,7 @@ const alterValue = () => {
         directionSelectOutput.setSelectedOption('Positive');
         testStringOut.setValue('Counter runs forward');
     }
-    counter += dir * incrementValue;
+    counter += dir * increment.value;
     switch (testSelect.value) {
         case 0:
             smallInteger.setValue(counter);
