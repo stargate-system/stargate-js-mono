@@ -1,23 +1,22 @@
-import {Connection} from "gate-core";
-import keywords from "gate-core/dist/src/constants/Keywords";
+import {Connection, Keywords} from "gate-core";
 import Router from "../Router";
 
 export const setServerStorageRequestListeners = (connection: Connection, defaultDirectory: string) => {
-    connection.functionalHandler.addCommandListener(keywords.storageSet, (params) => {
+    connection.functionalHandler.addCommandListener(Keywords.storageSet, (params) => {
         if (params && params.length > 1) {
             const [key, value, directory] = params;
             Router.serverStorage.set(directory ?? defaultDirectory, key, value);
         }
     });
 
-    connection.functionalHandler.addCommandListener(keywords.storageAppend, (params) => {
+    connection.functionalHandler.addCommandListener(Keywords.storageAppend, (params) => {
         if (params && params.length > 1) {
             const [key, value, directory] = params;
             Router.serverStorage.append(directory ?? defaultDirectory, key, value);
         }
     });
 
-    connection.functionalHandler.addCommandListener(keywords.storageRemove, (params) => {
+    connection.functionalHandler.addCommandListener(Keywords.storageRemove, (params) => {
         if (params && params.length > 1) {
             const [key, directory] = params;
             Router.serverStorage.remove(
@@ -28,7 +27,7 @@ export const setServerStorageRequestListeners = (connection: Connection, default
         }
     });
 
-    connection.functionalHandler.addQueryListener(keywords.storageGet, (respond, params) => {
+    connection.functionalHandler.addQueryListener(Keywords.storageGet, (respond, params) => {
         if (params && params.length > 0) {
             const [key, directory] = params;
             Router.serverStorage.get(directory ?? defaultDirectory, key).then((value) => {

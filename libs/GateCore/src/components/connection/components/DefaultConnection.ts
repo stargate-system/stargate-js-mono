@@ -132,7 +132,6 @@ export class DefaultConnection implements Connection{
             this._pingTimeout = undefined;
         }
         this._pingTimeout = setTimeout(() => {
-            console.log('>>> close follower');
             this._pingTimeout = undefined;
             this.close();
         }, 10000);

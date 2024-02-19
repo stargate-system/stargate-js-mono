@@ -1,7 +1,6 @@
 import {Connection, ConnectionState, Keywords, ValueMessage} from "gate-core";
 import {ControllerConnector} from "./ControllerConnector";
 import {SystemImage} from "gate-core";
-import keywords from "gate-core/dist/src/constants/Keywords";
 import {setServerStorageRequestListeners} from "../common/ServerStorageRequestListener";
 
 export class LocalControllerConnector implements ControllerConnector {
@@ -47,11 +46,11 @@ export class LocalControllerConnector implements ControllerConnector {
     }
 
     sendDeviceEvent = (event: string, data: string[]) => {
-        this._connection.functionalHandler.sendCommand(keywords.deviceEvent, [event, ...data]);
+        this._connection.functionalHandler.sendCommand(Keywords.deviceEvent, [event, ...data]);
     }
 
     sendPipeEvent = (event: string, data: string[]) => {
-        this._connection.functionalHandler.sendCommand(keywords.pipeEvent, [event, ...data]);
+        this._connection.functionalHandler.sendCommand(Keywords.pipeEvent, [event, ...data]);
     }
 
     sendJoinData = (systemImage: SystemImage, connectedDevices: string[]) => {

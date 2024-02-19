@@ -7,7 +7,6 @@ import {
     SystemImage
 } from "gate-core";
 import config from "../config";
-import keywords from "gate-core/dist/src/constants/Keywords";
 
 export class LocalServerConnector implements SystemConnector {
     private static readonly ws = typeof window === 'undefined' ? import('ws') : undefined;
@@ -103,11 +102,11 @@ export class LocalServerConnector implements SystemConnector {
     }
 
     sendDeviceEvent = (event: string, params: string[]) => {
-        this._connection.functionalHandler.sendCommand(keywords.deviceEvent, [event, ...params]);
+        this._connection.functionalHandler.sendCommand(Keywords.deviceEvent, [event, ...params]);
     }
 
     sendPipeEvent = (event: string, params: string[]) => {
-        this._connection.functionalHandler.sendCommand(keywords.pipeEvent, [event, ...params]);
+        this._connection.functionalHandler.sendCommand(Keywords.pipeEvent, [event, ...params]);
     }
 
     readonly getCurrentPing = () => this._connection.ping;
