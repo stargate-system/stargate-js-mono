@@ -27,8 +27,7 @@ export const initConnectionService = () => {
             console.log("Connection type for " + request.socket.remoteAddress + " - " + response);
             switch (response) {
                 case ConnectionType.device:
-                    const deviceConnector = new LocalDeviceConnector(connection);
-                    deviceConnector.onConnectorReady = () => Router.addDevice(deviceConnector);
+                    new LocalDeviceConnector(connection);
                     break;
                 case ConnectionType.controller:
                     const controllerConnector = new LocalControllerConnector(connection);

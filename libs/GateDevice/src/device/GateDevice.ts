@@ -9,10 +9,10 @@ import {
     Keywords,
     Manifest,
     Registry,
+    ServerStorage,
     SystemIds,
     ValueMessage,
-    ValueTypes,
-    ServerStorage
+    ValueTypes
 } from "gate-core";
 import config from "../../config.js";
 import ValueFactory from "../values/ValueFactory.js";
@@ -161,6 +161,10 @@ const usePing = () => {
     config.usePing = true;
 }
 
+const isReady = () => {
+    return device.deviceState.current === ConnectionState.ready;
+}
+
 export const device: Device = {
     isStarted: false,
     isStopped: false,
@@ -182,5 +186,6 @@ export default {
     config,
     ValueFactory,
     ServerStorage: new ServerStorage(device.connection),
-    state: device.deviceState
+    state: device.deviceState,
+    isReady
 }

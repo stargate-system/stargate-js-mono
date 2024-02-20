@@ -6,12 +6,12 @@ import {
 } from "gate-core";
 import {DeviceConnector} from "./DeviceConnector";
 import Router from "../Router";
+import {Device} from "./Device";
 
 export class LocalDeviceConnector implements DeviceConnector{
     private _id?: string;
     private readonly _connection: Connection;
     private _manifest?: ValidManifest;
-    onConnectorReady?: () => void;
 
     constructor(connection: Connection) {
         this._connection = connection;
@@ -36,9 +36,7 @@ export class LocalDeviceConnector implements DeviceConnector{
                     }
                     // @ts-ignore
                     this._id = this._manifest.id;
-                    if (this.onConnectorReady) {
-                        this.onConnectorReady();
-                    }
+                    new Device(this);
                 } catch (err) {
                     console.log("Failed connection (on handshake)", err);
                     this._connection.close();

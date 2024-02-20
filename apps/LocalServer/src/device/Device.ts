@@ -1,13 +1,13 @@
 import {DeviceConnector} from "./DeviceConnector";
 import {
+    AddressMapper,
     Connection,
     ConnectionState,
+    EventName,
     Keywords,
-    ValueMessage,
     SubscriptionBuffer,
     ValidManifest,
-    EventName,
-    AddressMapper
+    ValueMessage
 } from "gate-core";
 import ControllerContext from "../controller/ControllerContext";
 import DeviceContext from "../device/DeviceContext";
@@ -30,13 +30,6 @@ export class Device {
         this._manifest = connector.manifest;
         this._connection = connector.connection;
         this._connection.onValueMessage = this._routeDeviceMessage;
-
-        DeviceContext.deviceRegistry.getValues().forEach((connectedDevice) => {
-            if (connectedDevice.id === this.id) {
-                connectedDevice._connection.close();
-                console.log("Closed existing connection with " + connectedDevice.id);
-            }
-        });
         setServerStorageRequestListeners(this._connection, this._id);
         this._subscriptionBuffer = new SubscriptionBuffer(
             (subscribed) => this._connection.functionalHandler.sendCommand(Keywords.subscribe, subscribed),
@@ -53,17 +46,18 @@ export class Device {
                 console.log("Disconnected device: " + this._id);
             }
         });
-        try {
-            DeviceContext.deviceRegistry.add(this, this._id);
-            this._connection.functionalHandler.sendCommand(Keywords.ready);
-            this._connection.setReady();
-            DeviceContext.notifyPipes(EventName.deviceConnected, this);
-            ControllerContext.forwardDeviceEvent(EventName.deviceConnected, [JSON.stringify(this._manifest)]);
-        } catch (err) {
-            this._connection.close();
-            throw new Error('Failed registering device: ' + err);
+        const connectedDevice = DeviceContext.deviceRegistry.getByKey(this._id);
+        if (connectedDevice) {
+            console.log("Closed existing connection with " + connectedDevice.id);
+            connectedDevice._connection.addStateChangeListener((state) => {
+                if (state === ConnectionState.closed) {
+                    setTimeout(this._register, 0);
+                }
+            });
+            connectedDevice._connection.close();
+        } else {
+            this._register();
         }
-        console.log("Connected device: " + this._id);
     }
 
     get id(): string {
@@ -107,6 +101,20 @@ export class Device {
                 }
             }
         });
+    }
+
+    private readonly _register = () => {
+        try {
+            DeviceContext.deviceRegistry.add(this, this._id);
+            this._connection.functionalHandler.sendCommand(Keywords.ready);
+            this._connection.setReady();
+            DeviceContext.notifyPipes(EventName.deviceConnected, this);
+            ControllerContext.forwardDeviceEvent(EventName.deviceConnected, [JSON.stringify(this._manifest)]);
+            console.log("Connected device: " + this._id);
+        } catch (err) {
+            this._connection.close();
+            console.log('Failed registering device', err);
+        }
     }
 
     private readonly _routeDeviceMessage = (valueMessage: ValueMessage) => {

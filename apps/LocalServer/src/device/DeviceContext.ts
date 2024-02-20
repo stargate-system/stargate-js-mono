@@ -1,4 +1,3 @@
-import {DeviceConnector} from "./DeviceConnector";
 import {Registry, ValueMessage, AddressMapper} from "gate-core";
 import {Device} from "./Device";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
@@ -12,14 +11,6 @@ export const initDeviceContext = async () => {
     const image = await Router.systemRepository.getSystemImage();
     if (image.pipes) {
         pipes = image.pipes.map((pipe) => new Pipe(pipe[0], pipe[1]));
-    }
-}
-
-const addDevice = async (deviceConnector: DeviceConnector) => {
-    try {
-        new Device(deviceConnector);
-    } catch (err) {
-        console.log(err);
     }
 }
 
@@ -103,7 +94,6 @@ const notifyPipes = (event: string, device: Device | string) => {
 
 const DeviceContext = {
     deviceRegistry,
-    addDevice,
     forwardValueMessage,
     forwardSubscribed,
     forwardUnsubscribed,
