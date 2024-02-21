@@ -59,10 +59,11 @@ export class GateSelect extends GateValue<number> {
         }
     }
 
-    setValue = (index: number | undefined) => {
+    setValue = (index: number | undefined, equalityCheck?: boolean) => {
+
         if (index !== undefined) {
             if (index > -1 && index < this._values.length) {
-                this._setLocalValue(index);
+                this._setLocalValue(index, equalityCheck);
             } else {
                 console.log('WARNING: attempting to set index out of range on ' + this.valueName);
             }

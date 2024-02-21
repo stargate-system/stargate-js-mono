@@ -34,10 +34,10 @@ const NumberDisplay = (props: NumberDisplayProps) => {
         }
     }
 
-    const setValueWithDisplayValue = () => {
+    const setValueWithDisplayValue = (equalityCheck?: boolean) => {
         const inputValue = Number.parseFloat(displayValue);
         if (!Number.isNaN(inputValue)) {
-            setValue(inputValue);
+            setValue(inputValue, equalityCheck);
         }
     }
 
@@ -48,7 +48,7 @@ const NumberDisplay = (props: NumberDisplayProps) => {
     const onKeyDown = (ev: any) => {
         switch (ev.key) {
             case 'Enter':
-                setValueWithDisplayValue();
+                setValueWithDisplayValue(false);
                 break;
             case 'Escape':
                 setDisplayValue(value.toString());

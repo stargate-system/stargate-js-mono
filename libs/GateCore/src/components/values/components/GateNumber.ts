@@ -44,13 +44,13 @@ export class GateNumber extends GateValue<number> {
         return this._range;
     }
 
-    setValue = (value: number | undefined) => {
+    setValue = (value: number | undefined, equalityCheck?: boolean) => {
         if (value !== undefined) {
             let checkedValue = value;
             if (this._type === ValueTypes.integer) {
                 checkedValue = Number.isInteger(value) ? value : Math.round(value);
             }
-            this._setLocalValue(this._getWithinRange(checkedValue));
+            this._setLocalValue(this._getWithinRange(checkedValue), equalityCheck);
         }
     }
 

@@ -19,8 +19,8 @@ const GateNumberView = (props: GateValueProps) => {
     const [rangePanelStyle, setRangePanelStyle] = useState<CSSProperties>();
     const [valuePanelStyle, setValuePanelStyle] = useState<CSSProperties>();
 
-    const setValue = (value: number) => {
-        gateValue.setValue(value);
+    const setValue = (value: number, equalityCheck?: boolean) => {
+        gateValue.setValue(value, equalityCheck ?? true);
     }
 
     const setLimitedValueDisplayStyles = () => {

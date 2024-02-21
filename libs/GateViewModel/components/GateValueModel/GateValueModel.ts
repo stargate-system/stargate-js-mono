@@ -3,7 +3,6 @@ import {
     GateValueFactory,
     SystemIds,
     ValueManifest,
-    ValueTypes,
     AddressMapper
 } from "gate-core";
 import {DeviceState} from "../DeviceModel/DeviceState";
@@ -44,7 +43,7 @@ export class GateValueModel {
         }
         this._gateValue.onLocalUpdate = (wasChanged) => {
             this._value.setValue(this._gateValue.value);
-            if (wasChanged || this._gateValue.type === ValueTypes.string) {
+            if (wasChanged) {
                 systemConnector.connection.sendGateValue(this._gateValue);
             }
         }

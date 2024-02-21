@@ -36,7 +36,7 @@ setButton.onRemoteUpdate = () => {
                 settingsDto.increment = 10;
                 break;
         }
-        dto.setValue(JSON.stringify(settingsDto));
+        dto.setValue(JSON.stringify(settingsDto), false);
     }
 }
 

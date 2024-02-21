@@ -60,8 +60,8 @@ testSelect.nothingSelectedLabel = 'None';
 testSelect.values = ['Small integer', 'Big integer', 'Unlimited integer', 'All'];
 testSelect.setSelectedOption('All');
 
-const onCountChange = () => {
-    if (countRunning.value) {
+const onCountChange = (wasChanged) => {
+    if (countRunning.value && wasChanged) {
         alterValue();
     }
 }

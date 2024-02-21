@@ -82,8 +82,8 @@ export abstract class GateValue<T> {
         this._onSubscriptionChange.push(callback);
     }
 
-    setValue = (value: T | undefined) => {
-        this._setLocalValue(value);
+    setValue = (value: T | undefined, equalityCheck?: boolean) => {
+        this._setLocalValue(value, equalityCheck);
     }
 
     setSubscribed = (subscribed: boolean) => {
@@ -101,11 +101,10 @@ export abstract class GateValue<T> {
         return this._value !== newValue;
     }
 
-    protected _setLocalValue = (value?: T) => {
-        let wasChanged = false;
-        if (this._isValueChanged(value)) {
+    protected _setLocalValue = (value?: T, equalityCheck?: boolean) => {
+        const wasChanged = (equalityCheck ?? true) ? this._isValueChanged(value) : true;
+        if (wasChanged) {
             this._value = value;
-            wasChanged = true;
         }
         this.onLocalUpdate(wasChanged);
     }

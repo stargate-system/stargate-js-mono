@@ -107,7 +107,6 @@ export class DefaultConnection implements Connection{
             }
             this.ping = (Date.now() - startTime) / 2;
             if (this._failedPings === 3) {
-                console.log('>>> close leader');
                 this.close();
             } else {
                 if (response) {
