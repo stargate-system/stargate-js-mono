@@ -12,7 +12,7 @@ const GateNumberView = (props: GateValueProps) => {
     const {valueModel, isActive} = props;
     // @ts-ignore
     const gateValue = valueModel.gateValue as GateNumber;
-    const value = useModelValue(valueModel.value);
+    const value = useModelValue(valueModel.modelValue);
 
     const [isLimited, setIsLimited] = useState(false);
     const [editable, setEditable] = useState(false);

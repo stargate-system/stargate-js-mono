@@ -15,7 +15,7 @@ const GateSelectView = (props: GateValueProps) => {
     const {valueModel, isActive} = props;
     // @ts-ignore
     const gateValue = valueModel.gateValue as GateSelect;
-    const value = useModelValue(valueModel.value);
+    const value = useModelValue(valueModel.modelValue);
     const [selectedOption, setSelectedOption] = useState<SelectedOption>();
 
     const options: SelectedOption[] = useMemo(() => {

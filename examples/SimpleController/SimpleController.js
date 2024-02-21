@@ -30,8 +30,8 @@ const initObservedDevice = () => {
         observedDevice.state.subscribe(() => testDeviceState.setValue(observedDevice.state.value === DeviceState.up));
         observedValue = observedDevice.gateValues.values.find((value) => value.name === incrementAmount.valueName);
         if (observedValue) {
-            observedValue.value.subscribe(() => {
-                incrementAmount.setValue(observedValue.gateValue.value)
+            observedValue.modelValue.subscribe(() => {
+                incrementAmount.setValue(observedValue.gateValue.value);
             });
         }
     }

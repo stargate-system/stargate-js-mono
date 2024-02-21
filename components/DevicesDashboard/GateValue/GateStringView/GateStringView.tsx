@@ -7,7 +7,7 @@ import styles from './GateStringView.module.css';
 const GateStringView = (props: GateValueProps) => {
     const {valueModel, isActive} = props;
     const gateValue = valueModel.gateValue as GateString;
-    const value = useModelValue(valueModel.value);
+    const value = useModelValue(valueModel.modelValue);
 
     const [editable, setEditable] = useState(false);
     const [displayValue, setDisplayValue] = useState(value.toString());

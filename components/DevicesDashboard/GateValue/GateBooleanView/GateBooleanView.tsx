@@ -11,7 +11,7 @@ const GateBooleanView = (props: GateValueProps) => {
     const {valueModel, isActive} = props;
     // @ts-ignore
     const gateValue = valueModel.gateValue as GateBoolean;
-    const value = useModelValue(valueModel.value);
+    const value = useModelValue(valueModel.modelValue);
 
     const [editable, setEditable] = useState(false);
 
