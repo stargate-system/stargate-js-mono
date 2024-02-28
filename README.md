@@ -46,6 +46,5 @@ Example:
 
 ## Repo structure
 **apps**: code meant to be run as standalone applications \
-**components**: possibly reusable FE components \
 **examples**: example implementations \
 **libs**: code shared between apps and/or meant to be published to npm

@@ -38,7 +38,7 @@ export class LocalDeviceConnector implements DeviceConnector{
                     this._id = this._manifest.id;
                     new Device(this);
                 } catch (err) {
-                    console.log("Failed connection (on handshake)", err);
+                    console.log("Failed connection (on handshake) for manifest: " + manifestString, err);
                     this._connection.close();
                 }
             } else {
