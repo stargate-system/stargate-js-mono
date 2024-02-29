@@ -5,7 +5,7 @@ import React, {useContext, useMemo, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import MenuComponent from "@/components/generic/MenuComponent/MenuComponent";
-import ModalContext from "@/components/stargate/MainPage/ModalContext";
+import ModalContext from "@/components/stargate/SystemPage/ModalContext";
 import StandardModal from "@/components/generic/ModalComponent/StandardModal/StandardModal";
 import SystemModelContext from "@/components/stargate/ReactGateViewModel/SystemModelContext";
 import {EventName} from "gate-core";

@@ -1,0 +1,28 @@
+.displayContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-width: 100vw;
+}
+
+.leftHeader {
+    position: fixed;
+    z-index: 100;
+}
+
+.rightHeader {
+    position: fixed;
+    z-index: 100;
+    right: 0;
+}
+
+.headerButton {
+    margin: 0.5rem;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+}
+
+.content {
+    padding-top: 3rem;
+}

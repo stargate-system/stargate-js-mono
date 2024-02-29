@@ -1,5 +1,5 @@
 import {PropsWithChildren, useContext} from "react";
-import ModalContext from "@/components/stargate/MainPage/ModalContext";
+import ModalContext from "@/components/stargate/SystemPage/ModalContext";
 import styles from './StandardModal.module.css';
 
 interface StandardModalProps extends PropsWithChildren{

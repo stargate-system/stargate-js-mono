@@ -3,8 +3,8 @@
 }
 
 .noDevicesContainer {
-    width: 100%;
+    margin: 0 auto;
     text-align: center;
     font-size: 2rem;
-    padding: 2rem 0;
+    padding: 2rem;
 }

@@ -41,3 +41,11 @@
         background-color: #444444;
     }
 }
+
+.pipesUnavailableContainer {
+    margin: 0 auto;
+    text-align: center;
+    font-size: 2rem;
+    padding: 2rem;
+    color: white;
+}

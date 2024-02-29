@@ -2,7 +2,7 @@ import styles from './PipesDashboard.module.css';
 import {faPlus, faMinus} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import React, {useContext, useMemo, useState} from "react";
-import ModalContext from "@/components/stargate/MainPage/ModalContext";
+import ModalContext from "@/components/stargate/SystemPage/ModalContext";
 import NewPipeModal from "./components/NewPipeModal/NewPipeModal";
 import useModelMap from "@/components/stargate/ReactGateViewModel/hooks/useModelMap";
 import Pipe, {PipeViewModel} from "./components/Pipe/Pipe";
@@ -20,6 +20,7 @@ interface PipeTree {
 
 const PipesDashboard = () => {
     const systemModel = useContext(SystemModelContext);
+    const devices = useModelMap(systemModel.devices);
     const modal = useContext(ModalContext);
     const pipes = useModelMap(systemModel.pipes);
     const [selectedPipes, setSelectedPipes] = useState<PipeModel[]>([]);
@@ -167,25 +168,32 @@ const PipesDashboard = () => {
     }
 
     return (
-        <div className={styles.pipesDashboard}>
-            {pipingModel.map((pipeModel) =>
-                <Pipe
-                    key={pipeModel.key}
-                    model={pipeModel.props}
-                    selectedPipes={selectedPipes}
-                    setSelectedValue={setSelectedValue}
-                />
-            )}
-            <div className={styles.controlButtonContainer}>
-                <button className={styles.controlButton} onClick={onAddPipe}>
-                    <FontAwesomeIcon className={styles.addIcon} icon={faPlus}/>
-                </button>
-                {!!selectedPipes.length &&
-                    <button className={styles.controlButton} onClick={onRemovePipe}>
-                        <FontAwesomeIcon className={styles.addIcon} icon={faMinus}/>
-                    </button>
-                }
-            </div>
+        <div>
+            {devices.length < 2 &&
+                <div className={styles.pipesUnavailableContainer}>Pipes unavailable for less than 2 devices</div>
+            }
+            {devices.length > 1 &&
+                <div className={styles.pipesDashboard}>
+                    {pipingModel.map((pipeModel) =>
+                        <Pipe
+                            key={pipeModel.key}
+                            model={pipeModel.props}
+                            selectedPipes={selectedPipes}
+                            setSelectedValue={setSelectedValue}
+                        />
+                    )}
+                    <div className={styles.controlButtonContainer}>
+                        <button className={styles.controlButton} onClick={onAddPipe}>
+                            <FontAwesomeIcon className={styles.addIcon} icon={faPlus}/>
+                        </button>
+                        {!!selectedPipes.length &&
+                            <button className={styles.controlButton} onClick={onRemovePipe}>
+                                <FontAwesomeIcon className={styles.addIcon} icon={faMinus}/>
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
         </div>
     )
 }

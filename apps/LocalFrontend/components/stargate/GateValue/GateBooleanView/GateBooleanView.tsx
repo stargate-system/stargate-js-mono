@@ -53,13 +53,14 @@ const GateBooleanView = (props: GateValueProps) => {
             }
             {(editable && gateValue.isButton) &&
                 <GateButton
-                    label={(value ? gateValue.labelTrue ?? gateValue.labelFalse : gateValue.labelFalse ?? gateValue.labelTrue) ?? ''}
                     onMouseUp={() => setValue(false)}
                     onMouseDown={() => setValue(true)}
                     disabled={!isActive}
                     style={buttonStyle}
                     className={styles.button}
-                />
+                >
+                    {value ? gateValue.labelTrue ?? gateValue.labelFalse : gateValue.labelFalse ?? gateValue.labelTrue}
+                </GateButton>
             }
         </div>
     )

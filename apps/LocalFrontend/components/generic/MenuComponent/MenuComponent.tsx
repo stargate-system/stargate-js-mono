@@ -1,7 +1,8 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEllipsis} from "@fortawesome/free-solid-svg-icons";
 import styles from './MenuComponent.module.css';
+import useClickOutsideDetector from "@/helper/useClickOutsideDetector";
 
 interface MenuComponentProps {
     items: Array<{label: string, callback: () => void}>
@@ -11,18 +12,12 @@ const MenuComponent = (props: MenuComponentProps) => {
     const {items} = props;
     const [menuOpen, setMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
-
-    useEffect(() => {
-        if (menuOpen && menuRef.current) {
-            menuRef.current.focus();
-        }
-    }, [menuOpen]);
+    useClickOutsideDetector(menuRef, () => setMenuOpen(false));
 
     return (
         <div
             className={styles.menuButton}
             ref={menuRef}
-            onBlur={() => setMenuOpen(false)}
             onClick={() => setMenuOpen(!menuOpen)}
             tabIndex={0}
         >

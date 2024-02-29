@@ -1,11 +1,11 @@
 import React from "react";
 import ReactGateViewModel from "@/components/stargate/ReactGateViewModel/ReactGateViewModel";
-import MainPage from "@/components/stargate/MainPage/MainPage";
+import SystemPage from "@/components/stargate/SystemPage/SystemPage";
 
 const Home = () => {
     return (
         <ReactGateViewModel>
-            <MainPage/>
+            <SystemPage/>
         </ReactGateViewModel>
     );
 }

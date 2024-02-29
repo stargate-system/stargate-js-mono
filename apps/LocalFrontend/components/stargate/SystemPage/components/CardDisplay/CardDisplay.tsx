@@ -1,0 +1,46 @@
+import styles from './CardDisplay.module.css';
+import DevicesDashboard from "@/components/cards/DevicesDashboard/DevicesDashboard";
+import {faGears, faLink} from "@fortawesome/free-solid-svg-icons";
+import {useMemo, useState} from "react";
+import PipesDashboard from "@/components/cards/PipesDashboard/PipesDashboard";
+import CardSelect from "@/components/stargate/SystemPage/components/CardDisplay/components/CardSelect/CardSelect";
+import AccountOptions
+    from "@/components/stargate/SystemPage/components/CardDisplay/components/AccountOptions/AccountOptions";
+
+export const cards = {
+    devices: {
+        id: 'devices',
+        label: 'Devices',
+        icon: faGears
+    },
+    pipes: {
+        id: 'pipes',
+        label: 'Pipes',
+        icon: faLink
+    }
+}
+
+const CardDisplay = () => {
+    const [currentCard, setCurrentCard] = useState(Object.values(cards)[0].id);
+
+    const card = useMemo(() => {
+        switch (currentCard) {
+            case cards.devices.id:
+                return <DevicesDashboard/>
+            case cards.pipes.id:
+                return <PipesDashboard/>
+        }
+    }, [currentCard]);
+
+    return (
+        <div className={styles.displayContainer}>
+            <CardSelect currentCard={currentCard} setCurrentCard={setCurrentCard} className={styles.leftHeader}/>
+            <AccountOptions className={styles.rightHeader}/>
+            <div className={styles.content}>
+                {card}
+            </div>
+        </div>
+    );
+}
+
+export default CardDisplay;

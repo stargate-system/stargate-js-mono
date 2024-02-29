@@ -1,8 +1,7 @@
 import styles from './GateButton.module.css';
-import {CSSProperties, useEffect, useRef, useState} from "react";
+import {CSSProperties, PropsWithChildren, useEffect, useRef, useState} from "react";
 
-interface GateButtonProps {
-    label: string,
+interface GateButtonProps extends PropsWithChildren{
     onClick?: () => void,
     onMouseDown?: () => void,
     onMouseUp?: () => void,
@@ -12,13 +11,14 @@ interface GateButtonProps {
 }
 
 const GateButton = (props: GateButtonProps) => {
-    const {label,
+    const {
         onClick,
         onMouseDown,
         onMouseUp,
         className,
         style,
-        disabled
+        disabled,
+        children
     } = props;
 
     const [isDown, setIsDown] = useState(false);
@@ -29,6 +29,9 @@ const GateButton = (props: GateButtonProps) => {
         setIsDown(true);
         if (onMouseDown) {
             onMouseDown();
+        }
+        if (onClick) {
+            onClick();
         }
     }
 
@@ -64,14 +67,13 @@ const GateButton = (props: GateButtonProps) => {
             ref={buttonRef}
             className={buttonClass}
             style={style}
-            onClick={onClick}
             onMouseDown={onButtonDown}
             onMouseUp={onButtonUp}
             disabled={disabled}
             onMouseLeave={onMouseLeave}
             onTouchEnd={onButtonUp}
         >
-            {label}
+            {children}
         </button>
     )
 }

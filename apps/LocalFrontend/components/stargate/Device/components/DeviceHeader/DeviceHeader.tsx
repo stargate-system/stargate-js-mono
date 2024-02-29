@@ -4,7 +4,7 @@ import React, {
     useMemo
 } from "react";
 import {DeviceModel} from "gate-viewmodel";
-import ModalContext from "@/components/stargate/MainPage/ModalContext";
+import ModalContext from "@/components/stargate/SystemPage/ModalContext";
 import StandardModal from "@/components/generic/ModalComponent/StandardModal/StandardModal";
 import useModelValue from "@/components/stargate/ReactGateViewModel/hooks/useModelValue";
 import MenuComponent from "@/components/generic/MenuComponent/MenuComponent";

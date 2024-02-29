@@ -1,0 +1,50 @@
+.dropdownMenuContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    border-radius: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    background-color: #363535;
+    border: 1px solid #9d6e47;
+    box-shadow: -1px -1px #e0d3c9, 1px 1px #603b0e;
+}
+
+.menuItem {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 0.3rem 0.5rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+
+    @media only screen and (max-device-width:640px) {
+        font-size: 1.5rem;
+    }
+
+    .label {
+        color: white;
+        padding-right: 1rem;
+    }
+
+    .icon {
+        color: #f5debf;
+    }
+}
+
+.menuItem:hover {
+    background-image: linear-gradient(transparent, #334194, transparent);
+
+    .label {
+        font-weight: bold;
+    }
+}
+
+.selected {
+    font-weight: bold;
+    --selected-background: linear-gradient(transparent, #366225, transparent);
+    background-image: var(--selected-background);
+}
+
+div.selected:hover {
+    background-image: var(--selected-background);
+}
