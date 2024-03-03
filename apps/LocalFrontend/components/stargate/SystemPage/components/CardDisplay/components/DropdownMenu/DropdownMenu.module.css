@@ -18,7 +18,7 @@
     cursor: pointer;
 
     @media only screen and (max-device-width:640px) {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
 
     .label {

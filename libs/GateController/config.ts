@@ -5,7 +5,6 @@ const config = {
   discoveryPort: CoreConfig.discoveryPort,
   hubDiscoveryPort: CoreConfig.hubDiscoveryPort,
   discoveryInterval: CoreConfig.discoveryInterval,
-  outputBufferDelay: 0,
   queryTimeout: 5000,
   handshakeTimeout: 5000,
   useFixedUrl: false,

@@ -5,7 +5,8 @@ const Markers = {
     commandPrefix: '!',
     queryPrefix: '?',
     answerPrefix: '>',
-    addressSeparator: ':'
+    addressSeparator: ':',
+    acknowledge: '+'
 }
 
 export default Markers;

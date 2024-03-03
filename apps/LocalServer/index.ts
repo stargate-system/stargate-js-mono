@@ -40,6 +40,7 @@ if (serverIp) {
             console.log('On saving server link', err);
         }
     });
+    console.log('Server running on ' + serverAddress);
 }
 
 const app = express();

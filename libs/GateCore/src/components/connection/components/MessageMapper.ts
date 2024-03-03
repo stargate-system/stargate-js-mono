@@ -10,7 +10,10 @@ const {
     answerPrefix
 } = Markers;
 
-const serializeArray = (array: Array<string>) => {
+const serializeArray = (array: string[]) => {
+    if (array.length === 0) {
+        return mainSeparator;
+    }
     let messages = '';
     let lengths = '';
     array.forEach((message) => {
@@ -20,33 +23,40 @@ const serializeArray = (array: Array<string>) => {
     return lengths.slice(0, -1) + mainSeparator + messages;
 }
 
-const parseArray = (message: string) => {
-    const separator = message.indexOf(mainSeparator);
-    const lengths = message.slice(0, separator).split(auxSeparator).map((val) => Number.parseInt(val));
-    const messagesString = message.slice(separator + 1);
-    if (lengths.reduce((a, b) => a + b) !== messagesString.length) {
+const parseArray = (message: string): [string[], string] => {
+    if (message.charAt(0) === mainSeparator) {
+        return [[], message.substring(1)];
+    }
+    const separatorIndex = message.indexOf(mainSeparator);
+    const lengths = message.slice(0, separatorIndex).split(auxSeparator).map((val) => Number.parseInt(val));
+    const arrayStringLength = lengths.reduce((a, b) => a + b);
+    const arrayString = message.slice(separatorIndex + 1);
+    if (arrayStringLength > arrayString.length) {
         throw new Error('Messages length inconsistent with declared: ' + message);
     }
-    const messagesArray: Array<string> = [];
+    const messagesArray: string[] = [];
     let currentIndex = 0;
     let nextIndex;
     lengths.forEach((length) => {
         nextIndex = currentIndex + length;
-        messagesArray.push(messagesString.substring(currentIndex, nextIndex));
+        messagesArray.push(arrayString.substring(currentIndex, nextIndex));
         currentIndex = nextIndex;
     });
-    return messagesArray;
+    return [messagesArray, message.substring(separatorIndex + 1 + arrayStringLength)];
 }
 
 const serializeValueMessage = (valueMessage: ValueMessage) => {
-    let ids = '';
-    const values: Array<string> = [];
-    valueMessage.forEach((entry) => {
-        ids += entry[0] + auxSeparator;
-        values.push(entry[1]);
-    });
-    const serializedValues = serializeArray(values);
-    return ids.slice(0, -1) + mainSeparator + serializedValues;
+    if (valueMessage.length) {
+        let ids = '';
+        const values: string[] = [];
+        valueMessage.forEach((entry) => {
+            ids += entry[0] + auxSeparator;
+            values.push(entry[1]);
+        });
+        const serializedValues = serializeArray(values);
+        return ids.slice(0, -1) + mainSeparator + serializedValues;
+    }
+    return '';
 }
 
 const parseValueMessage = (message: string): ValueMessage => {
@@ -54,10 +64,16 @@ const parseValueMessage = (message: string): ValueMessage => {
     const ids = message.slice(0, firstSeparator).split(auxSeparator);
     const serializedValues = message.slice(firstSeparator + 1);
     let messages: string[];
+    let remainingString = '';
     try {
-        messages = parseArray(serializedValues);
+        const result = parseArray(serializedValues);
+        messages = result[0];
+        remainingString = result[1];
     } catch (err) {
         throw new Error('On parsing value message ' + message + ' reason: ' + err)
+    }
+    if (remainingString.length) {
+        console.log('WARNING: part of message dropped after parsing value message - ' + remainingString);
     }
     if (ids.length !== messages.length) {
         throw new Error('Ids count not match messages count: ' + message);
@@ -73,26 +89,26 @@ const functionalMessage = (msg: string) => {
     return functionalMessagePrefix + msg;
 }
 
-const command = (keyword: string, params?: Array<string>) => {
+const command = (keyword: string, params?: string[]) => {
     let message = commandPrefix + keyword;
-    if (params !== undefined && params.length) {
-        message += mainSeparator + serializeArray(params);
-    }
+    message += mainSeparator + serializeArray(params ?? []);
     return functionalMessage(message);
 }
 
 const query = (msg: string, params?: string[]) => {
     let message = queryPrefix + msg;
-    if (params !== undefined && params.length) {
-        message += mainSeparator + serializeArray(params);
-    }
+    message += mainSeparator + serializeArray(params ?? []);
     return functionalMessage(message);
 }
 
 const answer = (query: string, msg: string) => {
     const separatorIndex = query.indexOf(Markers.mainSeparator);
     const keyword = separatorIndex !== -1 ? query.substring(2, separatorIndex) : query.substring(2);
-    return functionalMessage(answerPrefix + keyword + mainSeparator + msg);
+    return functionalMessage(answerPrefix + keyword + mainSeparator + serializeArray([msg]));
+}
+
+const acknowledge = () => {
+    return functionalMessage(Markers.acknowledge);
 }
 
 export default {
@@ -103,5 +119,6 @@ export default {
     functionalMessage,
     command,
     query,
-    answer
+    answer,
+    acknowledge
 }

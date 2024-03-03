@@ -3,6 +3,7 @@ import {ConnectionConfig} from "../../../interfaces/ConnectionConfig.js";
 import MessageMapper from "./MessageMapper.js";
 import Markers from "../../../constants/Markers.js";
 import {FunctionalHandler} from "../interfaces/FunctionalHandler.js";
+import {Connection} from "../interfaces/Connection";
 
 interface PendingQuery {
     resolveQuery: (value: string) => void,
@@ -15,8 +16,10 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
     private readonly _queryListeners = new Registry<(respond: (response: string) => void, params?: string[]) => void>();
     private readonly _commandListeners = new Registry<(params?: Array<string>) => void>();
     private readonly _queryTimeout: number;
+    private readonly _connection: Connection;
 
-    constructor(config?: ConnectionConfig) {
+    constructor(connection: Connection, config?: ConnectionConfig) {
+        this._connection = connection;
         this._queryTimeout = config?.queryTimeout ?? 5000;
     }
 
@@ -84,59 +87,91 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
         }
     }
 
-    private handleQueryRequest = (queryMessage: string) => {
+    private handleQueryRequest = (queryMessage: string): string => {
         const separatorIndex = queryMessage.indexOf(Markers.mainSeparator);
-        const keyword = separatorIndex !== -1 ? queryMessage.substring(2, separatorIndex) : queryMessage.substring(2);
-        const listener = this._queryListeners.getByKey(keyword);
-        if (listener) {
-            let params;
-            if (separatorIndex !== -1) {
-                params = MessageMapper.parseArray(queryMessage.substring(separatorIndex + 1));
+        if (separatorIndex !== -1) {
+            const keyword = queryMessage.substring(2, separatorIndex);
+            const listener = this._queryListeners.getByKey(keyword);
+            const [params, remainingMessage] = MessageMapper.parseArray(queryMessage.substring(separatorIndex + 1));
+            if (listener) {
+                const respond = (msg: string) => {
+                    if (this._sendFunction) {
+                        this._sendFunction(MessageMapper.answer(queryMessage, msg));
+                    }
+                };
+                listener(respond, params);
             }
-            const respond = (msg: string) => {
-                if (this._sendFunction) {
-                    this._sendFunction(MessageMapper.answer(queryMessage, msg));
-                }
-            };
-            listener(respond, params);
+            return remainingMessage;
+        } else {
+            console.log('WARNING: query request malformed - ' + queryMessage);
+            return '';
         }
     }
 
-    private handleQueryResponse = (queryResponse: string) => {
+    private handleQueryResponse = (queryResponse: string): string => {
         const separatorIndex = queryResponse.indexOf(Markers.mainSeparator);
         const keyword = separatorIndex !== -1 ? queryResponse.substring(2, separatorIndex) : queryResponse.substring(2);
+        const [responseContent, remainingMessage] = MessageMapper.parseArray(queryResponse.substring(separatorIndex + 1));
         const pendingQuery = this._pendingQueries.getByKey(keyword);
         if (pendingQuery) {
-            pendingQuery.resolveQuery(queryResponse.substring(separatorIndex + 1));
+            pendingQuery.resolveQuery(responseContent.length ? responseContent[0] : '');
             this._pendingQueries.remove(keyword);
+        }
+        return remainingMessage;
+    }
+
+    private handleCommand = (commandMessage: string): string => {
+        const separatorIndex = commandMessage.indexOf(Markers.mainSeparator);
+        if (separatorIndex !== -1) {
+            const keyword = separatorIndex !== -1 ? commandMessage.substring(2, separatorIndex) : commandMessage.substring(2);
+            const listener = this._commandListeners.getByKey(keyword);
+            const [params, remainingMessage] = MessageMapper.parseArray(commandMessage.substring(separatorIndex + 1));
+            if (listener) {
+                listener(params);
+            }
+            return remainingMessage;
+        } else {
+            console.log('WARNING: command malformed - ' + commandMessage);
+            return '';
         }
     }
 
-    private handleCommand = (commandMessage: string) => {
-        const separatorIndex = commandMessage.indexOf(Markers.mainSeparator);
-        const keyword = separatorIndex !== -1 ? commandMessage.substring(2, separatorIndex) : commandMessage.substring(2);
-        const listener = this._commandListeners.getByKey(keyword);
-        if (listener) {
-            if (separatorIndex !== -1) {
-                const params = MessageMapper.parseArray(commandMessage.substring(separatorIndex + 1));
-                listener(params);
-            } else {
-                listener();
-            }
-        }
+    private handleAcknowledge = (message: string) => {
+        return message.length > 2 ? message.substring(2) : '';
     }
 
     handleFunctionalMessage = (message: string) => {
-        switch (message.toString().charAt(1)) {
-            case Markers.queryPrefix:
-                this.handleQueryRequest(message);
-                break;
-            case Markers.answerPrefix:
-                this.handleQueryResponse(message);
-                break;
-            case Markers.commandPrefix:
-                this.handleCommand(message);
-                break;
+        let isAcknowledge = false;
+        let remainingMessage = message;
+        while (remainingMessage.length) {
+            if (remainingMessage.charAt(0) === Markers.functionalMessagePrefix) {
+                switch (remainingMessage.charAt(1)) {
+                    case Markers.queryPrefix:
+                        remainingMessage = this.handleQueryRequest(remainingMessage);
+                        break;
+                    case Markers.answerPrefix:
+                        remainingMessage = this.handleQueryResponse(remainingMessage);
+                        break;
+                    case Markers.commandPrefix:
+                        remainingMessage = this.handleCommand(remainingMessage);
+                        break;
+                    case Markers.acknowledge:
+                        isAcknowledge = true;
+                        remainingMessage = this.handleAcknowledge(remainingMessage);
+                        break;
+                    default:
+                        console.log('WARNING: unknown functional marker - ' + message.charAt(1));
+                        remainingMessage = '';
+                }
+            } else {
+                this._connection.handleValueMessage(remainingMessage);
+                remainingMessage = '';
+            }
+        }
+        if (isAcknowledge) {
+            this._connection.outputBuffer.acknowledgeReceived();
+        } else {
+            this._connection.outputBuffer.sendAcknowledge();
         }
     };
 }

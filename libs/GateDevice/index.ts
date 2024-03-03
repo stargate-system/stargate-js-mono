@@ -15,17 +15,11 @@ if (process.env.DISCOVERY_PORT) {
 if (process.env.DISCOVERY_INTERVAL) {
     config.discoveryInterval = Number.parseInt(process.env.DISCOVERY_INTERVAL);
 }
-if (process.env.OUTPUT_BUFFER_DELAY) {
-    config.outputBufferDelay = Number.parseInt(process.env.OUTPUT_BUFFER_DELAY);
-}
 if (process.env.QUERY_TIMEOUT) {
     config.queryTimeout = Number.parseInt(process.env.QUERY_TIMEOUT);
 }
 if (process.env.HANDSHAKE_TIMEOUT) {
     config.handshakeTimeout = Number.parseInt(process.env.HANDSHAKE_TIMEOUT);
-}
-if (process.env.OUTPUT_BUFFER_DELAY) {
-    config.outputBufferDelay = Number.parseInt(process.env.OUTPUT_BUFFER_DELAY);
 }
 if (process.env.USE_PING) {
     config.usePing = process.env.USE_PING.toLowerCase() === 'true';

@@ -28,8 +28,8 @@ export class DefaultConnection implements Connection{
     constructor(leader?: boolean, config?: ConnectionConfig) {
         this._leader = leader ?? false;
         this._state = ConnectionState.closed;
-        this._buffer = new OutputBuffer(config);
-        this._functionalHandler = new DefaultFunctionalHandler(config);
+        this._buffer = new OutputBuffer();
+        this._functionalHandler = new DefaultFunctionalHandler(this, config);
         this._stateChangeListeners = new Registry<(state: ConnectionState) => void>();
     }
 
@@ -39,6 +39,10 @@ export class DefaultConnection implements Connection{
 
     get functionalHandler() {
         return this._functionalHandler;
+    }
+
+    get outputBuffer(): OutputBuffer {
+        return this._buffer;
     }
 
     addStateChangeListener = (callback: (state: ConnectionState) => void): string => {
@@ -53,7 +57,8 @@ export class DefaultConnection implements Connection{
         this._socket = socketWrapper;
         this._socket.setOnClose(this._handleClosed);
         this._socket.setOnMessage(this._handleIncomingMessage);
-        this._functionalHandler.setConnected(this._socket.send);
+        this._buffer.setConnected(this._socket?.send);
+        this._functionalHandler.setConnected(this._buffer.sendFunctionalMessage);
         this._changeState(ConnectionState.connected);
         if (this._leader) {
             this._checkPing();
@@ -67,7 +72,6 @@ export class DefaultConnection implements Connection{
     }
 
     setReady = () => {
-        this._buffer.setConnected(this._socket?.send);
         this._changeState(ConnectionState.ready);
     }
 
@@ -85,6 +89,16 @@ export class DefaultConnection implements Connection{
 
     sendValue = (value: [string, string]) => {
         this._buffer.sendValue(value);
+    }
+
+    handleValueMessage = (message: string) => {
+        if (this.onValueMessage) {
+            try {
+                this.onValueMessage(MessageMapper.parseValueMessage(message));
+            } catch (err) {
+                console.log('On handling value message: ' + err);
+            }
+        }
     }
 
     onValueMessage?: (valueMessage: ValueMessage) => void
@@ -160,13 +174,8 @@ export class DefaultConnection implements Connection{
         if (message.charAt(0) === Markers.functionalMessagePrefix) {
             this._functionalHandler.handleFunctionalMessage(message);
         } else {
-            if (this.onValueMessage) {
-                try {
-                    this.onValueMessage(MessageMapper.parseValueMessage(message));
-                } catch (err) {
-                    console.log('On handling value message: ' + err);
-                }
-            }
+            this.handleValueMessage(message);
+            this._buffer.sendAcknowledge();
         }
     }
 }
