@@ -3,16 +3,12 @@ import {
     ConnectionState,
     DefaultConnection,
     Directions,
-    GateNumber,
     GateValue,
-    GateValueFactory,
     Keywords,
     Manifest,
     Registry,
     ServerStorage,
-    SystemIds,
-    ValueMessage,
-    ValueTypes
+    ValueMessage
 } from "gate-core";
 import config from "../../config.js";
 import ValueFactory from "../values/ValueFactory.js";
@@ -59,21 +55,6 @@ const start = () => {
             }
         });
     } else {
-        if (config.usePing && !device.values.getValues().find((value) => value.id === SystemIds.ping)) {
-            const ping = GateValueFactory.fromManifest({
-                id: SystemIds.ping,
-                type: ValueTypes.integer,
-                direction: Directions.output,
-                valueName: 'Ping'
-            }) as GateNumber;
-            device.connection.onPingChange = (value) => {
-                if (ping.subscribed) {
-                    ping.setValue(value);
-                    device.connection.sendGateValue(ping);
-                }
-            }
-            device.values.add(ping, ping.id);
-        }
         device.manifest = {
             id: getDeviceId(),
             deviceName,
@@ -157,10 +138,6 @@ const getDeviceId = () => {
     }
 }
 
-const usePing = () => {
-    config.usePing = true;
-}
-
 const isReady = () => {
     return device.deviceState.current === ConnectionState.ready;
 }
@@ -180,7 +157,6 @@ export const device: Device = {
 export default {
     setName,
     setGroup,
-    usePing,
     start,
     stop,
     config,

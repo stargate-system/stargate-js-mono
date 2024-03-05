@@ -21,6 +21,5 @@ init(() => {
     };
 
     GateDevice.setName('Raspberry LED');
-    GateDevice.usePing();
     GateDevice.start();
 })

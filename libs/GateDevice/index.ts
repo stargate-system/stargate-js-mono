@@ -21,9 +21,6 @@ if (process.env.QUERY_TIMEOUT) {
 if (process.env.HANDSHAKE_TIMEOUT) {
     config.handshakeTimeout = Number.parseInt(process.env.HANDSHAKE_TIMEOUT);
 }
-if (process.env.USE_PING) {
-    config.usePing = process.env.USE_PING.toLowerCase() === 'true';
-}
 if (process.env.USE_FIXED_URL) {
     config.useFixedUrl = process.env.USE_FIXED_URL.toLowerCase() === 'true';
 }

@@ -11,11 +11,7 @@
 - To create apps ready to use outside this repository - "bash CreateStandaloneApps.sh"
 (will create StargateApps directory next to repository root directory)
 
-## Example devices
-Device can optionally display it's current ping. To turn on this feature,
-add following line in code (before invoking GateDevice.start()):
-
-    GateDevice.usePing();
+## Examples
 
 ### BlankProjectJS, BlankProjectTS
 Templates for CreateStandaloneApps script, not meant to be used

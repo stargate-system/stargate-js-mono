@@ -1,7 +1,6 @@
 import {
     GateValue,
     GateValueFactory,
-    SystemIds,
     ValueManifest,
     AddressMapper
 } from "gate-core";
@@ -31,16 +30,9 @@ export class GateValueModel {
         this._modelValue.onSubscriptionChange = (subscribed) => {
             subscribed ? systemConnector.subscribe(this._id) : systemConnector.unsubscribe(this._id);
         }
-        if (valueManifest.id === SystemIds.ping) {
-            this._gateValue.onRemoteUpdate = () => {
-                console.log('to server: ' + this._gateValue.value + ', from server: ' + systemConnector.getCurrentPing());
-                this._modelValue.setValue(this._gateValue.value + (systemConnector.getCurrentPing() ?? 0));
-            };
-        } else {
-            this._gateValue.onRemoteUpdate = () => {
-                this._modelValue.setValue(this._gateValue.value);
-            };
-        }
+        this._gateValue.onRemoteUpdate = () => {
+            this._modelValue.setValue(this._gateValue.value);
+        };
         this._gateValue.onLocalUpdate = (wasChanged) => {
             this._modelValue.setValue(this._gateValue.value);
             if (wasChanged) {

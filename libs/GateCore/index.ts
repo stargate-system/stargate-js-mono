@@ -17,7 +17,6 @@ import {Connection} from "./src/components/connection/interfaces/Connection.js";
 import {ConnectionConfig} from "./src/interfaces/ConnectionConfig.js";
 import {DefaultConnection} from "./src/components/connection/components/DefaultConnection.js";
 import {SocketWrapper} from "./src/components/connection/interfaces/SocketWrapper.js";
-import {SystemIds} from "./src/constants/SystemIds";
 import {SubscriptionBuffer} from "./src/components/connection/components/SubscriptionBuffer";
 import {EventName} from "./src/constants/EventName";
 import {SystemImage} from "./src/interfaces/SystemImage";
@@ -47,7 +46,6 @@ export {
     ConnectionConfig,
     DefaultConnection,
     SocketWrapper,
-    SystemIds,
     SubscriptionBuffer,
     EventName,
     SystemImage,

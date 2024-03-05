@@ -7,7 +7,6 @@ const config = {
   discoveryInterval: CoreConfig.discoveryInterval,
   queryTimeout: 5000,
   handshakeTimeout: 5000,
-  usePing: false,
   useFixedUrl: false,
   fixedUrl: 'localhost:10002'
 }
