@@ -6,7 +6,12 @@ export class OutputBuffer {
     private _buffer: Map<string, string> = new Map<string, string>();
     private _functionalBuffer = '';
     private _sendFunction: ((message: string) => void) | undefined;
-    private _lastMessageAcknowledged = true;
+    private _lastMessageTimestamp?: number;
+    private readonly _onPingChange: (ping: number) => void;
+
+    constructor(onPingChange: (ping: number) => void) {
+        this._onPingChange = onPingChange;
+    }
 
     sendGateValue = (gateValue: GateValue<any>) => {
         if (this._sendFunction && gateValue.id) {
@@ -33,7 +38,10 @@ export class OutputBuffer {
     }
 
     acknowledgeReceived = () => {
-        this._lastMessageAcknowledged = true;
+        if (this._lastMessageTimestamp) {
+            this._onPingChange(Math.round((Date.now() - this._lastMessageTimestamp)/2));
+        }
+        this._lastMessageTimestamp = undefined;
         if (this._hasContent()) {
             this._flushLater();
         }
@@ -42,12 +50,13 @@ export class OutputBuffer {
     setConnected = (sendFunction: ((message: string) => void) | undefined) => {
         this._clear();
         this._sendFunction = sendFunction;
-        this._lastMessageAcknowledged = true;
+        this._lastMessageTimestamp = undefined;
     }
 
     close = () => {
         this._clear();
         this._sendFunction = undefined;
+        this._lastMessageTimestamp = undefined;
     }
 
     private _toString = (): string => {
@@ -75,13 +84,13 @@ export class OutputBuffer {
     }
 
     private _flushLater = () => {
-        if (this._lastMessageAcknowledged) {
-            this._lastMessageAcknowledged = false;
+        if (this._lastMessageTimestamp === undefined) {
+            this._lastMessageTimestamp = Date.now();
             process.nextTick(() => {
                 if (this._hasContent()) {
                     this._flush();
                 } else {
-                    this._lastMessageAcknowledged = true;
+                    this._lastMessageTimestamp = undefined;
                 }
             });
         }

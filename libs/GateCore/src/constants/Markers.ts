@@ -6,7 +6,8 @@ const Markers = {
     queryPrefix: '?',
     answerPrefix: '>',
     addressSeparator: ':',
-    acknowledge: '+'
+    acknowledge: '+',
+    ping: '.'
 }
 
 export default Markers;

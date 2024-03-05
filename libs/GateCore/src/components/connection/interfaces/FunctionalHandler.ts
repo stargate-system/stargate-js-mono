@@ -7,5 +7,6 @@ export interface FunctionalHandler {
     addCommandListener: (command: string, onCommand: (params?: Array<string>) => void) => void;
     removeCommandListener: (command: string) => void,
     sendCommand: (keyword: string, params?: Array<string>) => void,
-    handleFunctionalMessage: (message: string) => void
+    handleFunctionalMessage: (message: string) => void,
+    sendPing: () => void
 }

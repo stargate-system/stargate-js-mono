@@ -16,7 +16,7 @@ export const initConnectionService = () => {
             setOnClose: (callback) => socket.onclose = callback,
             setOnMessage: (callback) => socket.on('message', (ev: any) => callback(ev.toString()))
         }
-        const connection = new DefaultConnection();
+        const connection = new DefaultConnection(true);
         connection.setConnected(socketWrapper);
         const stateListenerKey = connection.addStateChangeListener((state) => {
             if (state === ConnectionState.closed) {

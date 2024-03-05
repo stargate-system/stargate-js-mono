@@ -111,6 +111,10 @@ const acknowledge = () => {
     return functionalMessage(Markers.acknowledge);
 }
 
+const ping = () => {
+    return functionalMessage(Markers.ping);
+}
+
 export default {
     serializeArray,
     parseArray,
@@ -120,5 +124,6 @@ export default {
     command,
     query,
     answer,
-    acknowledge
+    acknowledge,
+    ping
 }

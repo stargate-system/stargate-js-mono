@@ -25,13 +25,13 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
 
     setConnected = (sendFunction: (message: string) => void) => {
         this._sendFunction = sendFunction;
-    }
+    };
 
     close = () => {
         this._sendFunction = undefined;
         this._pendingQueries.getValues().forEach((pendingQuery) => pendingQuery.rejectQuery('Connection closed'));
         this._pendingQueries.clear();
-    }
+    };
 
     createQuery = (keyword: string, timeout?: number, params?: string[]): Promise<string> => {
         if (!this._sendFunction) {
@@ -63,29 +63,35 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
         } else {
             throw new Error(`Query for ${keyword} already pending`);
         }
-    }
+    };
 
     addQueryListener = (keyword: string, onQuery: (respond: (response: string) => void, params?: string[]) => void) => {
         this._queryListeners.add(onQuery, keyword);
-    }
+    };
 
     removeQueryListener = (keyword: string) => {
         this._queryListeners.remove(keyword);
-    }
+    };
 
     addCommandListener = (command: string, onCommand: (params?: Array<string>) => void) => {
         this._commandListeners.add(onCommand, command);
-    }
+    };
 
     removeCommandListener = (command: string) => {
         this._commandListeners.remove(command);
-    }
+    };
 
     sendCommand = (keyword: string, params?: Array<string>) => {
         if (this._sendFunction) {
             this._sendFunction(MessageMapper.command(keyword, params));
         }
-    }
+    };
+
+    sendPing = () => {
+        if (this._sendFunction) {
+            this._sendFunction(MessageMapper.ping());
+        }
+    };
 
     private handleQueryRequest = (queryMessage: string): string => {
         const separatorIndex = queryMessage.indexOf(Markers.mainSeparator);
@@ -106,7 +112,7 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
             console.log('WARNING: query request malformed - ' + queryMessage);
             return '';
         }
-    }
+    };
 
     private handleQueryResponse = (queryResponse: string): string => {
         const separatorIndex = queryResponse.indexOf(Markers.mainSeparator);
@@ -118,7 +124,7 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
             this._pendingQueries.remove(keyword);
         }
         return remainingMessage;
-    }
+    };
 
     private handleCommand = (commandMessage: string): string => {
         const separatorIndex = commandMessage.indexOf(Markers.mainSeparator);
@@ -134,11 +140,11 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
             console.log('WARNING: command malformed - ' + commandMessage);
             return '';
         }
-    }
+    };
 
-    private handleAcknowledge = (message: string) => {
+    private handleNoArguments = (message: string) => {
         return message.length > 2 ? message.substring(2) : '';
-    }
+    };
 
     handleFunctionalMessage = (message: string) => {
         let isAcknowledge = false;
@@ -146,6 +152,9 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
         while (remainingMessage.length) {
             if (remainingMessage.charAt(0) === Markers.functionalMessagePrefix) {
                 switch (remainingMessage.charAt(1)) {
+                    case Markers.ping:
+                        remainingMessage = this.handleNoArguments(remainingMessage);
+                        break;
                     case Markers.queryPrefix:
                         remainingMessage = this.handleQueryRequest(remainingMessage);
                         break;
@@ -157,7 +166,7 @@ export class DefaultFunctionalHandler implements FunctionalHandler{
                         break;
                     case Markers.acknowledge:
                         isAcknowledge = true;
-                        remainingMessage = this.handleAcknowledge(remainingMessage);
+                        remainingMessage = this.handleNoArguments(remainingMessage);
                         break;
                     default:
                         console.log('WARNING: unknown functional marker - ' + message.charAt(1));

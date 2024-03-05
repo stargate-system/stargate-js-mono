@@ -31,7 +31,7 @@ export class LocalServerConnector implements SystemConnector {
         } else {
             this._config = {...config};
         }
-        this._connection = new DefaultConnection(true, this._config);
+        this._connection = new DefaultConnection(false, this._config);
         this._subscriptionBuffer = new SubscriptionBuffer(
             (subscribed) => this._connection.functionalHandler
                 .sendCommand(Keywords.subscribe, subscribed),
@@ -109,7 +109,7 @@ export class LocalServerConnector implements SystemConnector {
         this._connection.functionalHandler.sendCommand(Keywords.pipeEvent, [event, ...params]);
     }
 
-    readonly getCurrentPing = () => this._connection.ping;
+    getCurrentPing = () => this._connection.ping;
 
     private handleConnectionClosed = () => {
         if (!this._isClosed) {

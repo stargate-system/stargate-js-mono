@@ -10,8 +10,6 @@ import {GateValue} from "../../values/components/GateValue.js";
 import {Registry} from "../../Registry.js";
 import {Connection} from "../interfaces/Connection.js";
 import {FunctionalHandler} from "../interfaces/FunctionalHandler.js";
-import Keywords from "../../../constants/Keywords";
-import {clearTimeout} from "timers";
 
 export class DefaultConnection implements Connection{
     private _socket?: SocketWrapper;
@@ -20,7 +18,7 @@ export class DefaultConnection implements Connection{
     private readonly _functionalHandler: FunctionalHandler;
     private readonly _stateChangeListeners;
     private readonly _leader: boolean;
-    private _failedPings: number = 0;
+    private _inboundTimeout?: NodeJS.Timeout;
     private _pingTimeout?: NodeJS.Timeout;
     ping?: number;
     onPingChange?: (ping: number) => void;
@@ -28,30 +26,35 @@ export class DefaultConnection implements Connection{
     constructor(leader?: boolean, config?: ConnectionConfig) {
         this._leader = leader ?? false;
         this._state = ConnectionState.closed;
-        this._buffer = new OutputBuffer();
+        this._buffer = new OutputBuffer((ping) => {
+            this.ping = ping;
+            if (this.onPingChange) {
+                this.onPingChange(ping);
+            }
+        });
         this._functionalHandler = new DefaultFunctionalHandler(this, config);
         this._stateChangeListeners = new Registry<(state: ConnectionState) => void>();
     }
 
     get state() {
         return this._state;
-    }
+    };
 
     get functionalHandler() {
         return this._functionalHandler;
-    }
+    };
 
     get outputBuffer(): OutputBuffer {
         return this._buffer;
-    }
+    };
 
     addStateChangeListener = (callback: (state: ConnectionState) => void): string => {
         return this._stateChangeListeners.add(callback);
-    }
+    };
 
     removeStateChangeListener = (key: string) => {
         this._stateChangeListeners.remove(key);
-    }
+    };
 
     setConnected = (socketWrapper: SocketWrapper) => {
         this._socket = socketWrapper;
@@ -60,20 +63,12 @@ export class DefaultConnection implements Connection{
         this._buffer.setConnected(this._socket?.send);
         this._functionalHandler.setConnected(this._buffer.sendFunctionalMessage);
         this._changeState(ConnectionState.connected);
-        if (this._leader) {
-            this._checkPing();
-        } else {
-            this._functionalHandler.addQueryListener(Keywords.ping, (respond) => {
-                respond('1');
-                this._watchPing();
-            });
-            this._watchPing();
-        }
-    }
+        this.resetTimeouts();
+    };
 
     setReady = () => {
         this._changeState(ConnectionState.ready);
-    }
+    };
 
     close = () => {
         if (this._socket) {
@@ -81,15 +76,15 @@ export class DefaultConnection implements Connection{
         } else {
             this._handleClosed();
         }
-    }
+    };
 
     sendGateValue = (gateValue: GateValue<any>) => {
         this._buffer.sendGateValue(gateValue);
-    }
+    };
 
     sendValue = (value: [string, string]) => {
         this._buffer.sendValue(value);
-    }
+    };
 
     handleValueMessage = (message: string) => {
         if (this.onValueMessage) {
@@ -99,83 +94,59 @@ export class DefaultConnection implements Connection{
                 console.log('On handling value message: ' + err);
             }
         }
-    }
+    };
 
-    onValueMessage?: (valueMessage: ValueMessage) => void
-
-    private _checkPing = async () => {
-        if (this._pingTimeout) {
-            try {
-                clearTimeout(this._pingTimeout);
-            } catch (err) {}
-            this._pingTimeout = undefined;
-        }
-        if (this._state !== ConnectionState.closed) {
-            const startTime = Date.now();
-            let response;
-            try {
-                response = await this._functionalHandler.createQuery(Keywords.ping, 1000)
-                    .catch(() => this._failedPings += 1);
-            } catch (err) {
-                console.log('On checking ping', err);
-            }
-            this.ping = (Date.now() - startTime) / 2;
-            if (this._failedPings === 3) {
-                this.close();
-            } else {
-                if (response) {
-                    this._failedPings = 0;
-                    if (this.onPingChange) {
-                        this.onPingChange(this.ping);
-                    }
-                }
-                this._pingTimeout = setTimeout(() => {
-                    this._pingTimeout = undefined;
-                    this._checkPing();
-                }, 3000);
-            }
-        }
-    }
-
-    private _watchPing = () => {
-        if (this._pingTimeout) {
-            try {
-                clearTimeout(this._pingTimeout);
-            } catch (err) {}
-            this._pingTimeout = undefined;
-        }
-        this._pingTimeout = setTimeout(() => {
-            this._pingTimeout = undefined;
-            this.close();
-        }, 10000);
-    }
+    onValueMessage?: (valueMessage: ValueMessage) => void;
 
     private _changeState = (newState: ConnectionState) => {
         if (this._state !== newState) {
             this._state = newState;
             this._stateChangeListeners.getValues().forEach((callback) => callback(this._state));
         }
-    }
+    };
 
     private _handleClosed = () => {
         this._buffer.close();
         this._functionalHandler.close();
         this._changeState(ConnectionState.closed);
         this._socket = undefined;
-        if (this._pingTimeout) {
-            try {
-                clearTimeout(this._pingTimeout);
-            } catch (err) {}
-            this._pingTimeout = undefined;
-        }
-    }
+        this.clearTimeouts();
+    };
 
     private _handleIncomingMessage = (message: string) => {
+        this.resetTimeouts();
         if (message.charAt(0) === Markers.functionalMessagePrefix) {
             this._functionalHandler.handleFunctionalMessage(message);
         } else {
             this.handleValueMessage(message);
             this._buffer.sendAcknowledge();
+        }
+    };
+
+    private resetTimeouts = () => {
+        this.clearTimeouts();
+        this._inboundTimeout = setTimeout(() => {
+            this.close();
+        }, 7000);
+        if (this._leader) {
+            this._pingTimeout = setTimeout(() => {
+                this.functionalHandler.sendPing();
+            }, 2000);
+        }
+    }
+
+    private clearTimeouts = () => {
+        if (this._inboundTimeout) {
+            try {
+                clearTimeout(this._inboundTimeout);
+            } catch (err) {}
+            this._inboundTimeout = undefined;
+        }
+        if (this._pingTimeout) {
+            try {
+                clearTimeout(this._pingTimeout);
+            } catch (err) {}
+            this._pingTimeout = undefined;
         }
     }
 }

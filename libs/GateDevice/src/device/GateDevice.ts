@@ -151,7 +151,7 @@ export const device: Device = {
         current: ConnectionState.closed,
         onStateChange: undefined
     },
-    connection: new DefaultConnection(true, config)
+    connection: new DefaultConnection(false, config)
 };
 
 export default {
