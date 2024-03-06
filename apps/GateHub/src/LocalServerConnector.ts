@@ -1,6 +1,13 @@
 import {SerialPort} from "serialport";
 import {ReadlineParser} from "@serialport/parser-readline";
-import {Connection, ConnectionState, DefaultConnection, SocketWrapper} from "gate-core";
+import {
+    Connection,
+    ConnectionState,
+    DefaultConnection,
+    Keywords,
+    SocketWrapper,
+    MessageMapper
+} from "gate-core";
 import DiscoveryService from "./DiscoveryService";
 import discoveryService from "./DiscoveryService";
 import {WebSocket} from 'ws';
@@ -20,7 +27,7 @@ export class LocalServerConnector {
         this.connection = new DefaultConnection(true);
         this.connection.addStateChangeListener((state) => {
             if (state !== ConnectionState.ready) {
-                this.serialPort.write("*!notReady\n");
+                this.serialPort.write(MessageMapper.command('notReady') + '\n');
             }
         });
         const parser = serialPort.pipe(new ReadlineParser({ delimiter: '\r\n' }));
@@ -52,12 +59,12 @@ export class LocalServerConnector {
                 this.performHandshake();
             }
         }, 1000);
-        this.serialPort.write("*?type\n");
+        this.serialPort.write(MessageMapper.query(Keywords.type) + '\n');
     }
 
     private handleSerialMessage = (message: string) => {
         if (!this.handshakeDone) {
-            if (message === "*>type|device") {
+            if (message === "*>type|6|device*+") {
                 if (this.timeout) {
                     clearTimeout(this.timeout);
                     this.timeout = undefined;
@@ -84,13 +91,15 @@ export class LocalServerConnector {
             }
             const socket = new WebSocket('ws://' + discoveryService.getServerAddress());
             const socketWrapper: SocketWrapper = {
-                send: socket.send.bind(socket),
+                send: () => {},
                 close: socket.close.bind(socket),
                 setOnClose: (callback) => socket.on('close', callback),
                 setOnMessage: (callback) => socket.on('message', (ev: any) => {
                     const message = ev.toString();
-                    this.forwardServerMessage(message);
-                    callback(message);
+                    if (message.length > 0) {
+                        this.serialPort.write(message + '\n');
+                    }
+                    callback(MessageMapper.acknowledge());
                 })
             }
             socket.onopen = () => {
@@ -105,12 +114,6 @@ export class LocalServerConnector {
                     setTimeout(this.connectServer, 5000);
                 }
             });
-        }
-    }
-
-    private forwardServerMessage = (message: string) => {
-        if (message !== "*>ping|1") {
-            this.serialPort.write(message + '\n');
         }
     }
 }

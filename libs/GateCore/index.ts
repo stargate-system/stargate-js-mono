@@ -25,6 +25,7 @@ import AddressMapper from "./src/components/AddressMapper";
 import {ConnectionType} from "./src/constants/ConnectionType";
 import {ValueVisibility} from "./src/components/values/constants/ValueVisibility";
 import {ServerStorage} from "./src/components/ServerStorage";
+import MessageMapper from "./src/components/connection/components/MessageMapper"
 
 export {
     CoreConfig,
@@ -53,5 +54,6 @@ export {
     AddressMapper,
     ConnectionType,
     ValueVisibility,
-    ServerStorage
+    ServerStorage,
+    MessageMapper
 }
