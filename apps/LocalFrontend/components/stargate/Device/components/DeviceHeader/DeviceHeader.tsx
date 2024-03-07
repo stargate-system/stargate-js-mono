@@ -13,14 +13,17 @@ import AddToGroupModal from "@/components/stargate/Device/components/AddToGroupM
 import ModifyDeviceValuesModal from "@/components/stargate/Device/components/ModifyDeviceValuesModal/ModifyDeviceValuesModal";
 import {ValueVisibility} from "gate-core";
 import DeviceSettingsModal from "@/components/stargate/Device/components/DeviceSettingsModal/DeviceSettingsModal";
+import ChevronComponent from "@/components/generic/ChevronComponent/ChevronComponent";
 
 interface DeviceHeaderProps {
     deviceModel: DeviceModel,
-    isActive: boolean
+    isActive: boolean,
+    open?: boolean,
+    toggleVisibility?: () => void
 }
 
 const DeviceHeader = (props: DeviceHeaderProps) => {
-    const {deviceModel, isActive} = props;
+    const {deviceModel, isActive, open, toggleVisibility} = props;
     const modal = useContext(ModalContext);
     const deviceName = useModelValue(deviceModel.name);
 
@@ -111,7 +114,12 @@ const DeviceHeader = (props: DeviceHeaderProps) => {
             <div className={styles.nameContainer}>
                 {deviceName}
             </div>
-            <MenuComponent items={menuItems}/>
+            <div className={styles.iconContainer}>
+                {(open !== undefined) &&
+                    <ChevronComponent chevronUp={open} onClick={toggleVisibility} />
+                }
+                <MenuComponent items={menuItems}/>
+            </div>
         </div>
     )
 }

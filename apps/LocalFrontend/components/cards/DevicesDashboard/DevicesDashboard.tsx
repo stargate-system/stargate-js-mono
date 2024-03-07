@@ -4,6 +4,7 @@ import useModelMap from "@/components/stargate/ReactGateViewModel/hooks/useModel
 import styles from './DevicesDashboard.module.css';
 import {DeviceModel} from "gate-viewmodel";
 import DeviceGroup from "./DeviceGroup/DeviceGroup";
+import {localStorageHelper} from "@/helper/localStorageHelper";
 import {ConnectionState} from "gate-core";
 
 const DevicesDashboard = () => {
@@ -31,14 +32,8 @@ const DevicesDashboard = () => {
         setUngrouped(newUngrouped);
         setGroupsMap(newGroupsMap);
 
-        if (typeof window !== 'undefined' && systemModel.state.value === ConnectionState.ready) {
-            Object.entries(localStorage)
-                .filter((entry) => entry[1] === 'groupClosed')
-                .forEach((entry) => {
-                    if (!newGroupsMap.get(entry[0])) {
-                        localStorage.removeItem(entry[0]);
-                    }
-                });
+        if (systemModel.state.value === ConnectionState.ready) {
+            localStorageHelper.removeUnused(devices);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [devices]);

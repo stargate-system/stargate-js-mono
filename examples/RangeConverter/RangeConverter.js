@@ -16,6 +16,7 @@ const applySettings = () => {
     inputMax.setValue(settings.inputMax);
     outputMin.setValue(settings.outputMin);
     outputMax.setValue(settings.outputMax);
+    invert.setValue(settings.invert);
 }
 
 const saveSettings = () => {

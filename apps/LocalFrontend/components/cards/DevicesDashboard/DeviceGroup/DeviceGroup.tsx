@@ -2,21 +2,14 @@ import {DeviceModel} from "gate-viewmodel";
 import Device from "@/components/stargate/Device/Device";
 import styles from './DeviceGroup.module.css';
 import React, {useContext, useMemo, useState} from "react";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faChevronDown, faChevronUp} from "@fortawesome/free-solid-svg-icons";
 import MenuComponent from "@/components/generic/MenuComponent/MenuComponent";
 import ModalContext from "@/components/stargate/SystemPage/ModalContext";
 import StandardModal from "@/components/generic/ModalComponent/StandardModal/StandardModal";
 import SystemModelContext from "@/components/stargate/ReactGateViewModel/SystemModelContext";
 import {EventName} from "gate-core";
 import RenameModal from "@/components/generic/ModalComponent/RenameModal/RenameModal";
-
-const getFromLocalStorage = (key: string) => {
-    if (typeof window !== 'undefined') {
-        return localStorage.getItem(key);
-    }
-    return null;
-}
+import {Categories, localStorageHelper} from "@/helper/localStorageHelper";
+import ChevronComponent from "@/components/generic/ChevronComponent/ChevronComponent";
 
 interface DeviceGroupProps {
     group?: string,
@@ -25,7 +18,7 @@ interface DeviceGroupProps {
 
 const DeviceGroup = (props: DeviceGroupProps) => {
     const {group, devices} = props;
-    const [open, setOpen] = useState(!getFromLocalStorage(group ?? ''));
+    const [open, setOpen] = useState(localStorageHelper.getVisibility(Categories.groups, group) ?? true);
     const modal = useContext(ModalContext);
     const systemModel = useContext(SystemModelContext);
 
@@ -78,12 +71,8 @@ const DeviceGroup = (props: DeviceGroupProps) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const toggleGroup = () => {
-        if (open) {
-            localStorage.setItem(group ?? '', 'groupClosed');
-        } else {
-            localStorage.removeItem(group ?? '');
-        }
+    const toggleVisibility = () => {
+        localStorageHelper.setVisibility(!open, Categories.groups, group);
         setOpen(!open);
     }
 
@@ -93,8 +82,7 @@ const DeviceGroup = (props: DeviceGroupProps) => {
                 <div className={`${styles.headerContainer} ${open ? styles.headerOpen : ''}`}>
                     <div className={styles.name}>{group}</div>
                     <div className={styles.iconContainer}>
-                        {open ? <FontAwesomeIcon className={styles.iconClass} icon={faChevronUp} onClick={toggleGroup} />
-                            : <FontAwesomeIcon className={styles.iconClass} icon={faChevronDown} onClick={toggleGroup} />}
+                        <ChevronComponent chevronUp={open} onClick={toggleVisibility} />
                         <MenuComponent items={menuItems} />
                     </div>
                 </div>

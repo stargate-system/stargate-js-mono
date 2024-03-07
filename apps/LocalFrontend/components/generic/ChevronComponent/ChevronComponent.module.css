@@ -1,0 +1,9 @@
+.iconClass {
+    filter:drop-shadow(1px 1px #000000);
+    padding: 0 0.2rem;
+    cursor: pointer;
+}
+
+.iconClass:hover {
+    filter:drop-shadow(0 0 2px #2ef621);
+}
