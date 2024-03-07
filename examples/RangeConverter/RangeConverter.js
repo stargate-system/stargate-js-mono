@@ -7,7 +7,8 @@ let settings = {
     inputMin: 0,
     inputMax: 1,
     outputMin: 0,
-    outputMax: 1
+    outputMax: 1,
+    invert: false
 };
 
 const applySettings = () => {
@@ -43,6 +44,10 @@ outputMax.visibility = ValueVisibility.settings;
 const output = ValueFactory.createFloat(Directions.output);
 output.valueName = 'Output';
 
+const invert = ValueFactory.createBoolean(Directions.input);
+invert.valueName = 'Invert';
+invert.visibility = ValueVisibility.settings;
+
 const convert = () => {
     const inputRange = inputMax.value - inputMin.value;
     let inputRelative = (input.value - inputMin.value) / inputRange;
@@ -52,7 +57,8 @@ const convert = () => {
         inputRelative = 0;
     }
     const outputRange = outputMax.value - outputMin.value;
-    output.setValue(outputMin.value + outputRange * inputRelative);
+    const outputValue = invert.value ? (outputMax.value - outputRange * inputRelative) : (outputMin.value + outputRange * inputRelative);
+    output.setValue(outputValue);
 }
 
 inputMin.onRemoteUpdate = () => {
@@ -77,6 +83,11 @@ outputMax.onRemoteUpdate = () => {
     saveSettings();
     convert();
 };
+invert.onRemoteUpdate = () => {
+    settings.invert = invert.value;
+    saveSettings();
+    convert();
+}
 output.onRemoteUpdate = convert;
 
 applySettings();
