@@ -57,6 +57,9 @@ export class DefaultConnection implements Connection{
     };
 
     setConnected = (socketWrapper: SocketWrapper) => {
+        if (this._state !== ConnectionState.closed) {
+            this.close();
+        }
         this._socket = socketWrapper;
         this._socket.setOnClose(this._handleClosed);
         this._socket.setOnMessage(this._handleIncomingMessage);
@@ -73,9 +76,8 @@ export class DefaultConnection implements Connection{
     close = () => {
         if (this._socket) {
             this._socket.close();
-        } else {
-            this._handleClosed();
         }
+        this._handleClosed();
     };
 
     sendGateValue = (gateValue: GateValue<any>) => {

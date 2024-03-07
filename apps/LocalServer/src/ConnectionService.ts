@@ -12,7 +12,10 @@ export const initConnectionService = () => {
         socket.on('error', console.log);
         const socketWrapper: SocketWrapper = {
             send: socket.send.bind(socket),
-            close: socket.close.bind(socket),
+            close: () => {
+                socket.removeAllListeners();
+                socket.close();
+            },
             setOnClose: (callback) => socket.onclose = callback,
             setOnMessage: (callback) => socket.on('message', (ev: any) => callback(ev.toString()))
         }

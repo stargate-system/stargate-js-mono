@@ -1,5 +1,5 @@
 import {WebSocket} from 'ws';
-import {ConnectionType, Keywords, SocketWrapper} from "gate-core";
+import {ConnectionState, ConnectionType, Keywords, SocketWrapper} from "gate-core";
 import {device} from "../device/GateDevice.js";
 import fs from 'fs';
 import config from "../../config.js";
@@ -24,27 +24,33 @@ const connect = (serverAddress: string) => {
     const socket = new WebSocket('ws://' + serverAddress);
     const socketWrapper: SocketWrapper = {
         send: socket.send.bind(socket),
-        close: socket.close.bind(socket),
+        close: () => {
+            socket.removeAllListeners();
+            socket.close();
+        },
         setOnClose: (callback) => socket.on('close', callback),
         setOnMessage: (callback) => socket.on('message', (ev: any) => callback(ev.toString()))
     }
+    socket.on('error', console.log);
     socket.onopen = () => {
         console.log('Connected to ' + serverAddress);
-        handleConnection(socketWrapper);
+        handleConnection(socketWrapper, serverAddress);
     }
-    socket.on('error', console.log);
-    socket.on('close', () => {
-        if (device.isStopped) {
-            lastKnownServerAddress = serverAddress;
-        } else {
-            console.log('Connection closed. Reconnecting...');
-            setTimeout(initLocalServer, 5000);
-        }
-    });
 }
 
-const handleConnection = (socketWrapper: SocketWrapper) => {
+const handleConnection = (socketWrapper: SocketWrapper, serverAddress: string) => {
     device.connection.setConnected(socketWrapper);
+    const key = device.connection.addStateChangeListener((state) => {
+        if (state === ConnectionState.closed) {
+            if (device.isStopped) {
+                lastKnownServerAddress = serverAddress;
+            } else {
+                console.log('Connection closed. Reconnecting...');
+                setTimeout(initLocalServer, 5000);
+            }
+            device.connection.removeStateChangeListener(key);
+        }
+    });
     setHandshakeListeners();
 };
 
