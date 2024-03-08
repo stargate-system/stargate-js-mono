@@ -92,9 +92,12 @@ const spawnProcess = (spawnFunction, processId, nextProcess) => {
     });
 }
 
+const isWindows = process.platform === 'win32';
+
 const installLocalServer = () => {
     console.log('Installing LocalServer...');
-    const spawnFunction = () => spawn('npm',
+    const spawnFunction = () => spawn(
+        (isWindows ? 'npm.cmd' : 'npm'),
         ['link', './libs/GateCore'],
         {cwd: `${APPS_DIR}/LocalServer`}
     );
@@ -103,7 +106,8 @@ const installLocalServer = () => {
 
 const installGateHub = () => {
     console.log('Installing GateHub...');
-    const spawnFunction = () => spawn('npm',
+    const spawnFunction = () => spawn(
+        (isWindows ? 'npm.cmd' : 'npm'),
         ['link', './libs/GateCore', './libs/GateDiscovery'],
         {cwd: `${APPS_DIR}/GateHub`}
     );
@@ -112,7 +116,8 @@ const installGateHub = () => {
 
 const installBlankProjectJS = () => {
     console.log('Installing BlankProjectJS...');
-    const spawnFunction = () => spawn('npm',
+    const spawnFunction = () => spawn(
+        (isWindows ? 'npm.cmd' : 'npm'),
         ['link', './libs/GateCore', './libs/GateDiscovery', './libs/GateDevice', './libs/GateController', './libs/GateViewModel'],
         {cwd: `${APPS_DIR}/BlankProjectJS`}
     );
@@ -121,7 +126,8 @@ const installBlankProjectJS = () => {
 
 const installBlankProjectTS = () => {
     console.log('Installing BlankProjectTS...');
-    const spawnFunction = () => spawn('npm',
+    const spawnFunction = () => spawn(
+        (isWindows ? 'npm.cmd' : 'npm'),
         ['link', './libs/GateCore', './libs/GateDiscovery', './libs/GateDevice', './libs/GateController', './libs/GateViewModel'],
         {cwd: `${APPS_DIR}/BlankProjectTS`}
     );
@@ -138,7 +144,7 @@ const install = () => {
 const buildFlag = !!process.argv[2] && !!process.argv[2].match(/^-b/i);
 if (buildFlag) {
     console.log('Building project...');
-    const spawnFunction = () => spawn('npm', ['run', 'build']);
+    const spawnFunction = () => spawn((isWindows ? 'npm.cmd' : 'npm'), ['run', 'build']);
     spawnProcess(spawnFunction, undefined, createApps);
 } else {
     createApps();
