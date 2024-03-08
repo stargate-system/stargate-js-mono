@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build && rm -rf ../LocalServer/out && cp -r ./out ../LocalServer/out",
+    "build": "next build && node updateServer.js",
     "start": "next start",
     "lint": "next lint"
   },

@@ -8,7 +8,7 @@
 
 - To start local server - "npm run server" (available on localhost:8080)
 - To start development server for frontend - "npm run dev" (available on localhost:3000)
-- To create apps ready to use outside this repository - "bash CreateStandaloneApps.sh"
+- To create apps ready to use outside this repository - "node CreateStandaloneApps.js"
 (will create StargateApps directory next to repository root directory)
 
 ## Examples
