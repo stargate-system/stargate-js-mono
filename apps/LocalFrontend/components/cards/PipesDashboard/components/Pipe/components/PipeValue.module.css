@@ -11,11 +11,13 @@
     .deviceNameContainer {
         font-size: 0.8rem;
         color: #f5debf;
+        text-align: center;
     }
 
     .valueNameContainer {
         font-size: 1rem;
         color: white;
+        text-align: center;
     }
 
     .valueTypeContainer {
