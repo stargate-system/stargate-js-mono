@@ -11,6 +11,7 @@ export class DeviceModel {
     private readonly _gateValues: ModelMap<GateValueModel>;
     private readonly _name: ModelValue<string>;
     private readonly _group: ModelValue<string | undefined>;
+    private readonly _info: ModelValue<string | undefined>;
     private readonly _systemConnector: SystemConnector;
     private readonly _manifest: ValidManifest;
 
@@ -35,6 +36,7 @@ export class DeviceModel {
         });
         this._name = new ModelValue<string>(manifest.deviceName ?? '');
         this._group = new ModelValue<string | undefined>(manifest.group);
+        this._info = new ModelValue<string | undefined>(manifest.info);
         this._state.subscribe(() => {
             this._gateValues.values.forEach((value) => {
                 value.state.setValue(this._state.value ?? DeviceState.down);
@@ -82,5 +84,9 @@ export class DeviceModel {
 
     get manifest(): ValidManifest {
         return JSON.parse(JSON.stringify(this._manifest));
+    }
+
+    get info(): ModelValue<string | undefined> {
+        return this._info;
     }
 }

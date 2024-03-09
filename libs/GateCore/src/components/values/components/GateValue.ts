@@ -11,11 +11,13 @@ export abstract class GateValue<T> {
         target.valueName = manifest.valueName;
         target.direction = manifest.direction;
         target.visibility = manifest.visibility;
+        target.info = manifest.info;
     };
 
     valueName?: string;
     direction?: Directions;
     visibility?: string;
+    info?: string;
     protected _type?: string;
     private _value?: T;
     private _subscribed: boolean = false;
@@ -133,6 +135,9 @@ export abstract class GateValue<T> {
         }
         if (this.visibility && this.visibility !== ValueVisibility.main) {
             manifest.visibility = this.visibility;
+        }
+        if (this.info !== undefined) {
+            manifest.info = this.info;
         }
         return manifest;
     }

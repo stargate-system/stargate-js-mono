@@ -6,5 +6,6 @@ export interface ValueManifest {
     direction?: Directions,
     visibility?: string,
     valueName?: string,
+    info?: string,
     options?: object
 }

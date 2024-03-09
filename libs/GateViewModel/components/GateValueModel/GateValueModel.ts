@@ -13,14 +13,12 @@ export class GateValueModel {
     private readonly _state: ModelValue<DeviceState>;
     private readonly _gateValue: GateValue<any>;
     private readonly _modelValue: ModelValue<any>;
-    private readonly _name?: string;
 
     constructor(parentId: string, valueManifest: ValueManifest, state: DeviceState, systemConnector: SystemConnector) {
         this._state = new ModelValue<DeviceState>(state);
         const modifiedManifest = {...valueManifest};
         modifiedManifest.id = AddressMapper.appendParentId(parentId, valueManifest.id);
         this._id = modifiedManifest.id;
-        this._name = modifiedManifest.valueName;
         try {
             this._gateValue = GateValueFactory.fromManifest(modifiedManifest);
         } catch (err) {
@@ -51,10 +49,6 @@ export class GateValueModel {
 
     get modelValue(): ModelValue<any> {
         return this._modelValue;
-    }
-
-    get name(): string | undefined {
-        return this._name;
     }
 
     get id(): string {

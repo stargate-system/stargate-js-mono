@@ -45,7 +45,7 @@ const GateValueWrapper = (props: ValueWrapperProps) => {
 
     return (
         <div className={gateValueClass}>
-            <span className={styles.nameContainer}>{valueModel.name}</span>
+            <span className={styles.nameContainer}>{valueModel.gateValue.valueName}</span>
             <div className={styles.gateValue}>
                 {valueView}
             </div>

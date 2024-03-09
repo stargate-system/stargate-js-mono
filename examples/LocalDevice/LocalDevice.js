@@ -3,7 +3,8 @@ const {
     Directions
 } = require('gate-device');
 
-GateDevice.setName('Test local');
+GateDevice.setName('Local device');
+GateDevice.setInfo('LocalDevice custom id');
 GateDevice.setGroup('Test devices');
 GateDevice.state.onStateChange = (state) => {
     console.log('State: ' + state);

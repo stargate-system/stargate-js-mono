@@ -42,7 +42,7 @@ const ValueSelect = (props: ValueSelectProps) => {
     const getTypeLabel = (value: GateValueModel) => {
         return (
             <div>
-                {getName(value.name)}
+                {getName(value.gateValue.valueName)}
                 {value.gateValue.type ? <div className={styles.valueLabel}>{value.gateValue.type.toUpperCase()}</div> : ''}
             </div>
         )
@@ -80,7 +80,7 @@ const ValueSelect = (props: ValueSelectProps) => {
     const valueOptions: SelectedOption[] = useMemo(() => {
         let options: SelectedOption[];
         options = filterByType(values).map((value) => {
-            return {value: value, label: getTypeLabel(value), name: value.name}
+            return {value: value, label: getTypeLabel(value), name: value.gateValue.valueName}
         });
         if (excludeOutput) {
             options = options.filter(option => (option.value as GateValueModel).gateValue.direction !== Directions.output)

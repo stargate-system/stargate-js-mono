@@ -17,6 +17,14 @@ export class ModelMap<T> extends ModelNode<(event: ModelMapEvent) => void>{
         return this._map.get(id);
     }
 
+    find = (matcher: (value: T) => boolean) => {
+        return this.values.find(matcher);
+    }
+
+    forEach = (callback: (value: T) => void) => {
+        this.values.forEach(callback);
+    }
+
     add = (key: string, value: T) => {
         this._map.set(key, value);
         this._notify((callback) => callback({name: MapEventName.added, id: key}));

@@ -27,6 +27,7 @@ interface Device {
 
 let deviceName = "New Device";
 let groupName: string | undefined;
+let info: string | undefined;
 
 const setName = (name: string) => {
     if (!device.isStarted) {
@@ -41,6 +42,14 @@ const setGroup = (name: string) => {
         groupName = name;
     } else {
         console.log('WARNING: Attempting to change device group after device started');
+    }
+}
+
+const setInfo = (content: string) => {
+    if (!device.isStarted) {
+        info = content;
+    } else {
+        console.log('WARNING: Attempting to change device info after device started');
     }
 }
 
@@ -64,6 +73,9 @@ const start = () => {
         }
         if (groupName) {
             device.manifest.group = groupName;
+        }
+        if (info) {
+            device.manifest.info = info;
         }
         startConnection();
     }
@@ -157,6 +169,7 @@ export const device: Device = {
 export default {
     setName,
     setGroup,
+    setInfo,
     start,
     stop,
     config,

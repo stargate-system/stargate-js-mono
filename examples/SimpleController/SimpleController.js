@@ -1,56 +1,44 @@
 const {GateDevice, Directions} = require('gate-device');
 const {getSystemModel} = require('gate-controller');
-const {MapEventName, DeviceState} = require("gate-viewmodel");
+const {DeviceState, DeviceSubscription} = require("gate-viewmodel");
 
+// Exposing output as device - just for demonstration purposes (use of GateDevice together with GateController is optional)
 GateDevice.setName('Simple controller');
 
-const testDeviceState = GateDevice.ValueFactory.createBoolean(Directions.output);
-testDeviceState.valueName = 'Test device';
-testDeviceState.labelTrue = 'Online';
-testDeviceState.labelFalse = 'Offline';
-
-const incrementAmount = GateDevice.ValueFactory.createInteger(Directions.input);
-incrementAmount.valueName = 'Increment amount';
-incrementAmount.setRange([1, 10]);
-incrementAmount.onRemoteUpdate = () => {
-    if (observedValue) {
-        observedValue.gateValue.setValue(incrementAmount.value);
-    }
-}
+const localDeviceState = GateDevice.ValueFactory.createBoolean(Directions.output);
+localDeviceState.valueName = 'Local device';
+localDeviceState.labelTrue = 'Online';
+localDeviceState.labelFalse = 'Offline';
 
 GateDevice.start();
 
+// Getting system model
 const systemModel = getSystemModel();
-let observedDevice;
-let observedValue;
 
-const initObservedDevice = () => {
-    if (observedDevice) {
-        testDeviceState.setValue(observedDevice.state.value === DeviceState.up);
-        observedDevice.state.subscribe(() => testDeviceState.setValue(observedDevice.state.value === DeviceState.up));
-        observedValue = observedDevice.gateValues.values.find((value) => value.name === incrementAmount.valueName);
-        if (observedValue) {
-            observedValue.modelValue.subscribe(() => {
-                incrementAmount.setValue(observedValue.gateValue.value);
-            });
-        }
-    }
-}
-
-systemModel.devices.subscribe((ev) => {
-    if (observedDevice) {
-        if (ev.id === observedDevice.id) {
-            if (ev.name === MapEventName.removed) {
-                observedDevice = undefined;
-                observedValue = undefined;
-            } else {
-                observedDevice = systemModel.devices.getById(observedDevice.id);
-                initObservedDevice();
-            }
-        }
+// Subscribing desired device on system model
+// Searching device by value of "info" field, defined in device code
+const bindStateWithOutput = (deviceModel, output) => {
+    if (deviceModel) {
+        output.setValue(deviceModel.state.value === DeviceState.up);
+        deviceModel.state.subscribe(() => {
+            output.setValue(deviceModel.state.value === DeviceState.up);
+        });
     } else {
-        observedDevice = systemModel.devices.values.find((model) => model.name.value === testDeviceState.valueName);
-        initObservedDevice();
+        output.setValue(false);
     }
-});
+};
+
+const testDeviceSubscription = new DeviceSubscription(
+    systemModel,
+    (deviceModel) => deviceModel.info.value === 'LocalDevice custom id',
+    (deviceModel) => bindStateWithOutput(deviceModel, localDeviceState)
+);
+
+// Keeping subscription active only when testDeviceState has listeners (subscription is open on creation)
+if (!localDeviceState.subscribed) {
+    testDeviceSubscription.close();
+}
+localDeviceState.onSubscriptionChange = (subscribed) => {
+    subscribed ? testDeviceSubscription.open() : testDeviceSubscription.close();
+}
 
