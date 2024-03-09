@@ -56,36 +56,25 @@ const copy = () => {
     copyBlankProjectTS();
 }
 
-const logProcess = (message, processId) => {
-    if (processId !== undefined) {
-        console.log(processId);
-        console.log('----------------------');
-        console.log(message);
-        console.log('----------------------');
-    } else {
-        console.log(message);
-    }
-}
-
-const spawnProcess = (spawnFunction, processId, nextProcess) => {
+const spawnProcess = (spawnFunction, nextProcess) => {
     const childProcess = spawnFunction();
-    childProcess.stdout.on('data', (data) => logProcess(data.toString(), processId));
-    childProcess.stderr.on('data', (data) => logProcess(data.toString(), processId));
+    childProcess.stdout.on('data', (data) => console.log(data.toString()));
+    childProcess.stderr.on('data', (data) => console.log(data.toString()));
     childProcess.on('close', (code) => {
         if (code === 0) {
             if (nextProcess) {
                 nextProcess();
             }
         } else {
-            logProcess("Aborted due to errors", processId);
+            console.log("Aborted due to errors");
             if (nextProcess) {
                 process.exit(1);
             }
         }
     });
     childProcess.on('error', (err) => {
-        logProcess(err, processId);
-        logProcess("Aborted due to errors", processId);
+        console.log(err);
+        console.log("Aborted due to errors");
         if (nextProcess) {
             process.exit(1);
         }
@@ -94,14 +83,14 @@ const spawnProcess = (spawnFunction, processId, nextProcess) => {
 
 const isWindows = process.platform === 'win32';
 
-const installLocalServer = () => {
+const install = () => {
     console.log('Installing LocalServer...');
     const spawnFunction = () => spawn(
         (isWindows ? 'npm.cmd' : 'npm'),
         ['link', './libs/GateCore'],
         {cwd: `${APPS_DIR}/LocalServer`}
     );
-    spawnProcess(spawnFunction, 'LocalServer');
+    spawnProcess(spawnFunction, installGateHub);
 }
 
 const installGateHub = () => {
@@ -111,7 +100,7 @@ const installGateHub = () => {
         ['link', './libs/GateCore', './libs/GateDiscovery'],
         {cwd: `${APPS_DIR}/GateHub`}
     );
-    spawnProcess(spawnFunction, 'GateHub');
+    spawnProcess(spawnFunction, installBlankProjectJS);
 }
 
 const installBlankProjectJS = () => {
@@ -121,7 +110,7 @@ const installBlankProjectJS = () => {
         ['link', './libs/GateCore', './libs/GateDiscovery', './libs/GateDevice', './libs/GateController', './libs/GateViewModel'],
         {cwd: `${APPS_DIR}/BlankProjectJS`}
     );
-    spawnProcess(spawnFunction, 'BlankProjectJS');
+    spawnProcess(spawnFunction, installBlankProjectTS);
 }
 
 const installBlankProjectTS = () => {
@@ -131,21 +120,14 @@ const installBlankProjectTS = () => {
         ['link', './libs/GateCore', './libs/GateDiscovery', './libs/GateDevice', './libs/GateController', './libs/GateViewModel'],
         {cwd: `${APPS_DIR}/BlankProjectTS`}
     );
-    spawnProcess(spawnFunction, 'BlankProjectTS');
-}
-
-const install = () => {
-    installLocalServer();
-    installGateHub();
-    installBlankProjectJS();
-    installBlankProjectTS();
+    spawnProcess(spawnFunction);
 }
 
 const buildFlag = !!process.argv[2] && !!process.argv[2].match(/^-b/i);
 if (buildFlag) {
     console.log('Building project...');
     const spawnFunction = () => spawn((isWindows ? 'npm.cmd' : 'npm'), ['run', 'build']);
-    spawnProcess(spawnFunction, undefined, createApps);
+    spawnProcess(spawnFunction, createApps);
 } else {
     createApps();
 }
