@@ -1,7 +1,7 @@
 import React from "react";
-const ReactGateViewModel = dynamic(() => import("@/components/stargate/ReactGateViewModel/ReactGateViewModel"), {ssr: false});
-import SystemPage from "@/components/stargate/SystemPage/SystemPage";
+import SystemPage from "@/components/SystemPage/SystemPage";
 import dynamic from "next/dynamic";
+const ReactGateViewModel = dynamic(() => import("@/components/ReactGateViewModel/ReactGateViewModel"), {ssr: false});
 
 const Home = () => {
     return (
