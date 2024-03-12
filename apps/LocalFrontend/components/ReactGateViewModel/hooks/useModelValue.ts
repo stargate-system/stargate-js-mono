@@ -1,17 +1,19 @@
 import {ModelValue} from "gate-viewmodel";
 import {useEffect, useState} from "react";
 
-const useModelValue = <T>(modelValue: ModelValue<T>) => {
-    const [value, setValue] = useState<T | undefined>(modelValue.value);
+const useModelValue = <T>(modelValue?: ModelValue<T>) => {
+    const [value, setValue] = useState<T | undefined>(modelValue?.value);
 
     useEffect(() => {
-        setValue(modelValue.value);
-        const key = modelValue.subscribe(() => {
+        setValue(modelValue?.value);
+        const key = modelValue?.subscribe(() => {
             setValue(modelValue.value);
         });
 
         return () => {
-            modelValue.unsubscribe(key)
+            if (key && modelValue) {
+                modelValue.unsubscribe(key);
+            }
         };
     }, [modelValue]);
 
