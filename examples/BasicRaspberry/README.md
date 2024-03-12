@@ -2,7 +2,7 @@
 Minimalistic example of Raspberry Pi device.
 Contains one number input to control PWM on pin GPIO22.
 If input is not subscribed, pin output is automatically set to 0 and
-restored to current input value if subscribed again. Uses ping.
+restored to current input value if subscribed again.
 
 ### Setup
 *Point 2 is temporary as libraries are not yet published to npm*

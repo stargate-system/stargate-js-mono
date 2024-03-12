@@ -15,6 +15,7 @@ Range converter (Output) -> Any numeric input
 **Settings**
 - Input min, Input max - expected range of input
 - Output min, Output max - desired range of output
+- Invert - reversing output value
 
 ### Setup
 Open terminal under project's root directory and run "npm run device:converter"

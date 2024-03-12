@@ -31,11 +31,11 @@ App to facilitate running multiple devices on one physical device.
 Open terminal under project's root directory and run "npm run hub"
 
 **Autostart** \
-Autostart list is defined in ./autostart.ts in format [\<working directory\>, \<command\>]
+Autostart list is defined in autostart.js in format [\<working directory\>, \<command\>]
 
 Example:
 
-    export const autostart = [
+    const autostart = [
         ["../my-devices/device1", "node device-one.js"],
         ["../my-devices/device2", "npm run device-two"]
     ];

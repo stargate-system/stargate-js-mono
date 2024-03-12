@@ -28,6 +28,7 @@ const copyGateHub = () => {
     fs.cpSync('./libs/GateCore', APPS_DIR + '/GateHub/libs/GateCore', {recursive: true});
     fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/GateHub/libs/GateDiscovery', {recursive: true});
     fs.copyFileSync('./apps/GateHub/package.json', APPS_DIR + '/GateHub/package.json');
+    fs.copyFileSync('./apps/GateHub/autostart.js', APPS_DIR + '/GateHub/autostart.js');
 }
 
 const copyBlankProjectJS = () => {
