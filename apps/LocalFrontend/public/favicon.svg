@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="70mm" height="70mm" version="1.1" viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <radialGradient id="radialGradient2" cx="35" cy="35" r="30" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#a2914b" offset=".70342"/>
+   <stop stop-color="#f2e187" offset="1"/>
+  </radialGradient>
+  <linearGradient id="linearGradient4" x1="16" x2="57.937" y1="35" y2="35" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#a27d37" stop-opacity=".1257" offset="0"/>
+   <stop stop-color="#a2914b" offset=".8778"/>
+  </linearGradient>
+ </defs>
+ <g>
+  <circle cx="35" cy="35" r="35"/>
+  <path d="m57.937 30-41.936 4.9403 41.936 5.0597z" fill="url(#linearGradient4)"/>
+  <path d="m35 5c-16.569-1.3e-4 -30 13.432-30 30 1.55e-4 16.569 13.432 30 30 30 16.568-1.55e-4 30-13.431 30-30-8.71e-4 -1.9244-0.1869-3.8442-0.55552-5.733l-10.039 1.1756c0.37256 1.4912 0.57197 3.0204 0.59428 4.5573-1.03e-4 11.046-8.9543 20-20 20-11.046-1.03e-4 -20-8.9543-20-20 1.03e-4 -11.046 8.9543-20 20-20 8.5121 0.01098 16.043 5.6136 18.83 13.656l10.144-1.4056c-3.5078-13.12-15.392-22.247-28.973-22.251z" fill="url(#radialGradient2)" stroke-width=".13229"/>
+ </g>
+ <path d="m0 0"/>
+</svg>

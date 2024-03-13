@@ -25,6 +25,7 @@
 }
 
 .connectionSpinner {
-    font-size: 1rem;
-    padding: 1rem;
+    width: 8rem;
+    height: 8rem;
+    padding-bottom: 2rem;
 }

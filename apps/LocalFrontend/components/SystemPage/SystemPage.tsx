@@ -4,7 +4,6 @@ import ModalContext, {ModalInterface} from "./ModalContext";
 import {ConnectionState} from "gate-core";
 import ModalComponent from "@/components/common/modals/BaseModal/ModalComponent";
 import styles from "./SystemPage.module.css";
-import Spinner from "@/components/common/elements/Spinner/Spinner";
 import CardDisplay from "@/components/SystemPage/CardDisplay/CardDisplay";
 
 const SystemPage = () => {
@@ -49,7 +48,8 @@ const SystemPage = () => {
         <div>
             <ModalComponent open={!connectionReady}>
                 <div className={styles.connectionModal}>
-                    <Spinner className={styles.connectionSpinner}/>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="./spinner.svg" alt="spinner" className={styles.connectionSpinner}/>
                     Waiting for connection...
                 </div>
             </ModalComponent>

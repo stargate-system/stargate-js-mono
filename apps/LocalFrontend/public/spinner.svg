@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg width="100mm" height="100mm" version="1.1" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+ <defs>
+  <radialGradient id="radialGradient28" cx="50" cy="50" r="30" gradientTransform="matrix(1.0833 0 0 1.0833 -4.1665 -4.1665)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#82828c" offset=".67003"/>
+   <stop stop-color="#fff" offset=".92807"/>
+  </radialGradient>
+  <linearGradient id="linearGradient36" x1="31" x2="72.937" y1="50" y2="50" gradientTransform="translate(-.68579 -.127)" gradientUnits="userSpaceOnUse">
+   <stop stop-opacity="0" offset=".17824"/>
+   <stop stop-color="#50505a" offset=".59309"/>
+   <stop stop-color="#82828c" offset=".92435"/>
+  </linearGradient>
+  <radialGradient id="radialGradient3" cx="14.935" cy="12.653" r="38.415" gradientTransform="matrix(1.1818 .078978 -.075255 1.1808 33.291 33.902)" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#d4b584" offset=".8372"/>
+   <stop stop-color="#ece9d1" offset="1"/>
+  </radialGradient>
+  <radialGradient id="radialGradient5" cx="50" cy="50" r="37.5" gradientUnits="userSpaceOnUse">
+   <stop stop-color="#a46f00" offset=".94461"/>
+   <stop stop-color="#d4b584" offset="1"/>
+  </radialGradient>
+  <radialGradient id="radialGradient111" cx="50" cy="50" r="35" gradientTransform="matrix(1.4286 0 0 1.4286 -21.429 -21.429)" gradientUnits="userSpaceOnUse">
+   <stop offset=".18094"/>
+   <stop stop-color="#00ff83" stop-opacity=".27435" offset=".38362"/>
+   <stop stop-color="#00ff98" stop-opacity="0" offset="1"/>
+  </radialGradient>
+ </defs>
+ <circle cx="50" cy="50" r="50" fill="url(#radialGradient111)" stroke-width="0"/>
+ <path d="m40.748 5.1023c-0.74328 0.051069-1.6987 0.22781-2.9389 0.56425-9.9214 2.6915 1.0691 5.0191-7.809 10.187-8.8781 5.1682-5.5031-5.5226-12.733 1.7701-7.2297 7.2927 3.4357 3.8207-1.6529 12.741s-7.52-2.0414-10.121 7.8985c-2.6008 9.9399 4.8814 1.5979 4.9457 11.88 0.06424 10.282-7.5219 1.9862-4.7969 11.91 2.7249 9.9237 5.0191-1.0528 10.219 7.8362s-5.5086 5.482 1.812 12.73c7.3206 7.2484 3.8123-3.4213 12.755 1.6926 8.9423 5.1139-2.0188 7.5088 7.9359 10.14 9.9547 2.6309 1.5834-4.8734 11.872-4.9048 10.289-0.03136 2.0114 7.5234 11.933 4.8319 9.9214-2.6915-1.0691-5.0191 7.809-10.187 8.8781-5.1682 5.5031 5.5221 12.733-1.7707 7.2297-7.2927-3.4357-3.8202 1.6529-12.74s7.52 2.0414 10.121-7.8985c2.6008-9.9399-4.8814-1.5979-4.9457-11.88s7.5219-1.9862 4.7969-11.91c-2.7249-9.9237-5.0191 1.0528-10.219-7.8362s5.5081-5.482-1.8125-12.73c-7.3206-7.2484-3.8118 3.4213-12.754-1.6926-8.9423-5.1139 2.0188-7.5088-7.9359-10.14-9.9547-2.6309-1.5834 4.8734-11.872 4.9048-9.0025 0.027437-3.791-5.7536-8.9939-5.3962zm8.9833 9.9217a35 35 39.289 0 1 35.257 34.741 35 35 39.289 0 1-34.741 35.257 35 35 39.289 0 1-35.257-34.741 35 35 39.289 0 1 34.741-35.257z" fill="url(#radialGradient3)" stroke-width="0">
+  <animateTransform
+          id="gear"
+          attributeName="transform"
+          type="rotate"
+          from="0 50 50"
+          to="180 50 50"
+          begin="0s;gear.end"
+          dur="4s"
+  />
+ </path>
+ <path d="m72.251 44.873-41.936 4.9403 41.936 5.0597z" fill="url(#linearGradient36)"/>
+ <path d="m50 17.5c-17.949-1.41e-4 -32.5 14.551-32.5 32.5 1.68e-4 17.949 14.551 32.5 32.5 32.5 17.949-1.68e-4 32.5-14.551 32.5-32.5-9.44e-4 -2.0848-0.20248-4.1646-0.60182-6.2107l-10.875 1.2736c0.4036 1.6155 0.61963 3.2721 0.6438 4.9371-1.11e-4 11.966-9.7005 21.666-21.666 21.666-11.966-1.11e-4 -21.666-9.7005-21.666-21.666 1.11e-4 -11.966 9.7005-21.666 21.666-21.666 9.2215 0.01189 17.38 6.0814 20.399 14.795l10.989-1.5227c-3.8002-14.214-16.675-24.101-31.388-24.106z" fill="url(#radialGradient28)" stroke-width=".14332"/>
+ <path d="m0 0"/>
+ <path d="m50 12.5a37.5 37.5 0 0 0-37.5 37.5 37.5 37.5 0 0 0 37.5 37.5 37.5 37.5 0 0 0 37.5-37.5 37.5 37.5 0 0 0-37.5-37.5zm0 2.5001a35 35 0 0 1 35 35 35 35 0 0 1-35 35 35 35 0 0 1-35-35 35 35 0 0 1 35-35z" fill="url(#radialGradient5)" stroke-width="0"/>
+</svg>
