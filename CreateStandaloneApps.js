@@ -37,7 +37,7 @@ const copyBlankProjectJS = () => {
     fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/BlankProjectJS/libs/GateDiscovery', {recursive: true});
     fs.cpSync('./libs/GateDevice', APPS_DIR + '/BlankProjectJS/libs/GateDevice', {recursive: true});
     fs.cpSync('./libs/GateController', APPS_DIR + '/BlankProjectJS/libs/GateController', {recursive: true});
-    fs.cpSync('./libs/GateViewModel', APPS_DIR + '/BlankProjectJS/libs/GateViewModel', {recursive: true});
+    fs.cpSync('./libs/GateModel', APPS_DIR + '/BlankProjectJS/libs/GateModel', {recursive: true});
 }
 
 const copyBlankProjectTS = () => {
@@ -46,7 +46,7 @@ const copyBlankProjectTS = () => {
     fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/BlankProjectTS/libs/GateDiscovery', {recursive: true});
     fs.cpSync('./libs/GateDevice', APPS_DIR + '/BlankProjectTS/libs/GateDevice', {recursive: true});
     fs.cpSync('./libs/GateController', APPS_DIR + '/BlankProjectTS/libs/GateController', {recursive: true});
-    fs.cpSync('./libs/GateViewModel', APPS_DIR + '/BlankProjectTS/libs/GateViewModel', {recursive: true});
+    fs.cpSync('./libs/GateModel', APPS_DIR + '/BlankProjectTS/libs/GateModel', {recursive: true});
 }
 
 const copy = () => {
@@ -108,7 +108,7 @@ const installBlankProjectJS = () => {
     console.log('Installing BlankProjectJS...');
     const spawnFunction = () => spawn(
         (isWindows ? 'npm.cmd' : 'npm'),
-        ['link', './libs/GateCore', './libs/GateDiscovery', './libs/GateDevice', './libs/GateController', './libs/GateViewModel'],
+        ['link', './libs/GateCore', './libs/GateDiscovery', './libs/GateDevice', './libs/GateController', './libs/GateModel'],
         {cwd: `${APPS_DIR}/BlankProjectJS`}
     );
     spawnProcess(spawnFunction, installBlankProjectTS);
@@ -118,7 +118,7 @@ const installBlankProjectTS = () => {
     console.log('Installing BlankProjectTS...');
     const spawnFunction = () => spawn(
         (isWindows ? 'npm.cmd' : 'npm'),
-        ['link', './libs/GateCore', './libs/GateDiscovery', './libs/GateDevice', './libs/GateController', './libs/GateViewModel'],
+        ['link', './libs/GateCore', './libs/GateDiscovery', './libs/GateDevice', './libs/GateController', './libs/GateModel'],
         {cwd: `${APPS_DIR}/BlankProjectTS`}
     );
     spawnProcess(spawnFunction);

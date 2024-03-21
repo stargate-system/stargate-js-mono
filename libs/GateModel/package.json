@@ -7,6 +7,9 @@
   "scripts": {
     "build": "node clean.js && tsc"
   },
+  "files": [
+    "dist"
+  ],
   "author": "Michał Marchel",
   "license": "LGPL-3.0-or-later",
   "repository": {
