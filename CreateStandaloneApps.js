@@ -3,10 +3,14 @@ const fs = require('fs');
 
 const APPS_DIR = '../StargateApps';
 
+const installFlag = !!process.argv.find((arg) => arg.match(/^-i/i));
+
 const createApps = () => {
     cleanup();
     copy();
-    install();
+    if (installFlag) {
+        install();
+    }
 }
 
 const cleanup = () => {
@@ -19,34 +23,42 @@ const cleanup = () => {
 const copyLocalServer = () => {
     fs.cpSync('./apps/LocalServer/dist', APPS_DIR + '/LocalServer/dist', {recursive: true});
     fs.cpSync('./apps/LocalServer/out', APPS_DIR + '/LocalServer/out', {recursive: true});
-    fs.cpSync('./libs/GateCore', APPS_DIR + '/LocalServer/libs/GateCore', {recursive: true});
     fs.copyFileSync('./apps/LocalServer/package.json', APPS_DIR + '/LocalServer/package.json');
+    if (installFlag) {
+        fs.cpSync('./libs/GateCore', APPS_DIR + '/LocalServer/libs/GateCore', {recursive: true});
+    }
 }
 
 const copyGateHub = () => {
     fs.cpSync('./apps/GateHub/dist', APPS_DIR + '/GateHub/dist', {recursive: true});
-    fs.cpSync('./libs/GateCore', APPS_DIR + '/GateHub/libs/GateCore', {recursive: true});
-    fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/GateHub/libs/GateDiscovery', {recursive: true});
     fs.copyFileSync('./apps/GateHub/package.json', APPS_DIR + '/GateHub/package.json');
     fs.copyFileSync('./apps/GateHub/autostart.js', APPS_DIR + '/GateHub/autostart.js');
+    if (installFlag) {
+        fs.cpSync('./libs/GateCore', APPS_DIR + '/GateHub/libs/GateCore', {recursive: true});
+        fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/GateHub/libs/GateDiscovery', {recursive: true});
+    }
 }
 
 const copyBlankProjectJS = () => {
     fs.cpSync('./examples/BlankProjectJS', APPS_DIR + '/BlankProjectJS', {recursive: true});
-    fs.cpSync('./libs/GateCore', APPS_DIR + '/BlankProjectJS/libs/GateCore', {recursive: true});
-    fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/BlankProjectJS/libs/GateDiscovery', {recursive: true});
-    fs.cpSync('./libs/GateDevice', APPS_DIR + '/BlankProjectJS/libs/GateDevice', {recursive: true});
-    fs.cpSync('./libs/GateController', APPS_DIR + '/BlankProjectJS/libs/GateController', {recursive: true});
-    fs.cpSync('./libs/GateModel', APPS_DIR + '/BlankProjectJS/libs/GateModel', {recursive: true});
+    if (installFlag) {
+        fs.cpSync('./libs/GateCore', APPS_DIR + '/BlankProjectJS/libs/GateCore', {recursive: true});
+        fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/BlankProjectJS/libs/GateDiscovery', {recursive: true});
+        fs.cpSync('./libs/GateDevice', APPS_DIR + '/BlankProjectJS/libs/GateDevice', {recursive: true});
+        fs.cpSync('./libs/GateController', APPS_DIR + '/BlankProjectJS/libs/GateController', {recursive: true});
+        fs.cpSync('./libs/GateModel', APPS_DIR + '/BlankProjectJS/libs/GateModel', {recursive: true});
+    }
 }
 
 const copyBlankProjectTS = () => {
     fs.cpSync('./examples/BlankProjectTS', APPS_DIR + '/BlankProjectTS', {recursive: true});
-    fs.cpSync('./libs/GateCore', APPS_DIR + '/BlankProjectTS/libs/GateCore', {recursive: true});
-    fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/BlankProjectTS/libs/GateDiscovery', {recursive: true});
-    fs.cpSync('./libs/GateDevice', APPS_DIR + '/BlankProjectTS/libs/GateDevice', {recursive: true});
-    fs.cpSync('./libs/GateController', APPS_DIR + '/BlankProjectTS/libs/GateController', {recursive: true});
-    fs.cpSync('./libs/GateModel', APPS_DIR + '/BlankProjectTS/libs/GateModel', {recursive: true});
+    if (installFlag) {
+        fs.cpSync('./libs/GateCore', APPS_DIR + '/BlankProjectTS/libs/GateCore', {recursive: true});
+        fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/BlankProjectTS/libs/GateDiscovery', {recursive: true});
+        fs.cpSync('./libs/GateDevice', APPS_DIR + '/BlankProjectTS/libs/GateDevice', {recursive: true});
+        fs.cpSync('./libs/GateController', APPS_DIR + '/BlankProjectTS/libs/GateController', {recursive: true});
+        fs.cpSync('./libs/GateModel', APPS_DIR + '/BlankProjectTS/libs/GateModel', {recursive: true});
+    }
 }
 
 const copy = () => {
@@ -124,7 +136,7 @@ const installBlankProjectTS = () => {
     spawnProcess(spawnFunction);
 }
 
-const buildFlag = !!process.argv[2] && !!process.argv[2].match(/^-b/i);
+const buildFlag = !!process.argv.find((arg) => arg.match(/^-b/i));
 if (buildFlag) {
     console.log('Building project...');
     const spawnFunction = () => spawn((isWindows ? 'npm.cmd' : 'npm'), ['run', 'build']);

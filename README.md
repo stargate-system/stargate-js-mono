@@ -8,8 +8,19 @@
 
 - To start local server - "npm run server" (available on localhost:8080)
 - To start development server for frontend - "npm run dev" (available on localhost:3000)
-- To create apps ready to use outside this repository - "node CreateStandaloneApps.js"
-(will create StargateApps directory next to repository root directory)
+
+### CreateStandaloneApps.js
+Optionally, CreateStandaloneApps.js helper can be used.
+It creates StargateApps directory next to repository root directory.
+- With -i flag, it will create apps with current version of dependencies, ready to use outside monorepo.
+- Without -i flag, it will copy files without dependencies (for publishing purposes).
+
+Additionally, -b flag can be used to build project beforehand, i.e. running:
+
+    node CreateStandaloneApps.js -b -i
+
+will first build the project, then copy relevant packages, and finally link current version of dependencies
+
 
 ## Examples
 
