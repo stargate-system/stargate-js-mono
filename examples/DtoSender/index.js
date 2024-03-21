@@ -1,4 +1,4 @@
-const {GateDevice, Directions, ValueVisibility} = require('gate-device');
+const {GateDevice, Directions, ValueVisibility} = require('@stargate-system/device');
 
 GateDevice.setName('DTO Sender');
 GateDevice.setGroup('Test devices');

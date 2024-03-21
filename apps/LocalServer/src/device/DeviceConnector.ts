@@ -1,4 +1,4 @@
-import {Connection, ValidManifest} from "gate-core";
+import {Connection, ValidManifest} from "@stargate-system/core";
 
 export interface DeviceConnector{
     id?: string,

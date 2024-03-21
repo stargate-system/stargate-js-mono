@@ -1,5 +1,5 @@
 import {GateValueProps} from "../GateValueWrapper";
-import {Directions, GateSelect} from "gate-core";
+import {Directions, GateSelect} from "@stargate-system/core";
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
 import Select from "react-select";
 import React, {CSSProperties, useEffect, useMemo, useState} from "react";

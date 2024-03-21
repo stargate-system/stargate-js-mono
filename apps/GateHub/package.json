@@ -10,7 +10,15 @@
     "start": "node dist/index.js"
   },
   "author": "Michał Marchel",
-  "license": "ISC",
+  "license": "LGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stargate-system/stargate-js-mono.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stargate-system/stargate-js-mono/issues"
+  },
+  "homepage": "https://stargate-system.com",
   "devDependencies": {
     "express": "^4.18.2",
     "@types/express": "^4.17.21",
@@ -19,8 +27,8 @@
     "typescript": "^5.3.2"
   },
   "dependencies": {
-    "gate-core": "^1.0.0",
-    "gate-discovery": "^1.0.0",
+    "@stargate-system/core": "^1.0.0",
+    "@stargate-system/discovery": "^1.0.0",
     "serialport": "^12.0.0",
     "ws": "^8.14.2"
   }

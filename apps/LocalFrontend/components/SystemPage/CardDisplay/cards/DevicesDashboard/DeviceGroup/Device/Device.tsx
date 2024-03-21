@@ -3,10 +3,10 @@ import DeviceHeader from "./components/DeviceHeader/DeviceHeader";
 import styles from './Device.module.css';
 import GateValueWrapper
     from "@/components/SystemPage/CardDisplay/cards/DevicesDashboard/DeviceGroup/Device/GateValue/GateValueWrapper";
-import {DeviceModel, DeviceState, GateValueModel} from "gate-viewmodel";
+import {DeviceModel, DeviceState, GateValueModel} from "@stargate-system/model";
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
 import useModelMap from "@/components/ReactGateViewModel/hooks/useModelMap";
-import {ValueVisibility} from "gate-core";
+import {ValueVisibility} from "@stargate-system/core";
 import {Categories, localStorageHelper} from "@/helper/localStorageHelper";
 
 const customMatchers: CustomDeviceMatcher[] = [

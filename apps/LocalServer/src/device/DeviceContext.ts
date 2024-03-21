@@ -1,4 +1,4 @@
-import {Registry, ValueMessage, AddressMapper} from "gate-core";
+import {Registry, ValueMessage, AddressMapper} from "@stargate-system/core";
 import {Device} from "./Device";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
 import {Pipe} from "./Pipe";

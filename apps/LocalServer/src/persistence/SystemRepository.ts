@@ -1,4 +1,4 @@
-import {SystemImage, Manifest, ValidManifest} from "gate-core";
+import {SystemImage, Manifest, ValidManifest} from "@stargate-system/core";
 
 export interface SystemRepository {
     getSystemImage: () => Promise<SystemImage>,

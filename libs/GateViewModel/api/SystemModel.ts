@@ -1,6 +1,6 @@
 import {SystemConnector} from "./SystemConnector";
 import {ModelValue} from "../components/ModelValue";
-import {AddressMapper, ConnectionState, EventName, ServerStorage, ValidManifest, ValueMessage} from "gate-core";
+import {AddressMapper, ConnectionState, EventName, ServerStorage, ValidManifest, ValueMessage} from "@stargate-system/core";
 import {ModelMap} from "../components/ModelMap/ModelMap";
 import {DeviceModel} from "../components/DeviceModel/DeviceModel";
 import {DeviceState} from "../components/DeviceModel/DeviceState";

@@ -1,4 +1,4 @@
-import {ModelValue} from "gate-viewmodel";
+import {ModelValue} from "@stargate-system/model";
 import {useEffect, useState} from "react";
 
 const useModelValue = <T>(modelValue?: ModelValue<T>) => {

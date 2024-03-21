@@ -1,7 +1,7 @@
 import React, {ReactElement, useContext, useEffect, useMemo, useState} from "react";
 import SystemModelContext from "@/components/ReactGateViewModel/SystemModelContext";
 import ModalContext, {ModalInterface} from "./ModalContext";
-import {ConnectionState} from "gate-core";
+import {ConnectionState} from "@stargate-system/core";
 import ModalComponent from "@/components/common/modals/BaseModal/ModalComponent";
 import styles from "./SystemPage.module.css";
 import CardDisplay from "@/components/SystemPage/CardDisplay/CardDisplay";

@@ -1,5 +1,5 @@
 import {LocalServerConnector} from "./LocalServerConnector";
-import {SystemModel} from "gate-viewmodel";
+import {SystemModel} from "@stargate-system/model";
 
 export const getSystemModel = (config?: Object) => {
     const connector = new LocalServerConnector(config);

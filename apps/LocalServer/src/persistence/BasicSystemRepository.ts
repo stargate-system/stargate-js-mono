@@ -1,7 +1,7 @@
-import {Manifest, ValidManifest} from "gate-core";
+import {Manifest, ValidManifest} from "@stargate-system/core";
 import crypto from 'crypto';
 import fs from 'fs';
-import {SystemImage} from "gate-core";
+import {SystemImage} from "@stargate-system/core";
 import {SystemRepository} from "./SystemRepository";
 
 let systemImage: SystemImage;

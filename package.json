@@ -47,8 +47,11 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.0",
     "@fortawesome/free-solid-svg-icons": "^6.5.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "gate-controller": "^1.0.0",
-    "gate-discovery": "^1.0.0",
+    "@stargate-system/core": "file:./libs/GateCore",
+    "@stargate-system/discovery": "file:./libs/GateDiscovery",
+    "@stargate-system/model": "file:./libs/GateViewModel",
+    "@stargate-system/controller": "file:./libs/GateController",
+    "@stargate-system/device": "file:./libs/GateDevice",
     "next": "14.0.0",
     "react": "^18.2.0",
     "react-dom": "^18"
@@ -63,5 +66,13 @@
     "typescript": "^5"
   },
   "author": "Michał Marchel",
-  "license": "ISC"
+  "license": "LGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stargate-system/stargate-js-mono.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stargate-system/stargate-js-mono/issues"
+  },
+  "homepage": "https://stargate-system.com"
 }

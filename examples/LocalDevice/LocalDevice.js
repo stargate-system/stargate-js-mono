@@ -1,7 +1,7 @@
 const {
     GateDevice,
     Directions
-} = require('gate-device');
+} = require('@stargate-system/device');
 
 GateDevice.setName('Local device');
 GateDevice.setInfo('LocalDevice custom id');

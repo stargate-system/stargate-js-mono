@@ -1,11 +1,11 @@
-import {DeviceModel, GateValueModel, SystemModel} from "gate-viewmodel";
+import {DeviceModel, GateValueModel, SystemModel} from "@stargate-system/model";
 import StandardModal from "@/components/common/modals/StandardModal/StandardModal";
 import React, {useEffect, useState} from "react";
 import styles from './NewPipeModal.module.css';
 import ValueSelect from "./components/ValueSelect/ValueSelect";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowDown} from "@fortawesome/free-solid-svg-icons";
-import {AddressMapper} from "gate-core";
+import {AddressMapper} from "@stargate-system/core";
 
 interface NewPipeModalProps {
     systemModel: SystemModel

@@ -3,7 +3,7 @@ import React, {
     useContext,
     useMemo
 } from "react";
-import {DeviceModel} from "gate-viewmodel";
+import {DeviceModel} from "@stargate-system/model";
 import ModalContext from "@/components/SystemPage/ModalContext";
 import StandardModal from "@/components/common/modals/StandardModal/StandardModal";
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
@@ -11,7 +11,7 @@ import MenuComponent from "@/components/common/controls/MenuComponent/MenuCompon
 import RenameModal from "@/components/common/modals/RenameModal/RenameModal";
 import AddToGroupModal from "@/components/SystemPage/CardDisplay/cards/DevicesDashboard/DeviceGroup/Device/components/AddToGroupModal/AddToGroupModal";
 import ModifyDeviceValuesModal from "@/components/SystemPage/CardDisplay/cards/DevicesDashboard/DeviceGroup/Device/components/ModifyDeviceValuesModal/ModifyDeviceValuesModal";
-import {ValueVisibility} from "gate-core";
+import {ValueVisibility} from "@stargate-system/core";
 import DeviceSettingsModal from "@/components/SystemPage/CardDisplay/cards/DevicesDashboard/DeviceGroup/Device/components/DeviceSettingsModal/DeviceSettingsModal";
 import ChevronComponent from "@/components/common/controls/ChevronComponent/ChevronComponent";
 

@@ -1,7 +1,7 @@
-import {DeviceModel} from "gate-viewmodel";
+import {DeviceModel} from "@stargate-system/model";
 import styles from './DeviceSettingsModal.module.css';
 import GateValueWrapper from "@/components/SystemPage/CardDisplay/cards/DevicesDashboard/DeviceGroup/Device/GateValue/GateValueWrapper";
-import {ValueVisibility} from "gate-core";
+import {ValueVisibility} from "@stargate-system/core";
 import StandardModal from "@/components/common/modals/StandardModal/StandardModal";
 import useModelMap from "@/components/ReactGateViewModel/hooks/useModelMap";
 import {useContext, useMemo} from "react";

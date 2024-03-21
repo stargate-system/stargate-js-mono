@@ -3,7 +3,7 @@ import {
     GateValueFactory,
     ValueManifest,
     AddressMapper
-} from "gate-core";
+} from "@stargate-system/core";
 import {DeviceState} from "../DeviceModel/DeviceState";
 import {ModelValue} from "../ModelValue";
 import {SystemConnector} from "../../api/SystemConnector";

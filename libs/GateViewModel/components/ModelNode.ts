@@ -1,4 +1,4 @@
-import {Registry} from "gate-core";
+import {Registry} from "@stargate-system/core";
 
 export abstract class ModelNode<T extends Function> {
     private readonly _subscribers = new Registry<T>();

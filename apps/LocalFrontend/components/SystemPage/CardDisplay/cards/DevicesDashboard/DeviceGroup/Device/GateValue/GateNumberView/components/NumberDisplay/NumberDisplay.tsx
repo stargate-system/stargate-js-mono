@@ -1,6 +1,6 @@
 import {CSSProperties, useEffect, useMemo, useState} from "react";
 import styles from './NumberDisplay.module.css';
-import {ValueTypes} from "gate-core";
+import {ValueTypes} from "@stargate-system/core";
 
 interface NumberDisplayProps {
     valueType?: ValueTypes | string

@@ -1,8 +1,8 @@
 import React, {ReactNode, useEffect, useMemo, useState} from "react";
-import {ValueTypes} from "gate-core";
+import {ValueTypes} from "@stargate-system/core";
 import styles from './GateValueWrapper.module.css';
 import GateNumberView from "./GateNumberView/GateNumberView";
-import {DeviceState, GateValueModel} from "gate-viewmodel";
+import {DeviceState, GateValueModel} from "@stargate-system/model";
 import GateBooleanView from "./GateBooleanView/GateBooleanView";
 import GateStringView from "./GateStringView/GateStringView";
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";

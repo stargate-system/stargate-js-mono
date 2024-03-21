@@ -1,6 +1,6 @@
 import {PropsWithChildren} from "react";
 import SystemModelContext from "./SystemModelContext";
-import {getSystemModel} from "gate-controller";
+import {getSystemModel} from "@stargate-system/controller";
 
 const model = typeof window !== 'undefined' ? getSystemModel() : null;
 

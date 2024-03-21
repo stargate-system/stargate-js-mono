@@ -1,5 +1,5 @@
 import {Device} from "./Device";
-import {AddressMapper, EventName, ValueMessage, ValueTypes} from "gate-core";
+import {AddressMapper, EventName, ValueMessage, ValueTypes} from "@stargate-system/core";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
 import Router from "../Router";
 import DeviceContext from "./DeviceContext";

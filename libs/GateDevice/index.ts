@@ -1,4 +1,4 @@
-import {Directions, ConnectionState, ValueVisibility} from "gate-core";
+import {Directions, ConnectionState, ValueVisibility} from "@stargate-system/core";
 import GateDevice from "./src/device/GateDevice.js";
 import {DeviceState} from "./src/device/DeviceState.js";
 import config from "./config.js";

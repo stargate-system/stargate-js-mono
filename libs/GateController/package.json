@@ -1,7 +1,6 @@
 {
-  "name": "gate-controller",
+  "name": "@stargate-system/controller",
   "version": "1.0.0",
-  "private": true,
   "description": "Library for controller end",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,11 +8,19 @@
     "build": "node clean.js && tsc"
   },
   "author": "Michał Marchel",
-  "license": "ISC",
+  "license": "LGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stargate-system/stargate-js-mono.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stargate-system/stargate-js-mono/issues"
+  },
+  "homepage": "https://stargate-system.com",
   "dependencies": {
-    "gate-core": "^1.0.0",
-    "gate-discovery": "^1.0.0",
-    "gate-viewmodel": "^1.0.0",
+    "@stargate-system/core": "^1.0.0",
+    "@stargate-system/discovery": "^1.0.0",
+    "@stargate-system/model": "^1.0.0",
     "ws": "^8.14.2"
   }
 }

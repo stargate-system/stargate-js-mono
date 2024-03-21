@@ -1,7 +1,6 @@
 {
-  "name": "gate-discovery",
+  "name": "@stargate-system/discovery",
   "version": "1.0.0",
-  "private": true,
   "description": "Library for discovering server address within local network",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -9,8 +8,16 @@
     "build": "node clean.js && tsc"
   },
   "author": "Michał Marchel",
-  "license": "ISC",
+  "license": "LGPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stargate-system/stargate-js-mono.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stargate-system/stargate-js-mono/issues"
+  },
+  "homepage": "https://stargate-system.com",
   "dependencies": {
-    "gate-core": "^1.0.0"
+    "@stargate-system/core": "^1.0.0"
   }
 }

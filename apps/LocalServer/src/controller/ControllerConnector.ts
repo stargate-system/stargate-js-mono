@@ -1,5 +1,5 @@
-import {ValueMessage} from "gate-core";
-import {SystemImage} from "gate-core";
+import {ValueMessage} from "@stargate-system/core";
+import {SystemImage} from "@stargate-system/core";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
 
 export interface ControllerConnector extends ValueMessageConsumer{

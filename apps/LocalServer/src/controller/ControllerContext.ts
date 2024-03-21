@@ -1,4 +1,4 @@
-import {EventName, Registry, ValidManifest, ValueMessage} from "gate-core";
+import {EventName, Registry, ValidManifest, ValueMessage} from "@stargate-system/core";
 import {ControllerConnector} from "./ControllerConnector";
 import Router from "../Router";
 import DeviceContext from "../device/DeviceContext";

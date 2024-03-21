@@ -1,7 +1,7 @@
 import {
     SystemImage,
     Connection
-} from "gate-core";
+} from "@stargate-system/core";
 
 export interface SystemConnector {
     connection: Connection,

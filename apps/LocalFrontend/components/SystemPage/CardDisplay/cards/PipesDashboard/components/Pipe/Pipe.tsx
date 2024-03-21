@@ -3,7 +3,7 @@ import {faArrowDown} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import React from "react";
 import styles from './Pipe.module.css';
-import {PipeModel} from "gate-viewmodel";
+import {PipeModel} from "@stargate-system/model";
 
 export interface PipeViewModel {
     centralValue: PipeDashboardValue,

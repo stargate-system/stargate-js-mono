@@ -8,7 +8,7 @@ import {
     SubscriptionBuffer,
     ValidManifest,
     ValueMessage
-} from "gate-core";
+} from "@stargate-system/core";
 import ControllerContext from "../controller/ControllerContext";
 import DeviceContext from "../device/DeviceContext";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";

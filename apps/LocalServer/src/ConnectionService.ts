@@ -1,4 +1,4 @@
-import {ConnectionState, ConnectionType, DefaultConnection, Keywords, SocketWrapper} from "gate-core";
+import {ConnectionState, ConnectionType, DefaultConnection, Keywords, SocketWrapper} from "@stargate-system/core";
 import {LocalDeviceConnector} from "./device/LocalDeviceConnector";
 import {LocalControllerConnector} from "./controller/LocalControllerConnector";
 import {WebSocketServer} from "ws";

@@ -1,16 +1,16 @@
-import {SystemConnector} from "gate-viewmodel";
+import {SystemConnector} from "@stargate-system/model";
 import {
     ConnectionState, ConnectionType, CoreConfig,
     DefaultConnection,
     Keywords, SocketWrapper,
     SubscriptionBuffer,
     SystemImage
-} from "gate-core";
+} from "@stargate-system/core";
 import config from "../config";
 
 export class LocalServerConnector implements SystemConnector {
     private static readonly ws = typeof window === 'undefined' ? import('ws') : undefined;
-    private static readonly discovery = typeof window === 'undefined' ? import('gate-discovery') : undefined;
+    private static readonly discovery = typeof window === 'undefined' ? import('@stargate-system/discovery') : undefined;
     private _isClosed = false;
     private readonly _connection;
     private readonly _subscriptionBuffer;

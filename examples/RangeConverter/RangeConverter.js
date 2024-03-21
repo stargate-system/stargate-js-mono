@@ -1,4 +1,4 @@
-const {Directions, GateDevice, ValueVisibility, ConnectionState} = require('gate-device');
+const {Directions, GateDevice, ConnectionState} = require('@stargate-system/device');
 const {ValueFactory} = GateDevice;
 
 const SETTINGS_KEY = 'settings';
@@ -11,44 +11,29 @@ let settings = {
     invert: false
 };
 
-const applySettings = () => {
-    inputMin.setValue(settings.inputMin);
-    inputMax.setValue(settings.inputMax);
-    outputMin.setValue(settings.outputMin);
-    outputMax.setValue(settings.outputMax);
-    invert.setValue(settings.invert);
-}
-
-const saveSettings = () => {
-    GateDevice.ServerStorage.set(SETTINGS_KEY, JSON.stringify(settings));
-}
-
+// Creating necessary GateValues
 const inputMin = ValueFactory.createFloat(Directions.input);
 inputMin.valueName = 'Input min';
-inputMin.visibility = ValueVisibility.settings;
 
 const inputMax = ValueFactory.createFloat(Directions.input);
 inputMax.valueName = 'Input max';
-inputMax.visibility = ValueVisibility.settings;
 
 const input = ValueFactory.createFloat(Directions.input);
 input.valueName = 'Input';
 
 const outputMin = ValueFactory.createFloat(Directions.input);
 outputMin.valueName = 'Output min';
-outputMin.visibility = ValueVisibility.settings;
 
 const outputMax = ValueFactory.createFloat(Directions.input);
 outputMax.valueName = 'Output max';
-outputMax.visibility = ValueVisibility.settings;
 
 const output = ValueFactory.createFloat(Directions.output);
 output.valueName = 'Output';
 
 const invert = ValueFactory.createBoolean(Directions.input);
 invert.valueName = 'Invert';
-invert.visibility = ValueVisibility.settings;
 
+// Defining function that will perform conversion
 const convert = () => {
     const inputRange = inputMax.value - inputMin.value;
     let inputRelative = (input.value - inputMin.value) / inputRange;
@@ -58,10 +43,13 @@ const convert = () => {
         inputRelative = 0;
     }
     const outputRange = outputMax.value - outputMin.value;
-    const outputValue = invert.value ? (outputMax.value - outputRange * inputRelative) : (outputMin.value + outputRange * inputRelative);
+    const outputValue = invert.value
+        ? (outputMax.value - outputRange * inputRelative)
+        : (outputMin.value + outputRange * inputRelative);
     output.setValue(outputValue);
 }
 
+// Setting callbacks on GateValues
 inputMin.onRemoteUpdate = () => {
     settings.inputMin = inputMin.value;
     saveSettings();
@@ -89,11 +77,25 @@ invert.onRemoteUpdate = () => {
     saveSettings();
     convert();
 }
-output.onRemoteUpdate = convert;
 
+// Defining auxiliary functions
+const applySettings = () => {
+    inputMin.setValue(settings.inputMin);
+    inputMax.setValue(settings.inputMax);
+    outputMin.setValue(settings.outputMin);
+    outputMax.setValue(settings.outputMax);
+    invert.setValue(settings.invert);
+}
+
+const saveSettings = () => {
+    GateDevice.ServerStorage.set(SETTINGS_KEY, JSON.stringify(settings));
+}
+
+// Configuring device
 applySettings();
 GateDevice.setName('Range converter');
 GateDevice.state.onStateChange = (state) => {
+    // Fetching saved device settings on startup
     if (state === ConnectionState.ready) {
         GateDevice.ServerStorage.get(SETTINGS_KEY).then((result) => {
             if (result !== undefined) {
@@ -105,6 +107,7 @@ GateDevice.state.onStateChange = (state) => {
                 }
             }
         });
+        // Removing callback after device initialization
         GateDevice.state.onStateChange = undefined;
     }
 };

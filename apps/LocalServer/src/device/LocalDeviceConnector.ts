@@ -3,7 +3,7 @@ import {
     ConnectionState,
     Keywords,
     ValidManifest
-} from "gate-core";
+} from "@stargate-system/core";
 import {DeviceConnector} from "./DeviceConnector";
 import Router from "../Router";
 import {Device} from "./Device";

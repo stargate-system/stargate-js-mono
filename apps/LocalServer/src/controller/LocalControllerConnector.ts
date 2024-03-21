@@ -1,6 +1,6 @@
-import {Connection, ConnectionState, Keywords, ValueMessage} from "gate-core";
+import {Connection, ConnectionState, Keywords, ValueMessage} from "@stargate-system/core";
 import {ControllerConnector} from "./ControllerConnector";
-import {SystemImage} from "gate-core";
+import {SystemImage} from "@stargate-system/core";
 import {setServerStorageRequestListeners} from "../common/ServerStorageRequestListener";
 
 export class LocalControllerConnector implements ControllerConnector {

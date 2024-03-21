@@ -1,5 +1,5 @@
 import {GateValueProps} from "../GateValueWrapper";
-import {Directions, GateBoolean} from "gate-core";
+import {Directions, GateBoolean} from "@stargate-system/core";
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
 import {CSSProperties, useEffect, useMemo, useState} from "react";
 import BooleanDisplay from "@/components/common/controls/BooleanDisplay/BooleanDisplay";

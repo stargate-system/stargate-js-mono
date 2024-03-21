@@ -1,4 +1,4 @@
-const {GateDevice, Directions} = require('gate-device');
-const {getSystemModel, config} = require('gate-controller');
+const {GateDevice, Directions} = require('@stargate-system/device');
+const {getSystemModel, config} = require('@stargate-system/controller');
 
 // Put your code here

@@ -2,8 +2,8 @@ const {
     GateDevice,
     Directions,
     ValueVisibility
-} = require('gate-device');
-const {ValueTypes} = require("gate-core");
+} = require('@stargate-system/device');
+const {ValueTypes} = require("@stargate-system/core");
 
 GateDevice.setName('Dynamic device');
 

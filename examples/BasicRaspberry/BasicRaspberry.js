@@ -1,4 +1,4 @@
-import {Directions, GateDevice} from 'gate-device';
+import {Directions, GateDevice} from '@stargate-system/device';
 import { init } from 'raspi';
 import { SoftPWM } from 'raspi-soft-pwm';
 

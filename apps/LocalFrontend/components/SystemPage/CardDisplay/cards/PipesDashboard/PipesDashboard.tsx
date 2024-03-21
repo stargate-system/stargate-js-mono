@@ -7,8 +7,8 @@ import NewPipeModal from "./components/NewPipeModal/NewPipeModal";
 import useModelMap from "@/components/ReactGateViewModel/hooks/useModelMap";
 import Pipe, {PipeViewModel} from "./components/Pipe/Pipe";
 import {PipeDashboardValue} from "./components/Pipe/components/PipeValue";
-import {AddressMapper} from "gate-core";
-import {PipeModel} from "gate-viewmodel";
+import {AddressMapper} from "@stargate-system/core";
+import {PipeModel} from "@stargate-system/model";
 import StandardModal from "@/components/common/modals/StandardModal/StandardModal";
 import SystemModelContext from "@/components/ReactGateViewModel/SystemModelContext";
 

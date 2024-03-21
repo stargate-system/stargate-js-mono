@@ -1,5 +1,5 @@
 import styles from './PipeValue.module.css';
-import {PipeModel} from "gate-viewmodel/dist/components/PipeModel/PipeModel";
+import {PipeModel} from "@stargate-system/model";
 import {useEffect, useState} from "react";
 
 export interface PipeDashboardValue {

@@ -2,10 +2,10 @@ import {useContext, useEffect, useState} from "react";
 import SystemModelContext from "@/components/ReactGateViewModel/SystemModelContext";
 import useModelMap from "@/components/ReactGateViewModel/hooks/useModelMap";
 import styles from './DevicesDashboard.module.css';
-import {DeviceModel} from "gate-viewmodel";
+import {DeviceModel} from "@stargate-system/model";
 import DeviceGroup from "./DeviceGroup/DeviceGroup";
 import {localStorageHelper} from "@/helper/localStorageHelper";
-import {ConnectionState} from "gate-core";
+import {ConnectionState} from "@stargate-system/core";
 
 const DevicesDashboard = () => {
     const systemModel = useContext(SystemModelContext);

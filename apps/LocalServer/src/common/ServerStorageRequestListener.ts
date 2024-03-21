@@ -1,4 +1,4 @@
-import {Connection, Keywords} from "gate-core";
+import {Connection, Keywords} from "@stargate-system/core";
 import Router from "../Router";
 
 export const setServerStorageRequestListeners = (connection: Connection, defaultDirectory: string) => {

@@ -1,4 +1,4 @@
-import {ModelMap} from "gate-viewmodel";
+import {ModelMap} from "@stargate-system/model";
 import {useEffect, useState} from "react";
 
 const useModelMap = <T>(map: ModelMap<T>) => {

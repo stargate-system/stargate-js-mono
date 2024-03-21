@@ -1,4 +1,4 @@
-import {EventName, ValidManifest} from "gate-core";
+import {EventName, ValidManifest} from "@stargate-system/core";
 import {ModelValue} from "../ModelValue";
 import {DeviceState} from "./DeviceState";
 import {ModelMap} from "../ModelMap/ModelMap";

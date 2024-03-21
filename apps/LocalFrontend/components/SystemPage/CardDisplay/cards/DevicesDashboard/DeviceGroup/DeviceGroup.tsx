@@ -1,4 +1,4 @@
-import {DeviceModel} from "gate-viewmodel";
+import {DeviceModel} from "@stargate-system/model";
 import Device from "@/components/SystemPage/CardDisplay/cards/DevicesDashboard/DeviceGroup/Device/Device";
 import styles from './DeviceGroup.module.css';
 import React, {useContext, useMemo, useState} from "react";
@@ -6,7 +6,7 @@ import MenuComponent from "@/components/common/controls/MenuComponent/MenuCompon
 import ModalContext from "@/components/SystemPage/ModalContext";
 import StandardModal from "@/components/common/modals/StandardModal/StandardModal";
 import SystemModelContext from "@/components/ReactGateViewModel/SystemModelContext";
-import {EventName} from "gate-core";
+import {EventName} from "@stargate-system/core";
 import RenameModal from "@/components/common/modals/RenameModal/RenameModal";
 import {Categories, localStorageHelper} from "@/helper/localStorageHelper";
 import ChevronComponent from "@/components/common/controls/ChevronComponent/ChevronComponent";

@@ -1,9 +1,9 @@
 import {WebSocket} from 'ws';
-import {ConnectionState, ConnectionType, Keywords, SocketWrapper} from "gate-core";
+import {ConnectionState, ConnectionType, Keywords, SocketWrapper} from "@stargate-system/core";
 import {device} from "../device/GateDevice.js";
 import fs from 'fs';
 import config from "../../config.js";
-import {DefaultDiscoveryService} from 'gate-discovery'
+import {DefaultDiscoveryService} from '@stargate-system/discovery'
 
 let handshakeTimeout: NodeJS.Timeout | undefined;
 let lastKnownServerAddress: string | undefined;

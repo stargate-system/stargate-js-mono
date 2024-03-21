@@ -1,6 +1,6 @@
-const {GateDevice, Directions} = require('gate-device');
-const {getSystemModel} = require('gate-controller');
-const {DeviceState, DeviceSubscription} = require("gate-viewmodel");
+const {GateDevice, Directions} = require('@stargate-system/device');
+const {getSystemModel} = require('@stargate-system/controller');
+const {DeviceState, DeviceSubscription} = require("@stargate-system/model");
 
 // Exposing output as device - just for demonstration purposes (use of GateDevice together with GateController is optional)
 GateDevice.setName('Simple controller');

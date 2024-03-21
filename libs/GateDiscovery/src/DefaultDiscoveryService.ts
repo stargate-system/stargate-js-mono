@@ -1,5 +1,5 @@
 import {DiscoveryService, DiscoveryServiceConfig} from "./DiscoveryService";
-import {Registry, CoreConfig} from "gate-core";
+import {Registry, CoreConfig} from "@stargate-system/core";
 import dgram from "dgram";
 
 const addressListeners = new Registry<(keyword: string) => void>();

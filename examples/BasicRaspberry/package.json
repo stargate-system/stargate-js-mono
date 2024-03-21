@@ -8,8 +8,8 @@
   "author": "Michał Marchel",
   "license": "ISC",
   "dependencies": {
-    "gate-core": "file:GateCore",
-    "gate-device": "file:GateDevice",
+    "@stargate-system/core": "^1.0.0",
+    "@stargate-system/device": "^1.0.0",
     "raspi": "^6.0.1",
     "raspi-soft-pwm": "^6.0.2"
   }

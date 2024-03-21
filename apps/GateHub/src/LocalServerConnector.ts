@@ -7,7 +7,7 @@ import {
     Keywords,
     SocketWrapper,
     MessageMapper
-} from "gate-core";
+} from "@stargate-system/core";
 import DiscoveryService from "./DiscoveryService";
 import discoveryService from "./DiscoveryService";
 import {WebSocket} from 'ws';

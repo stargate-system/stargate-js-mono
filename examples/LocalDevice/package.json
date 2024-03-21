@@ -10,6 +10,6 @@
   "author": "Michał Marchel",
   "license": "ISC",
   "dependencies": {
-    "gate-device": "^1.0.0"
+    "@stargate-system/device": "^1.0.0"
   }
 }

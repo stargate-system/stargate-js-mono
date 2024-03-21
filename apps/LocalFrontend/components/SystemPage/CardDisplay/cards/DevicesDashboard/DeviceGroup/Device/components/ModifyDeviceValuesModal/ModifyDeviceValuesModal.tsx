@@ -1,8 +1,8 @@
-import {DeviceModel} from "gate-viewmodel";
+import {DeviceModel} from "@stargate-system/model";
 import StandardModal from "@/components/common/modals/StandardModal/StandardModal";
 import React, {useState} from "react";
 import styles from './ModifyDeviceValuesModal.module.css';
-import {ValueVisibility} from "gate-core";
+import {ValueVisibility} from "@stargate-system/core";
 
 interface ModifyDeviceValuesModalProps {
     deviceModel: DeviceModel

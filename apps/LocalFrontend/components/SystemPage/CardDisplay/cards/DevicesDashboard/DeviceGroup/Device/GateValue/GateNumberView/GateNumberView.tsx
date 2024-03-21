@@ -1,4 +1,4 @@
-import {Directions, GateNumber, ValueTypes} from "gate-core";
+import {Directions, GateNumber, ValueTypes} from "@stargate-system/core";
 import {CSSProperties, useEffect, useState} from "react";
 import styles from './GateNumberView.module.css'
 import ValueBar from "./components/ValueBar/ValueBar";

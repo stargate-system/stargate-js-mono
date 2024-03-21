@@ -1,4 +1,4 @@
-import {DeviceModel} from "gate-viewmodel";
+import {DeviceModel} from "@stargate-system/model";
 
 let visibility: Object = {devices: {}, groups: {}};
 

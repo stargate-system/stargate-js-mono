@@ -1,5 +1,5 @@
 import {createContext} from "react";
-import {SystemModel} from "gate-viewmodel";
+import {SystemModel} from "@stargate-system/model";
 
 // @ts-ignore
 const SystemModelContext = createContext<SystemModel>(new SystemModel());

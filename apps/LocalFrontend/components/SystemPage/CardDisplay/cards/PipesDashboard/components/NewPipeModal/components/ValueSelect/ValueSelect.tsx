@@ -1,8 +1,8 @@
 import React, {Dispatch, SetStateAction, useMemo, useState} from "react";
 import styles from './ValueSelect.module.css';
-import {DeviceModel, GateValueModel} from "gate-viewmodel";
+import {DeviceModel, GateValueModel} from "@stargate-system/model";
 import Select from 'react-select';
-import {AddressMapper, Directions, ValueTypes} from "gate-core";
+import {AddressMapper, Directions, ValueTypes} from "@stargate-system/core";
 
 interface ValueSelectProps {
     devices: DeviceModel[],

@@ -9,7 +9,7 @@ import {
     Registry,
     ServerStorage,
     ValueMessage
-} from "gate-core";
+} from "@stargate-system/core";
 import config from "../../config.js";
 import ValueFactory from "../values/ValueFactory.js";
 import {DeviceState} from "./DeviceState.js";

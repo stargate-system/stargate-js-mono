@@ -1,4 +1,4 @@
-import {CoreConfig} from "gate-core";
+import {CoreConfig} from "@stargate-system/core";
 
 const config = {
   discoveryKeyword: CoreConfig.discoveryKeyword,

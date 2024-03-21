@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import StandardModal from "@/components/common/modals/StandardModal/StandardModal";
 import styles from './AddToGroupModal.module.css';
-import {DeviceModel} from "gate-viewmodel";
+import {DeviceModel} from "@stargate-system/model";
 import SystemModelContext from "@/components/ReactGateViewModel/SystemModelContext";
 
 interface AddToGroupModalProps {

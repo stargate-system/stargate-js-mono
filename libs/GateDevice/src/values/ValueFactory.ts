@@ -7,7 +7,7 @@ import {
     GateString,
     GateNumber,
     GateSelect
-} from "gate-core";
+} from "@stargate-system/core";
 import {device} from "../device/GateDevice.js";
 
 const createValue = (type: ValueTypes, direction: Directions) => {

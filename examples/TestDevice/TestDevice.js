@@ -1,5 +1,5 @@
-const {Directions, GateDevice} = require('gate-device');
-const {ValueVisibility} = require("gate-core");
+const {Directions, GateDevice} = require('@stargate-system/device');
+const {ValueVisibility} = require("@stargate-system/core");
 const {ValueFactory} = GateDevice;
 
 GateDevice.setName('Test device');
