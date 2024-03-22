@@ -24,6 +24,8 @@ const copyLocalServer = () => {
     fs.cpSync('./apps/LocalServer/dist', APPS_DIR + '/LocalServer/dist', {recursive: true});
     fs.cpSync('./apps/LocalServer/out', APPS_DIR + '/LocalServer/out', {recursive: true});
     fs.copyFileSync('./apps/LocalServer/package.json', APPS_DIR + '/LocalServer/package.json');
+    fs.copyFileSync('./libs/scripts/install.bat', APPS_DIR + '/LocalServer/install.bat');
+    fs.copyFileSync('./libs/scripts/start.bat', APPS_DIR + '/LocalServer/start.bat');
     if (installFlag) {
         fs.cpSync('./libs/GateCore', APPS_DIR + '/LocalServer/libs/GateCore', {recursive: true});
     }
@@ -33,6 +35,8 @@ const copyGateHub = () => {
     fs.cpSync('./apps/GateHub/dist', APPS_DIR + '/GateHub/dist', {recursive: true});
     fs.copyFileSync('./apps/GateHub/package.json', APPS_DIR + '/GateHub/package.json');
     fs.copyFileSync('./apps/GateHub/autostart.js', APPS_DIR + '/GateHub/autostart.js');
+    fs.copyFileSync('./libs/scripts/install.bat', APPS_DIR + '/GateHub/install.bat');
+    fs.copyFileSync('./libs/scripts/start.bat', APPS_DIR + '/GateHub/start.bat');
     if (installFlag) {
         fs.cpSync('./libs/GateCore', APPS_DIR + '/GateHub/libs/GateCore', {recursive: true});
         fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/GateHub/libs/GateDiscovery', {recursive: true});
@@ -41,6 +45,8 @@ const copyGateHub = () => {
 
 const copyBlankProjectJS = () => {
     fs.cpSync('./examples/BlankProjectJS', APPS_DIR + '/BlankProjectJS', {recursive: true});
+    fs.copyFileSync('./libs/scripts/install.bat', APPS_DIR + '/BlankProjectJS/install.bat');
+    fs.copyFileSync('./libs/scripts/start.bat', APPS_DIR + '/BlankProjectJS/start.bat');
     if (installFlag) {
         fs.cpSync('./libs/GateCore', APPS_DIR + '/BlankProjectJS/libs/GateCore', {recursive: true});
         fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/BlankProjectJS/libs/GateDiscovery', {recursive: true});
@@ -52,6 +58,8 @@ const copyBlankProjectJS = () => {
 
 const copyBlankProjectTS = () => {
     fs.cpSync('./examples/BlankProjectTS', APPS_DIR + '/BlankProjectTS', {recursive: true});
+    fs.copyFileSync('./libs/scripts/install.bat', APPS_DIR + '/BlankProjectTS/install.bat');
+    fs.copyFileSync('./libs/scripts/start.bat', APPS_DIR + '/BlankProjectTS/start.bat');
     if (installFlag) {
         fs.cpSync('./libs/GateCore', APPS_DIR + '/BlankProjectTS/libs/GateCore', {recursive: true});
         fs.cpSync('./libs/GateDiscovery', APPS_DIR + '/BlankProjectTS/libs/GateDiscovery', {recursive: true});
@@ -61,12 +69,25 @@ const copyBlankProjectTS = () => {
     }
 }
 
+const copyExamples = () => {
+    fs.mkdirSync(APPS_DIR + '/examples');
+
+    fs.mkdirSync(APPS_DIR + '/examples/RangeConverter');
+    fs.copyFileSync('./examples/RangeConverter/RangeConverter.js', APPS_DIR + '/examples/RangeConverter/RangeConverter.js');
+    fs.copyFileSync('./examples/RangeConverter/package.json', APPS_DIR + '/examples/RangeConverter/package.json');
+    fs.copyFileSync('./libs/scripts/install.bat', APPS_DIR + '/examples/RangeConverter/install.bat');
+    fs.copyFileSync('./libs/scripts/start.bat', APPS_DIR + '/examples/RangeConverter/start.bat');
+}
+
 const copy = () => {
     console.log('Copying files...');
     copyLocalServer();
     copyGateHub();
     copyBlankProjectJS();
     copyBlankProjectTS();
+    if (!installFlag) {
+        copyExamples();
+    }
 }
 
 const spawnProcess = (spawnFunction, nextProcess) => {
