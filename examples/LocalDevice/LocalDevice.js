@@ -4,7 +4,6 @@ const {
 } = require('@stargate-system/device');
 
 GateDevice.setName('Local device');
-GateDevice.setInfo('LocalDevice custom id');
 GateDevice.setGroup('Test devices');
 GateDevice.state.onStateChange = (state) => {
     console.log('State: ' + state);

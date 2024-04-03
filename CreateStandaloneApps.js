@@ -69,14 +69,22 @@ const copyBlankProjectTS = () => {
     }
 }
 
+const copyExample = (dir, name = undefined, copyBatchFiles = true) => {
+    fs.mkdirSync(APPS_DIR + '/examples/' + dir);
+    fs.copyFileSync(`./examples/${dir}/${name ?? (dir + '.js')}`, APPS_DIR + `/examples/${dir}/${name ?? (dir + '.js')}`);
+    fs.copyFileSync(`./examples/${dir}/package.json`, APPS_DIR + `/examples/${dir}/package.json`);
+    if (copyBatchFiles) {
+        fs.copyFileSync('./libs/scripts/install.bat', APPS_DIR + `/examples/${dir}/install.bat`);
+        fs.copyFileSync('./libs/scripts/start.bat', APPS_DIR + `/examples/${dir}/start.bat`);
+    }
+}
+
 const copyExamples = () => {
     fs.mkdirSync(APPS_DIR + '/examples');
 
-    fs.mkdirSync(APPS_DIR + '/examples/RangeConverter');
-    fs.copyFileSync('./examples/RangeConverter/RangeConverter.js', APPS_DIR + '/examples/RangeConverter/RangeConverter.js');
-    fs.copyFileSync('./examples/RangeConverter/package.json', APPS_DIR + '/examples/RangeConverter/package.json');
-    fs.copyFileSync('./libs/scripts/install.bat', APPS_DIR + '/examples/RangeConverter/install.bat');
-    fs.copyFileSync('./libs/scripts/start.bat', APPS_DIR + '/examples/RangeConverter/start.bat');
+    copyExample('RangeConverter');
+    copyExample('SimpleController');
+    copyExample('BasicRaspberry', undefined, false);
 }
 
 const copy = () => {

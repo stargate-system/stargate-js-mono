@@ -2,21 +2,19 @@ const {GateDevice, Directions} = require('@stargate-system/device');
 const {getSystemModel} = require('@stargate-system/controller');
 const {DeviceState, DeviceSubscription} = require("@stargate-system/model");
 
-// Exposing output as device - just for demonstration purposes (use of GateDevice together with GateController is optional)
+// Exposing output as device - just for demonstration purposes (use of Device together with Controller is optional)
 GateDevice.setName('Simple controller');
 
-const localDeviceState = GateDevice.ValueFactory.createBoolean(Directions.output);
-localDeviceState.valueName = 'Local device';
-localDeviceState.labelTrue = 'Online';
-localDeviceState.labelFalse = 'Offline';
+const observedDeviceState = GateDevice.ValueFactory.createBoolean(Directions.output);
+observedDeviceState.valueName = 'Observed device';
+observedDeviceState.labelTrue = 'Online';
+observedDeviceState.labelFalse = 'Offline';
 
 GateDevice.start();
 
 // Getting system model
 const systemModel = getSystemModel();
 
-// Subscribing desired device on system model
-// Searching device by value of "info" field, defined in device code
 const bindStateWithOutput = (deviceModel, output) => {
     if (deviceModel) {
         output.setValue(deviceModel.state.value === DeviceState.up);
@@ -28,17 +26,19 @@ const bindStateWithOutput = (deviceModel, output) => {
     }
 };
 
+// Subscribing desired device on system model
+// Searching device by value of "info" field, defined in device code
 const testDeviceSubscription = new DeviceSubscription(
     systemModel,
-    (deviceModel) => deviceModel.info.value === 'LocalDevice custom id',
-    (deviceModel) => bindStateWithOutput(deviceModel, localDeviceState)
+    (deviceModel) => deviceModel.info.value === 'SimpleController custom id',
+    (deviceModel) => bindStateWithOutput(deviceModel, observedDeviceState)
 );
 
-// Keeping subscription active only when testDeviceState has listeners (subscription is open on creation)
-if (!localDeviceState.subscribed) {
+// Keeping subscription active only when observedDeviceState has listeners (subscription is open on creation)
+if (!observedDeviceState.subscribed) {
     testDeviceSubscription.close();
 }
-localDeviceState.onSubscriptionChange = (subscribed) => {
+observedDeviceState.onSubscriptionChange = (subscribed) => {
     subscribed ? testDeviceSubscription.open() : testDeviceSubscription.close();
 }
 
