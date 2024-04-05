@@ -1,5 +1,5 @@
 const {Directions, GateDevice, ConnectionState} = require('@stargate-system/device');
-const {ValueFactory} = GateDevice;
+const {factory} = GateDevice;
 
 const SETTINGS_KEY = 'settings';
 
@@ -12,25 +12,25 @@ let settings = {
 };
 
 // Creating necessary GateValues
-const inputMin = ValueFactory.createFloat(Directions.input);
+const inputMin = factory.createFloat(Directions.input);
 inputMin.valueName = 'Input min';
 
-const inputMax = ValueFactory.createFloat(Directions.input);
+const inputMax = factory.createFloat(Directions.input);
 inputMax.valueName = 'Input max';
 
-const input = ValueFactory.createFloat(Directions.input);
+const input = factory.createFloat(Directions.input);
 input.valueName = 'Input';
 
-const outputMin = ValueFactory.createFloat(Directions.input);
+const outputMin = factory.createFloat(Directions.input);
 outputMin.valueName = 'Output min';
 
-const outputMax = ValueFactory.createFloat(Directions.input);
+const outputMax = factory.createFloat(Directions.input);
 outputMax.valueName = 'Output max';
 
-const output = ValueFactory.createFloat(Directions.output);
+const output = factory.createFloat(Directions.output);
 output.valueName = 'Output';
 
-const invert = ValueFactory.createBoolean(Directions.input);
+const invert = factory.createBoolean(Directions.input);
 invert.valueName = 'Invert';
 
 // Defining function that will perform conversion

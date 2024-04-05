@@ -173,7 +173,7 @@ export default {
     start,
     stop,
     config,
-    ValueFactory,
+    factory: ValueFactory,
     ServerStorage: new ServerStorage(device.connection),
     state: device.deviceState,
     isReady

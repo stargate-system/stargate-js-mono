@@ -7,16 +7,16 @@ const {ValueTypes} = require("@stargate-system/core");
 
 GateDevice.setName('Dynamic device');
 
-const valueName = GateDevice.ValueFactory.createString(Directions.input);
+const valueName = GateDevice.factory.createString(Directions.input);
 valueName.valueName = 'New value name';
 valueName.visibility = ValueVisibility.settings;
 
-const valueType = GateDevice.ValueFactory.createSelect(Directions.input);
+const valueType = GateDevice.factory.createSelect(Directions.input);
 valueType.valueName = 'New value type';
 valueType.visibility = ValueVisibility.settings;
 valueType.values = [ValueTypes.boolean, ValueTypes.string, ValueTypes.float].map((value) => value.toString());
 
-const addValue = GateDevice.ValueFactory.createBoolean(Directions.input);
+const addValue = GateDevice.factory.createBoolean(Directions.input);
 addValue.valueName = 'Add';
 addValue.visibility = ValueVisibility.settings;
 addValue.isButton = true;
@@ -29,13 +29,13 @@ addValue.onRemoteUpdate = () => {
         let newValue;
         switch (valueType.value) {
             case 0:
-                newValue = GateDevice.ValueFactory.createBoolean(Directions.input);
+                newValue = GateDevice.factory.createBoolean(Directions.input);
                 break;
             case 1:
-                newValue = GateDevice.ValueFactory.createString(Directions.input);
+                newValue = GateDevice.factory.createString(Directions.input);
                 break;
             case 2:
-                newValue = GateDevice.ValueFactory.createFloat(Directions.input);
+                newValue = GateDevice.factory.createFloat(Directions.input);
                 break;
         }
         if (newValue) {

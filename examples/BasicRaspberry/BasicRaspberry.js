@@ -6,7 +6,7 @@ init(() => {
     const led = new SoftPWM('GPIO22');
 
     // Setting up value to control LED brightness
-    const ledBrightness = GateDevice.ValueFactory.createFloat(Directions.input);
+    const ledBrightness = GateDevice.factory.createFloat(Directions.input);
     ledBrightness.valueName = 'Brightness';
     ledBrightness.setRange([0, 1]);
     ledBrightness.onRemoteUpdate = () => {

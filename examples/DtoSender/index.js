@@ -8,15 +8,15 @@ const settingsDto = {
     increment: 1
 }
 
-const selectedOption = GateDevice.ValueFactory.createSelect(Directions.input);
+const selectedOption = GateDevice.factory.createSelect(Directions.input);
 selectedOption.valueName = 'Mode';
 selectedOption.values = ['Slow', 'Medium', 'High'];
 
-const setButton = GateDevice.ValueFactory.createBoolean(Directions.input);
+const setButton = GateDevice.factory.createBoolean(Directions.input);
 setButton.isButton = true;
 setButton.labelFalse = 'Set';
 
-const dto = GateDevice.ValueFactory.createString(Directions.output);
+const dto = GateDevice.factory.createString(Directions.output);
 dto.valueName = 'ModeDTO';
 dto.visibility = ValueVisibility.hidden;
 

@@ -1,49 +1,49 @@
 const {Directions, GateDevice} = require('@stargate-system/device');
 const {ValueVisibility} = require("@stargate-system/core");
-const {ValueFactory} = GateDevice;
+const {factory} = GateDevice;
 
 GateDevice.setName('Test device');
 GateDevice.setGroup('Test devices');
 
-const smallInteger = ValueFactory.createInteger(Directions.output);
+const smallInteger = factory.createInteger(Directions.output);
 smallInteger.valueName = 'Small integer';
 smallInteger.setRange([0, 200]);
 
-const bigInteger = ValueFactory.createInteger(Directions.output);
+const bigInteger = factory.createInteger(Directions.output);
 bigInteger.valueName = 'Big integer';
 bigInteger.setRange([-5000, 50000]);
 
-const unlimitedInteger = ValueFactory.createInteger(Directions.output);
+const unlimitedInteger = factory.createInteger(Directions.output);
 unlimitedInteger.valueName = 'Unlimited integer';
 
-const increment = ValueFactory.createInteger(Directions.input);
+const increment = factory.createInteger(Directions.input);
 increment.valueName = 'Increment amount';
 increment.visibility = ValueVisibility.settings;
 increment.setRange([1, 10]);
 
-const frequency = ValueFactory.createFloat(Directions.input);
+const frequency = factory.createFloat(Directions.input);
 frequency.valueName = 'Frequency';
 frequency.visibility = ValueVisibility.settings;
 frequency.setRange([1, 100]);
 frequency.setValue(4.5);
 
-const testBool = ValueFactory.createBoolean(Directions.output);
+const testBool = factory.createBoolean(Directions.output);
 testBool.valueName = 'Counter direction';
 testBool.labelTrue = 'Positive';
 testBool.labelFalse = 'Negative';
 testBool.setValue(true);
 
-const directionSelectOutput = ValueFactory.createSelect(Directions.output);
+const directionSelectOutput = factory.createSelect(Directions.output);
 directionSelectOutput.valueName = 'Counter direction';
 directionSelectOutput.values = ['Positive', 'Negative'];
 directionSelectOutput.setValue(0);
 
-const countRunning = ValueFactory.createBoolean(Directions.input);
+const countRunning = factory.createBoolean(Directions.input);
 countRunning.valueName = 'Counter';
 countRunning.labelTrue = 'Running';
 countRunning.labelFalse = 'Stopped';
 
-const runCounter = ValueFactory.createBoolean(Directions.input);
+const runCounter = factory.createBoolean(Directions.input);
 runCounter.valueName = 'Run counter';
 runCounter.labelFalse = 'Run';
 runCounter.isButton = true;
@@ -53,7 +53,7 @@ runCounter.onRemoteUpdate = (wasChanged) => {
     }
 }
 
-const testSelect = ValueFactory.createSelect(Directions.input);
+const testSelect = factory.createSelect(Directions.input);
 testSelect.valueName = 'Counted values';
 testSelect.visibility = 'settings';
 testSelect.nothingSelectedLabel = 'None';
@@ -68,11 +68,11 @@ const onCountChange = (wasChanged) => {
 countRunning.onRemoteUpdate = onCountChange;
 countRunning.onLocalUpdate = onCountChange;
 
-const testStringOut = ValueFactory.createString(Directions.output);
+const testStringOut = factory.createString(Directions.output);
 testStringOut.valueName = 'Test text';
 testStringOut.minimumLength = 20;
 
-const testStringIn = ValueFactory.createString(Directions.input);
+const testStringIn = factory.createString(Directions.input);
 testStringIn.valueName = 'Test command';
 testStringIn.onRemoteUpdate = () => {
     switch (testStringIn.value) {
@@ -92,7 +92,7 @@ testStringIn.onRemoteUpdate = () => {
     }
 }
 
-const modeDtoInput = GateDevice.ValueFactory.createString(Directions.input);
+const modeDtoInput = GateDevice.factory.createString(Directions.input);
 modeDtoInput.valueName = 'ModeDTO';
 modeDtoInput.visibility = ValueVisibility.hidden;
 modeDtoInput.onRemoteUpdate = () => {
