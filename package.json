@@ -9,7 +9,7 @@
     "./libs/GateController",
     "./libs/GateModel",
     "./apps/LocalServer",
-    "./apps/LocalFrontend",
+    "./apps/UserInterface",
     "./apps/GateHub",
     "./examples/TestDevice",
     "./examples/LocalDevice",
@@ -19,7 +19,7 @@
     "./examples/RangeConverter"
   ],
   "scripts": {
-    "build:fe": "npm -w apps/LocalFrontend run build",
+    "build:ui": "npm -w apps/UserInterface run build && node updateServerUI.js",
     "build:core": "npm -w libs/GateCore run build",
     "build:discovery": "npm -w libs/GateDiscovery run build",
     "build:device": "npm -w libs/GateDevice run build",
@@ -28,8 +28,8 @@
     "build:server": "npm -w apps/LocalServer run build",
     "build:hub": "npm -w apps/GateHub run build",
     "build:libs": "run-s build:core build:discovery build:device build:model build:controller",
-    "build": "run-s build:libs build:fe build:server build:hub",
-    "dev": "npm -w apps/LocalFrontend run dev",
+    "build": "run-s build:libs build:ui build:server build:hub",
+    "dev": "npm -w apps/UserInterface run dev",
     "start:server": "npm -w apps/LocalServer run start",
     "start:hub": "npm -w apps/GateHub run start",
     "server": "run-s build:server start:server",
