@@ -6,6 +6,8 @@ const HUB_DISCOVERY_PORT = process.env.HUB_DISCOVERY_PORT ? Number.parseInt(proc
 const DISCOVERY_KEYWORD = process.env.DISCOVERY_KEYWORD ?? config.discoveryKeyword;
 const DISCOVERY_INTERVAL = process.env.DISCOVERY_INTERVAL ? Number.parseInt(process.env.DISCOVERY_INTERVAL) : config.discoveryInterval;
 const DISCOVERY_PORT = process.env.DISCOVERY_PORT ? Number.parseInt(process.env.DISCOVERY_PORT) : config.discoveryPort;
+const USE_FIXED_URL = process.env.USE_FIXED_URL ? process.env.USE_FIXED_URL.toLowerCase() === 'true' : config.useFixedUrl;
+const FIXED_URL = process.env.FIXED_URL ? process.env.FIXED_URL : config.fixedUrl;
 
 let isInitialized = false;
 
@@ -46,6 +48,9 @@ const initialize = () => {
 }
 
 const getServerAddress = () => {
+    if (USE_FIXED_URL) {
+        return FIXED_URL;
+    }
     return DefaultDiscoveryService.getServerAddress(DISCOVERY_KEYWORD);
 }
 

@@ -9,10 +9,7 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@stargate-system/core": "^1.0.0",
-    "@stargate-system/discovery": "^1.0.0",
     "@stargate-system/device": "^1.0.0",
-    "@stargate-system/model": "^1.0.0",
     "@stargate-system/controller": "^1.0.0"
   }
 }
