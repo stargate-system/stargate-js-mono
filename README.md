@@ -7,7 +7,9 @@
 4. Run "npm build"
 
 - To start local server - "npm run start:server" (available on localhost:8080)
-- To start development server for frontend - "npm run dev" (available on localhost:3000)
+- To start development server for User Interface - "npm run dev" (available on localhost:3000)
+
+Check scripts in package.json for more.
 
 ### CreateStandaloneApps.js
 Optionally, CreateStandaloneApps.js helper can be used.

@@ -42,19 +42,11 @@
     "device:converter": "npm -w examples/RangeConverter run start"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.5.0",
-    "@fortawesome/free-brands-svg-icons": "^6.5.0",
-    "@fortawesome/free-regular-svg-icons": "^6.5.0",
-    "@fortawesome/free-solid-svg-icons": "^6.5.0",
-    "@fortawesome/react-fontawesome": "^0.2.0",
     "@stargate-system/core": "file:./libs/GateCore",
     "@stargate-system/discovery": "file:./libs/GateDiscovery",
     "@stargate-system/model": "file:./libs/GateModel",
     "@stargate-system/controller": "file:./libs/GateController",
-    "@stargate-system/device": "file:./libs/GateDevice",
-    "next": "14.0.0",
-    "react": "^18.2.0",
-    "react-dom": "^18"
+    "@stargate-system/device": "file:./libs/GateDevice"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -31,19 +31,6 @@ const copyLocalServer = () => {
     }
 }
 
-const copyUserInterface = () => {
-    fs.cpSync('./apps/UserInterface', APPS_DIR + '/UserInterface', {recursive: true});
-    try {
-        fs.rmSync(APPS_DIR + '/UserInterface/out', {recursive: true});
-    } catch (err) {}
-    try {
-        fs.rmSync(APPS_DIR + '/UserInterface/.next', {recursive: true});
-    } catch (err) {}
-    try {
-        fs.rmSync(APPS_DIR + '/UserInterface/next-env.d.ts');
-    } catch (err) {}
-}
-
 const copyGateHub = () => {
     fs.cpSync('./apps/GateHub/dist', APPS_DIR + '/GateHub/dist', {recursive: true});
     fs.copyFileSync('./apps/GateHub/package.json', APPS_DIR + '/GateHub/package.json');
@@ -103,7 +90,6 @@ const copyExamples = () => {
 const copy = () => {
     console.log('Copying files...');
     copyLocalServer();
-    copyUserInterface();
     copyGateHub();
     copyBlankProjectJS();
     copyBlankProjectTS();
