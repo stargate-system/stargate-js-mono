@@ -1,16 +1,14 @@
-import React, {Dispatch, SetStateAction, useMemo, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import styles from './ValueSelect.module.css';
 import {DeviceModel, GateValueModel} from "@stargate-system/model";
 import Select from 'react-select';
-import {AddressMapper, Directions, ValueTypes} from "@stargate-system/core";
+import {
+    CreatePipeModel
+} from "@/components/SystemPage/CardDisplay/cards/PipesDashboard/components/NewPipeModal/useCreatePipeModel";
 
 interface ValueSelectProps {
-    devices: DeviceModel[],
-    values: GateValueModel[],
-    setSelectedDevice: Dispatch<SetStateAction<DeviceModel | undefined>>,
-    setSelectedValue: Dispatch<SetStateAction<GateValueModel | undefined>>,
-    typeFilter?: string,
-    excludeOutput?: boolean
+    model: CreatePipeModel,
+    groups: string[]
 }
 
 interface SelectedOption {
@@ -19,16 +17,24 @@ interface SelectedOption {
     name?: string
 }
 
+interface GroupOption {
+    label: string,
+    value: string | undefined | null
+}
+
 const ValueSelect = (props: ValueSelectProps) => {
+    const {model, groups} = props;
+
     const {
         devices,
         values,
+        setSelectedGroup,
+        selectedDevice,
         setSelectedDevice,
-        setSelectedValue,
-        typeFilter,
-        excludeOutput = false
-    } = props;
+        selectedValue,
+        setSelectedValue} = model;
 
+    const [groupOption, setGroupOption] = useState<GroupOption | null>();
     const [deviceOption, setDeviceOption] = useState<SelectedOption | null>(null);
     const [valueOption, setValueOption] = useState<SelectedOption | null>(null);
 
@@ -48,12 +54,15 @@ const ValueSelect = (props: ValueSelectProps) => {
         )
     }
 
-    const getCompatibleTypes = (): Array<string | undefined> => {
-        if (typeFilter === ValueTypes.float || typeFilter === ValueTypes.integer) {
-            return [ValueTypes.float, ValueTypes.integer];
-        }
-        return [typeFilter];
-    }
+    const groupOptions: GroupOption[] = useMemo(() => {
+        return [
+            {label: '-- none --', value: undefined},
+            {label: 'Without group', value: null},
+            ...groups.map((group) => {
+                return {label: group, value: group}
+            })
+        ]
+    }, [groups]);
 
     const deviceOptions: SelectedOption[] = useMemo(() => {
         const options: SelectedOption[] = devices.map((device) => {
@@ -63,56 +72,58 @@ const ValueSelect = (props: ValueSelectProps) => {
         return options;
     }, [devices]);
 
-    const filterByType = (values: GateValueModel[]) => {
-        if (typeFilter) {
-            const compatibleTypes = getCompatibleTypes();
-            return values.filter((value) => {
-                return !!compatibleTypes.find((type) => type === value.gateValue.type);
-            });
-        }
-        return values;
-    }
-
     const emptyOption = useMemo<SelectedOption>(() => {
         return {value: undefined, label: '-- none --'};
     }, []);
 
     const valueOptions: SelectedOption[] = useMemo(() => {
-        let options: SelectedOption[];
-        options = filterByType(values).map((value) => {
+        const options: SelectedOption[] = values.map((value) => {
             return {value: value, label: getTypeLabel(value), name: value.gateValue.valueName}
         });
-        if (excludeOutput) {
-            options = options.filter(option => (option.value as GateValueModel).gateValue.direction !== Directions.output)
-        }
         options.unshift(emptyOption);
         return options;
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [values, deviceOption, typeFilter]);
+    }, [values]);
+
+    const onGroupChange = (selected: GroupOption) => {
+        setSelectedGroup(selected.value);
+        setGroupOption(selected.value === undefined ? null : selected);
+    }
 
     const onDeviceChange = (selected: SelectedOption) => {
         const device = selected.value ? selected.value as DeviceModel : undefined;
         setSelectedDevice(device);
         setDeviceOption(selected.value ? selected : null);
-        if (!device || (valueOption && !device.gateValues.values.find((value) => value.id === valueOption.value?.id))) {
-            onValueChange(emptyOption);
-        }
     }
 
     const onValueChange = (selected: SelectedOption) => {
-        if (selected.value) {
-            const parentId = AddressMapper.extractTargetId(selected.value.id)[0];
-            const deviceOption = deviceOptions.find((device) => device.value?.id === parentId);
-            if (deviceOption) {
-                onDeviceChange(deviceOption);
-            }
-        }
         setSelectedValue(selected.value ? selected.value as GateValueModel : undefined);
         setValueOption(selected.value ? selected : null);
     }
 
+    useEffect(() => {
+        if (selectedValue === undefined) {
+            setValueOption(null);
+        }
+    }, [selectedValue]);
+
+    useEffect(() => {
+        if (selectedDevice === undefined) {
+            setDeviceOption(null);
+        }
+    }, [selectedDevice]);
+
     return (
         <div className={styles.valueSelectContainer}>
+            {(groups.length > 0) &&
+                <Select
+                    className={styles.selectInput}
+                    options={groupOptions}
+                    value={groupOption}
+                    onChange={(selected) => onGroupChange(selected as GroupOption)}
+                    placeholder={'Filter by group...'}
+                />
+            }
             <Select
                 className={styles.selectInput}
                 options={deviceOptions}
