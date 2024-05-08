@@ -87,6 +87,7 @@ const PipesDashboard = () => {
                 return {
                     valueId: valueId,
                     deviceName: device.name.value ?? '',
+                    group: device.group.value,
                     valueName: value.gateValue.valueName ?? '',
                     valueType: value.gateValue.type ?? ''
                 }

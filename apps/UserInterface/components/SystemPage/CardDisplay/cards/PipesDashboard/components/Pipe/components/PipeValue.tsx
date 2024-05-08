@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 export interface PipeDashboardValue {
     valueId: string
     deviceName: string,
+    group?: string,
     valueName: string,
     valueType: string
 }
@@ -30,6 +31,11 @@ const PipeValue = (props: PipeValueProps) => {
             onClick={() => setSelectedValue(value.valueId, !isSelected)}
         >
             <div className={styles.deviceNameContainer}>{value.deviceName}</div>
+            {value.group &&
+                <div className={styles.deviceNameContainer}>
+                    (<span className={styles.groupContainer}>{value.group}</span>)
+                </div>
+            }
             <div className={styles.valueNameContainer}>{value.valueName}</div>
             <div className={styles.valueTypeContainer}>{value.valueType.toUpperCase()}</div>
         </div>
