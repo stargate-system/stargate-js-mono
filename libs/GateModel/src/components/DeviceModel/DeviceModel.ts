@@ -50,11 +50,13 @@ export class DeviceModel {
 
     rename = (newName: string) => {
         this.name.setValue(newName);
+        this._manifest.deviceName = newName;
         this._systemConnector.sendDeviceEvent(EventName.deviceRenamed, [this._id, newName]);
     };
 
     addToGroup = (groupName: string) => {
         this._group.setValue(groupName);
+        this._manifest.group = groupName;
         this._systemConnector.sendDeviceEvent(EventName.addedToGroup, [groupName, this._id]);
     }
 
