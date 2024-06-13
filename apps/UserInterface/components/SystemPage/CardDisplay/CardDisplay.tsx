@@ -6,6 +6,7 @@ import PipesDashboard from "@/components/SystemPage/CardDisplay/cards/PipesDashb
 import CardSelect from "@/components/SystemPage/CardDisplay/components/CardSelect/CardSelect";
 import AccountOptions
     from "@/components/SystemPage/CardDisplay/components/AccountOptions/AccountOptions";
+import CustomCard from "@/components/custom/CustomCard/CustomCard";
 
 export const cards = {
     devices: {
@@ -17,6 +18,10 @@ export const cards = {
         id: 'pipes',
         label: 'Pipes',
         icon: faLink
+    },
+    customCard: {
+        id: 'customCard',
+        label: 'Custom Card'
     }
 }
 
@@ -29,6 +34,8 @@ const CardDisplay = () => {
                 return <DevicesDashboard/>
             case cards.pipes.id:
                 return <PipesDashboard/>
+            case cards.customCard.id:
+                return <CustomCard/>
         }
     }, [currentCard]);
 
