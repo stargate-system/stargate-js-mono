@@ -8,9 +8,10 @@ import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
 import useModelMap from "@/components/ReactGateViewModel/hooks/useModelMap";
 import {ValueVisibility} from "@stargate-system/core";
 import {Categories, localStorageHelper} from "@/helper/localStorageHelper";
+import {colorPickerMatcher} from "@/components/custom/ColorPicker/colorPickerMatcher";
 
 const customMatchers: CustomDeviceMatcher[] = [
-    // put device values customizations here
+    colorPickerMatcher
 ]
 
 export interface CustomDeviceMatcher {
