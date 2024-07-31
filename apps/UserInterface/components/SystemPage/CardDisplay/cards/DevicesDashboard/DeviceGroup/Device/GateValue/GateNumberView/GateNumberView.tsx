@@ -5,8 +5,11 @@ import ValueBar from "./components/ValueBar/ValueBar";
 import NumberDisplay from "./components/NumberDisplay/NumberDisplay";
 import {GateValueProps} from "../GateValueWrapper";
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
+import { faChartLine } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import NumberChart from "./components/NumberChart/NumberChart";
 
-const valueSize = 1.2;
+const valueSize = 1.3;
 
 const GateNumberView = (props: GateValueProps) => {
     const {valueModel, isActive} = props;
@@ -16,6 +19,7 @@ const GateNumberView = (props: GateValueProps) => {
 
     const [isLimited, setIsLimited] = useState(false);
     const [editable, setEditable] = useState(false);
+    const [chartActive, setChartActive] = useState(false);
     const [rangePanelStyle, setRangePanelStyle] = useState<CSSProperties>();
     const [valuePanelStyle, setValuePanelStyle] = useState<CSSProperties>();
 
@@ -53,7 +57,7 @@ const GateNumberView = (props: GateValueProps) => {
         }
         const rangePanelSize = gateValue.direction === Directions.input ? maxRangeWidth + 0.3*rem : maxRangeWidth;
         setValuePanelStyle({width: `${valuePanelSize}px`, fontSize: `${valueSize}rem`});
-        setRangePanelStyle({width: `${rangePanelSize}px`, fontSize: `${rangeSize}rem`});
+        setRangePanelStyle({width: `max(1.5rem, ${rangePanelSize}px)`, fontSize: `${rangeSize}rem`});
     }
 
     useEffect(() => {
@@ -64,13 +68,23 @@ const GateNumberView = (props: GateValueProps) => {
             setLimitedValueDisplayStyles();
         } else {
             setRangePanelStyle(undefined);
-            setValuePanelStyle({width: '7rem', fontSize: `${valueSize}rem`})
+            setValuePanelStyle({width: '7rem', fontSize: `${valueSize}rem`});
         }
         if (gateValue.direction === Directions.input) {
             setEditable(true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [valueModel]);
+
+    useEffect(() => {
+        if (!isLimited) {
+            if (chartActive) {
+                setValuePanelStyle({width: '15rem', fontSize: `${valueSize}rem`});
+            } else {
+                setValuePanelStyle({width: '7rem', fontSize: `${valueSize}rem`})
+            }
+        }
+    }, [chartActive]);
 
     return (
         <div className={styles.numberOutputContainer}>
@@ -82,6 +96,7 @@ const GateNumberView = (props: GateValueProps) => {
                     setValue={setValue}
                     isActive={isActive}
                     editable={editable}
+                    chartActive={chartActive}
                 />
             }
             <div className={styles.valueContainer}>
@@ -96,6 +111,7 @@ const GateNumberView = (props: GateValueProps) => {
                     setValue={setValue}
                     isActive={isActive}
                     editable={editable}
+                    limited={isLimited}
                     style={valuePanelStyle}
                 />
                 {rangePanelStyle &&
@@ -104,6 +120,17 @@ const GateNumberView = (props: GateValueProps) => {
                     </div>
                 }
             </div>
+            <div className={`${styles.chartIconContainer} ${!isLimited ? styles.center : ''}`}>
+                <div onClick={() => setChartActive(!chartActive)} className={`${styles.chartIcon} ${isLimited ? styles.chartIconLeft : styles.chartIconCenter}`}>
+                    <FontAwesomeIcon
+                        icon={faChartLine}
+                        className={chartActive ? styles.chartIconActive : ''}
+                    />
+                </div>
+            </div>
+            {chartActive &&
+                <NumberChart model={valueModel} isActive={isActive}/>
+            }
         </div>
     )
 }

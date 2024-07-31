@@ -1,3 +1,7 @@
+.valueDisplayContainer {
+    margin: 0 auto;
+}
+
 .valueDisplay {
     --value-display-font-size: 1.2rem;
 
@@ -18,4 +22,14 @@
 
 .readonly {
     border: none;
+}
+
+.unlimited {
+    border-radius: 0.3rem;
+    background-color: rgb(37, 50, 37);
+}
+
+.readonly.limited {
+    padding-top: 0.25rem;
+    margin-bottom: 0.05rem;
 }

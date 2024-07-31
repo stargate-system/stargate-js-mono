@@ -16,4 +16,10 @@
 .readonly {
     cursor: default;
     border: none;
+    border-radius: 0.3rem;
+    background-color: rgb(37, 50, 37);
+    min-height: 1.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }

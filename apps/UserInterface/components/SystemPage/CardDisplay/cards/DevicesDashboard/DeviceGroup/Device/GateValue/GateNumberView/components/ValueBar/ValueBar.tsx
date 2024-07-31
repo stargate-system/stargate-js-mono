@@ -12,7 +12,8 @@ interface ValueBarProps {
     value: number,
     setValue: Function,
     isActive: boolean,
-    editable: boolean
+    editable: boolean,
+    chartActive: boolean
 }
 
 const ValueBar = (props: ValueBarProps) => {
@@ -22,7 +23,8 @@ const ValueBar = (props: ValueBarProps) => {
         value,
         setValue,
         isActive,
-        editable
+        editable,
+        chartActive
     } = props;
 
     const [sliderPosition, setSliderPosition] = useState(0);
@@ -122,10 +124,10 @@ const ValueBar = (props: ValueBarProps) => {
             setSliderPosition(calcSliderPosition(percent));
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [value]);
+    }, [value, chartActive]);
 
     return (
-        <div className={styles.valueBarContainer}>
+        <div className={`${styles.valueBarContainer} ${!editable ? styles.bottomMargin : ''}`}>
             <div
                 ref={valueBarRef}
                 onClick={barOnClick}

@@ -8,6 +8,7 @@ interface NumberDisplayProps {
     setValue: Function,
     isActive: boolean,
     editable: boolean,
+    limited:boolean,
     style?: CSSProperties
 }
 
@@ -18,14 +19,15 @@ const NumberDisplay = (props: NumberDisplayProps) => {
         setValue,
         isActive,
         editable,
+        limited,
         style
     } = props;
 
     const [displayValue, setDisplayValue] = useState(value.toString());
 
     const valueClass = useMemo(() => {
-        return `${styles.valueDisplay} ${editable ? styles.editable : styles.readonly}`
-    }, [editable]);
+        return `${styles.valueDisplay} ${editable ? styles.editable : styles.readonly} ${limited ? styles.limited : styles.unlimited}`
+    }, [editable, limited]);
 
     const onInput = (ev: any) => {
         const input = ev.target.value.trim();
@@ -61,16 +63,18 @@ const NumberDisplay = (props: NumberDisplayProps) => {
     }, [value]);
 
     return (
-        <input
-            type='text'
-            onInput={onInput}
-            onBlur={onBlur}
-            disabled={!editable || !isActive}
-            value={displayValue}
-            className={valueClass}
-            style={style}
-            onKeyDown={onKeyDown}
-        />
+        <div className={styles.valueDisplayContainer}>
+            <input
+                type='text'
+                onInput={onInput}
+                onBlur={onBlur}
+                disabled={!editable || !isActive}
+                value={displayValue}
+                className={valueClass}
+                style={style}
+                onKeyDown={onKeyDown}
+            />
+        </div>
     )
 }
 

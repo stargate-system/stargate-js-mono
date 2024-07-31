@@ -1,0 +1,9 @@
+.chartAreaContainer {
+    width: 100%;
+    margin-top: 0.3rem;
+    flex-grow: 10;
+
+    .canvas {
+        background-color: rgb(33, 43, 33);
+    }
+}

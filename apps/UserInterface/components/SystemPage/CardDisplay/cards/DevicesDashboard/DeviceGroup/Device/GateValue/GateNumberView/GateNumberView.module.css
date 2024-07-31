@@ -4,6 +4,7 @@
     align-items: center;
     justify-content: stretch;
     padding-top: 0.1rem;
+    min-width: 100%;
 
     .range {
         cursor: default;
@@ -22,5 +23,34 @@
         flex-direction: row;
         justify-content: space-between;
         width: 100%;
+    }
+
+    .chartIconContainer {
+        width: 100%;
+        display: flex;
+
+        .chartIcon {
+            cursor: pointer;
+        }
+    
+        .chartIcon :hover {
+            filter:drop-shadow(0 0 2px #2ef621);
+        }
+    
+        .chartIconActive {
+            color: #2ef621;
+        }
+    
+        .chartIconLeft {
+            margin-top: -0.92rem;
+        }
+    
+        .chartIconCenter {
+            margin-top: 0.3rem;
+        }
+    }
+
+    .center {
+        justify-content: center;
     }
 }
