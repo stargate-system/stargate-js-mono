@@ -8,6 +8,7 @@ import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
 import { faChartLine } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import NumberChart from "./components/NumberChart/NumberChart";
+import { localStorageHelper } from "@/helper/localStorageHelper";
 
 const valueSize = 1.3;
 
@@ -22,6 +23,13 @@ const GateNumberView = (props: GateValueProps) => {
     const [chartActive, setChartActive] = useState(false);
     const [rangePanelStyle, setRangePanelStyle] = useState<CSSProperties>();
     const [valuePanelStyle, setValuePanelStyle] = useState<CSSProperties>();
+
+    const onChartClick = () => {
+        const parameters = localStorageHelper.getParameters(valueModel.gateValue);
+        parameters.chartActive = !chartActive;
+        localStorageHelper.setParameters(valueModel.gateValue, parameters);
+        setChartActive(!chartActive);
+    }
 
     const setValue = (value: number, equalityCheck?: boolean) => {
         gateValue.setValue(value, equalityCheck ?? true);
@@ -61,6 +69,16 @@ const GateNumberView = (props: GateValueProps) => {
     }
 
     useEffect(() => {
+        if (!isLimited) {
+            if (chartActive) {
+                setValuePanelStyle({width: '15rem', fontSize: `${valueSize}rem`});
+            } else {
+                setValuePanelStyle({width: '7rem', fontSize: `${valueSize}rem`})
+            }
+        }
+    }, [chartActive]);
+
+    useEffect(() => {
         if (typeof gateValue.range[0] === "number" &&
             typeof gateValue.range[1] === "number") {
             setIsLimited(true);
@@ -77,14 +95,8 @@ const GateNumberView = (props: GateValueProps) => {
     }, [valueModel]);
 
     useEffect(() => {
-        if (!isLimited) {
-            if (chartActive) {
-                setValuePanelStyle({width: '15rem', fontSize: `${valueSize}rem`});
-            } else {
-                setValuePanelStyle({width: '7rem', fontSize: `${valueSize}rem`})
-            }
-        }
-    }, [chartActive]);
+        setChartActive(localStorageHelper.getParameters(valueModel.gateValue).chartActive ?? false);
+    }, []);
 
     return (
         <div className={styles.numberOutputContainer}>
@@ -121,7 +133,7 @@ const GateNumberView = (props: GateValueProps) => {
                 }
             </div>
             <div className={`${styles.chartIconContainer} ${!isLimited ? styles.center : ''}`}>
-                <div onClick={() => setChartActive(!chartActive)} className={`${styles.chartIcon} ${isLimited ? styles.chartIconLeft : styles.chartIconCenter}`}>
+                <div onClick={onChartClick} className={`${styles.chartIcon} ${isLimited ? styles.chartIconLeft : styles.chartIconCenter}`}>
                     <FontAwesomeIcon
                         icon={faChartLine}
                         className={chartActive ? styles.chartIconActive : ''}

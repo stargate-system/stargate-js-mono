@@ -1,23 +1,40 @@
+import { AddressMapper, GateValue, ValueTypes } from "@stargate-system/core";
 import {DeviceModel} from "@stargate-system/model";
 
 let visibility: Object = {devices: {}, groups: {}};
+let parameters: Object = {}
 
-const initVisibility = () => {
+export const Categories = {
+    devices: 'devices',
+    groups: 'groups'
+}
+
+const initLocalStorage = () => {
     if (typeof window !== 'undefined') {
-        const stored = localStorage.getItem('visibility');
-        if (stored) {
-            visibility = JSON.parse(stored);
+        const storedVisibility = localStorage.getItem('visibility');
+        if (storedVisibility) {
+            visibility = JSON.parse(storedVisibility);
+        }
+        const storedParameters = localStorage.getItem('parameters');
+        if (storedParameters) {
+            parameters = JSON.parse(storedParameters);
         }
     }
 }
 
-const save = () => {
+const saveVisibility = () => {
     if (typeof window !== 'undefined') {
         localStorage.setItem('visibility', JSON.stringify(visibility));
     }
 }
 
-initVisibility();
+const saveParameters = () => {
+    if (typeof window !== 'undefined') {
+        localStorage.setItem('parameters', JSON.stringify(parameters));
+    }
+}
+
+initLocalStorage();
 
 const removeUnused = (devices: DeviceModel[]) => {
     // @ts-ignore
@@ -39,8 +56,25 @@ const removeUnused = (devices: DeviceModel[]) => {
             // @ts-ignore
             delete visibility.groups[id];
         }
-    })
-    save();
+    });
+    saveVisibility();
+
+    // @ts-ignore
+    Object.entries(parameters).forEach((entry) => {
+        const [key, content] = entry;
+        const deviceId = AddressMapper.extractTargetId(key)[0];
+        const device = devices.find((d) => d.id === deviceId);
+        if (device) {
+            const value = device.gateValues.getById(key);
+            if (value && value.gateValue.type === content.type) {
+                return;
+            }
+        }
+
+        // @ts-ignore
+        delete visibility.groups[id];
+    });
+    saveParameters();
 }
 
 const setVisibility = (isVisible: boolean, category: string, id?: string) => {
@@ -53,7 +87,7 @@ const setVisibility = (isVisible: boolean, category: string, id?: string) => {
             visibility[category] = categoryObject;
         }
         categoryObject[id] = isVisible;
-        save();
+        saveVisibility();
     }
 }
 
@@ -76,18 +110,30 @@ const remove = (category: string, id: string) => {
     let categoryObject = visibility[category];
     if (categoryObject !== undefined && categoryObject[id] !== undefined) {
         delete categoryObject[id];
-        save();
+        saveVisibility();
     }
 }
 
-export const Categories = {
-    devices: 'devices',
-    groups: 'groups'
+const setParameters = (gateValue: GateValue<any>, content: Object) => {
+    // @ts-ignore
+    parameters[gateValue.id] = {type: gateValue.type, content: content};
+    saveParameters();
+}
+
+const getParameters = (gateValue: GateValue<any>) => {
+    // @ts-ignore
+    const value = parameters[gateValue.id];
+    if (value) {
+        return value.content ?? {};
+    }
+    return {};
 }
 
 export const localStorageHelper = {
     removeUnused,
     setVisibility,
     getVisibility,
-    remove
+    remove,
+    setParameters,
+    getParameters
 }

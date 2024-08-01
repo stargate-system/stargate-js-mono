@@ -3,6 +3,7 @@ import { GateValueModel } from "@stargate-system/model";
 import { useMemo, useEffect, useState, FormEvent } from "react";
 import styles from './NumberChart.module.css';
 import NumberChartArea from "./components/NumberChartArea";
+import { localStorageHelper } from "@/helper/localStorageHelper";
 
 interface NumberChartProps {
     model: GateValueModel,
@@ -40,12 +41,16 @@ const NumberChart = (props: NumberChartProps) => {
     const onMinBlur = () => {
         const inputValue = Number.parseFloat(displayMin);
         if (!Number.isNaN(inputValue)) {
+            const parameters = localStorageHelper.getParameters(model.gateValue);
             if (inputValue < max) {
                 setMin(inputValue);
+                parameters.min = inputValue;
             } else {
                 setMin(max - 1);
                 setDisplayMin((max - 1).toString());
+                parameters.min = max - 1;
             }
+            localStorageHelper.setParameters(model.gateValue, parameters);
         } else {
             setDisplayMin(min.toString());
         }
@@ -61,12 +66,16 @@ const NumberChart = (props: NumberChartProps) => {
     const onMaxBlur = () => {
         const inputValue = Number.parseFloat(displayMax);
         if (!Number.isNaN(inputValue)) {
+            const parameters = localStorageHelper.getParameters(model.gateValue);
             if (inputValue > min) {
                 setMax(inputValue);
+                parameters.max = inputValue;
             } else {
                 setMax(min + 1);
                 setDisplayMax((min + 1).toString());
+                parameters.max = min + 1;
             }
+            localStorageHelper.setParameters(model.gateValue, parameters);
         } else {
             setDisplayMax(max.toString());
         }
@@ -82,16 +91,36 @@ const NumberChart = (props: NumberChartProps) => {
     const onSpanBlur = () => {
         const inputValue = Number.parseInt(displaySpan);
         if (!Number.isNaN(inputValue)) {
+            const parameters = localStorageHelper.getParameters(model.gateValue);
             if (inputValue > 0) {
                 setSpan(inputValue);
+                parameters.span = inputValue;
             } else {
                 setSpan(1);
                 setDisplaySpan((1).toString());
+                parameters.span = 1;
             }
+            localStorageHelper.setParameters(model.gateValue, parameters);
         } else {
             setDisplaySpan(span.toString());
         }
     }
+
+    useEffect(() => {
+        const parameters = localStorageHelper.getParameters(model.gateValue);
+        if (parameters.min) {
+            setMin(parameters.min);
+            setDisplayMin(parameters.min.toString());
+        }
+        if (parameters.max) {
+            setMax(parameters.max);
+            setDisplayMax(parameters.max.toString());
+        }
+        if (parameters.span) {
+            setSpan(parameters.span);
+            setDisplaySpan(parameters.span.toString());
+        }
+    }, []);
 
     return (
         <div className={styles.chartContainer}>
