@@ -120,6 +120,7 @@ const NumberChart = (props: NumberChartProps) => {
             setSpan(parameters.span);
             setDisplaySpan(parameters.span.toString());
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

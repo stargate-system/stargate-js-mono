@@ -102,6 +102,7 @@ const NumberChartArea = (props: NumberChartAreaProps) => {
         const key = setInterval(collectData, frameTime);
 
         return () => clearInterval(key);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [span]);
 
     return (

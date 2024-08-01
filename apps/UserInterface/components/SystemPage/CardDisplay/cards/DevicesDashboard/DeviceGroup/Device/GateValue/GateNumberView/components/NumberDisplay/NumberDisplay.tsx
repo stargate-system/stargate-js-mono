@@ -26,8 +26,8 @@ const NumberDisplay = (props: NumberDisplayProps) => {
     const [displayValue, setDisplayValue] = useState(value.toString());
 
     const valueClass = useMemo(() => {
-        return `${styles.valueDisplay} ${editable ? styles.editable : styles.readonly} ${limited ? styles.limited : styles.unlimited}`
-    }, [editable, limited]);
+        return `${styles.valueDisplay} ${editable ? styles.editable : styles.readonly} ${limited ? styles.limited : styles.unlimited} ${isActive ? styles.active : styles.inactive}`
+    }, [editable, limited, isActive]);
 
     const onInput = (ev: any) => {
         const input = ev.target.value.trim();

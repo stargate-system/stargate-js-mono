@@ -76,6 +76,7 @@ const GateNumberView = (props: GateValueProps) => {
                 setValuePanelStyle({width: '7rem', fontSize: `${valueSize}rem`})
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chartActive]);
 
     useEffect(() => {
@@ -96,6 +97,7 @@ const GateNumberView = (props: GateValueProps) => {
 
     useEffect(() => {
         setChartActive(localStorageHelper.getParameters(valueModel.gateValue).chartActive ?? false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -132,7 +134,7 @@ const GateNumberView = (props: GateValueProps) => {
                     </div>
                 }
             </div>
-            <div className={`${styles.chartIconContainer} ${!isLimited ? styles.center : ''}`}>
+            <div className={styles.chartIconContainer}>
                 <div onClick={onChartClick} className={`${styles.chartIcon} ${isLimited ? styles.chartIconLeft : styles.chartIconCenter}`}>
                     <FontAwesomeIcon
                         icon={faChartLine}

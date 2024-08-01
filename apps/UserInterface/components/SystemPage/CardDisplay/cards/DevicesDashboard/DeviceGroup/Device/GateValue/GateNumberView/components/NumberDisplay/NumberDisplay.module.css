@@ -12,11 +12,11 @@
     font-family: inherit;
     color: inherit;
     text-align: center;
+    border-radius: var(--device-border-radius);
 }
 
 .editable {
     border: 1px solid var(--gatevalue-name-color);
-    border-radius: var(--device-border-radius);
     margin-top: 2px;
 }
 
@@ -24,9 +24,12 @@
     border: none;
 }
 
-.unlimited {
-    border-radius: 0.3rem;
+.readonly.unlimited.active {
     background-color: rgb(37, 50, 37);
+}
+
+.readonly.unlimited.inactive {
+    background-color: rgb(53, 53, 53);
 }
 
 .readonly.limited {
