@@ -57,6 +57,15 @@
             filter:drop-shadow(0 0 2px #2ef621);
         }
 
+        .clearContainer {
+            padding: 0.15rem 0 0 0.7rem;
+            cursor: pointer;
+        }
+
+        .clearContainer :hover {
+            filter:drop-shadow(0 0 2px #ff0000);
+        }
+
         .controlsContainer {
             display: flex;
             flex-direction: row;

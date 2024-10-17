@@ -3,7 +3,7 @@ import {Directions, GateString} from "@stargate-system/core";
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
 import {CSSProperties, useEffect, useRef, useState} from "react";
 import styles from './GateStringView.module.css';
-import { faRectangleList } from "@fortawesome/free-regular-svg-icons";
+import { faRectangleList, faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { localStorageHelper } from "@/helper/localStorageHelper";
 import { faAnglesDown } from "@fortawesome/free-solid-svg-icons";
@@ -146,6 +146,9 @@ const GateStringView = (props: GateValueProps) => {
                                 onKeyDown={(ev) => onKeyDown(ev, onSizeBlur, () => setDisplayBufferSize(bufferSize.toString()))}
                                 className={styles.input}
                             />
+                        </div>
+                        <div className={styles.clearContainer} onClick={() => setBuffer([])}>
+                            <FontAwesomeIcon icon={faTrashCan} />
                         </div>
                     </div>
                 }

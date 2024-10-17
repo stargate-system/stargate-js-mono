@@ -1,5 +1,5 @@
 import {Device} from "./Device";
-import {AddressMapper, EventName, ValueMessage, ValueTypes} from "@stargate-system/core";
+import {AddressMapper, Directions, EventName, ValueMessage, ValueTypes} from "@stargate-system/core";
 import {ValueMessageConsumer} from "../common/ValueMessageConsumer";
 import Router from "../Router";
 import DeviceContext from "./DeviceContext";
@@ -101,7 +101,7 @@ export class Pipe implements ValueMessageConsumer{
             const sourceValueType = this.sourceDevice.manifest.values
                 .find((value) => value.id === this.sourceValueId)?.type;
             const targetValueType = this.targetDevice.manifest.values
-                .find((value) => value.id === this.targetValueId)?.type;
+                .find((value) => value.direction === Directions.input && value.id === this.targetValueId)?.type;
             if (sourceValueType && targetValueType && this.areTypesCompatible(sourceValueType, targetValueType)) {
                 this.sourceDevice.subscribe(this.sourceValueId, this);
             } else {

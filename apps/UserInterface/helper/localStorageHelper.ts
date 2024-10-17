@@ -72,7 +72,7 @@ const removeUnused = (devices: DeviceModel[]) => {
         }
 
         // @ts-ignore
-        delete visibility.groups[id];
+        delete parameters[key];
     });
     saveParameters();
 }
