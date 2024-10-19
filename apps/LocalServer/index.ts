@@ -8,9 +8,6 @@ import config from "./config";
 import ip from 'ip';
 import fs from 'fs';
 
-if (process.env.HTTP_PORT) {
-    config.httpPort = Number.parseInt(process.env.HTTP_PORT);
-}
 if (process.env.DISCOVERY_KEYWORD) {
     config.discoveryKeyword = process.env.DISCOVERY_KEYWORD;
 }
@@ -32,7 +29,7 @@ if (process.env.ENABLE_DISCOVERY) {
 
 const serverIp = ip.address();
 if (serverIp) {
-    const serverAddress = 'http://' + serverIp + ':' + config.httpPort;
+    const serverAddress = 'http://' + serverIp + ':' + config.connectionPort;
     fs.writeFile('ServerLink.txt',
         serverAddress,
         (err) => {
@@ -50,11 +47,11 @@ app.get('/', (req, res) => {
     res.redirect('/ui/index.html?connectionPort=' + config.connectionPort);
 });
 
-app.listen(config.httpPort);
+const server = app.listen(config.connectionPort);
 Router.systemRepository = getBasicRepository();
 initDeviceContext().then(() => {
     if (config.enableDiscovery) {
         initDiscovery();
     }
-    initConnectionService();
+    initConnectionService(server);
 })

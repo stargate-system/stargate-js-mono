@@ -4,10 +4,11 @@ import {LocalControllerConnector} from "./controller/LocalControllerConnector";
 import {WebSocketServer} from "ws";
 import Router from "./Router";
 import config from "../config";
+import { Server } from "http";
 
-export const initConnectionService = () => {
-    const server = new WebSocketServer({port: config.connectionPort});
-    server.on('connection', (socket, request) => {
+export const initConnectionService = (server: Server) => {
+    const wsServer = new WebSocketServer({server});
+    wsServer.on('connection', (socket, request) => {
         console.log("New connection from " + request.socket.remoteAddress);
         socket.on('error', console.log);
         const socketWrapper: SocketWrapper = {
