@@ -3,12 +3,36 @@ import {LocalDeviceConnector} from "./device/LocalDeviceConnector";
 import {LocalControllerConnector} from "./controller/LocalControllerConnector";
 import {WebSocketServer} from "ws";
 import Router from "./Router";
-import config from "../config";
 import { Server } from "http";
+import { authenticate } from "./RemoteService";
 
-export const initConnectionService = (server: Server) => {
+
+export const initConnectionService = (server: Server, authenticated: boolean) => {
     const wsServer = new WebSocketServer({server});
     wsServer.on('connection', (socket, request) => {
+        if (authenticated) {
+            if (!request.headers.cookie) {
+                socket.close();
+                return;
+            }
+            const cookies = request.headers.cookie.split(';')
+            .map((cookie) => {
+                return cookie.trim().split('=');
+            })
+            .filter((cookie) => cookie[0] === 'stargate_client')
+            .map((cookie) => decodeURIComponent(cookie[1]));
+            
+            try {
+                if (cookies.length === 0 || !authenticate(JSON.parse(cookies[0]))) {
+                    socket.close();
+                    return;
+                };
+            } catch(err) {
+                console.log('On WebSocket authentication', err);
+                socket.close();
+                return;
+            }
+        }
         console.log("New connection from " + request.socket.remoteAddress);
         socket.on('error', console.log);
         const socketWrapper: SocketWrapper = {
