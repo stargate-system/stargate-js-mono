@@ -3,11 +3,13 @@ import config from '../config';
 import generator from "generate-password";
 import selfsigned from 'selfsigned';
 
-export const apiUrl = 'http://localhost:3000';
+export const apiUrl = 'https://stargate-user-frontend.onrender.com';
 const connections = new Map<string, string>();
 const clients = new Map<string, string>();
 let serverId: string;
 let serverKey: string;
+
+let initInterval: NodeJS.Timeout | undefined;
 
 export const initRemote = () => {
     try {
@@ -23,15 +25,19 @@ export const initRemote = () => {
                 method: 'POST',
                 body: JSON.stringify({id, key, port: config.authenticatedPort})
             }
-        ).then((res) => res.ok ? console.log('Registered in central service') : console.log('Failed to register in central service'))
+        ).then((res) => res.ok ? console.log('Registered in central service') : console.log('Failed to register in central service', res.status))
         .catch((err) => console.log('Failed to register in central service', err));
     } catch(err) {
+        // @ts-ignore
         console.log('Unable to initialize remote service', err);
+    }
+    if (!initInterval) {
+        initInterval = setInterval(initRemote, 3600000);
     }
 }
 
 export const getCertificates = () => {
-    const generated = selfsigned.generate([{name: 'commonName', value: 'StarGate Local Server'}]);
+    const generated = selfsigned.generate([{name: 'commonName', value: 'StarGate Local Server'}], {keySize: 2048, days: 365});
     return {key: generated.private, cert: generated.cert};
 }
 
@@ -41,7 +47,7 @@ export const connect = async (req: any, res: any) => {
     if (response.ok) {
         const keys = await response.json();
         connections.set(connectionId, keys.connectionKey);
-        setTimeout(() => connections.delete(connectionId), 5000);
+        setTimeout(() => connections.delete(connectionId), 20000);
         res.json({verificationKey: keys.verificationKey});
     } else {
         res.status(403).end();

@@ -62,7 +62,6 @@ const initServer = (authenticated: boolean) => {
         });
     }
     app.use('/ui', express.static(__dirname + '/../out'));
-    // const server = app.listen(authenticated ? config.authenticatedPort : config.connectionPort);
     const server = authenticated
         ? https.createServer(options, app).listen(config.authenticatedPort)
         : app.listen(config.connectionPort);
