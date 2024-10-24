@@ -9,6 +9,11 @@ import { authenticate } from "./RemoteService";
 
 export const initConnectionService = (server: Server, authenticated: boolean) => {
     const wsServer = new WebSocketServer({server});
+    server.on('close', () => wsServer.close((err) => {
+        if (err) {
+            console.log('On closing WS Server', err)
+        }
+    }));
     wsServer.on('connection', (socket, request) => {
         if (authenticated) {
             if (!request.headers.cookie) {

@@ -2,16 +2,24 @@ import fs from 'fs';
 import config from '../config';
 import generator from "generate-password";
 import selfsigned from 'selfsigned';
+import crypto from 'crypto';
+import https from 'https';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import {initConnectionService} from "./ConnectionService";
 
-export const apiUrl = 'https://stargate-user-frontend.onrender.com';
+const apiUrl = 'https://stargate-user-frontend.onrender.com';
 const connections = new Map<string, string>();
 const clients = new Map<string, string>();
-let serverId: string;
-let serverKey: string;
+let serverId: string | undefined;
+let serverKey: string | undefined;
+let server: https.Server | undefined;
+let currentIp: string | undefined;
+let registerTimeout: NodeJS.Timeout | undefined;
 
-let initInterval: NodeJS.Timeout | undefined;
-
-export const initRemote = () => {
+export const initRemote = async () => {
     try {
         const idFile = fs.readFileSync('remote/id.txt').toString();
         const [id, key] = idFile.split(',').map((word) => word.trim());
@@ -20,31 +28,122 @@ export const initRemote = () => {
         if (!id || !key) {
             throw new Error('Id or key missing');
         }
-        fetch(`${apiUrl}/api/register`,
-            {
-                method: 'POST',
-                body: JSON.stringify({id, key, port: config.authenticatedPort})
-            }
-        ).then((res) => res.ok ? console.log('Registered in central service') : console.log('Failed to register in central service', res.status))
-        .catch((err) => console.log('Failed to register in central service', err));
+        currentIp = await getPublicIp();
+        if (currentIp) {
+            initServer(currentIp);
+            initIpCheck();
+        } else {
+            setTimeout(initRemote, 5000);
+        }
+        
     } catch(err) {
-        // @ts-ignore
-        console.log('Unable to initialize remote service', err);
-    }
-    if (!initInterval) {
-        initInterval = setInterval(initRemote, 3600000);
+        console.log('Unable to initialize remote service:', err);
     }
 }
 
-export const getCertificates = () => {
-    const generated = selfsigned.generate([{name: 'commonName', value: 'StarGate Local Server'}], {keySize: 2048, days: 365});
+export const authenticate = (auth?: any) => {
+    if (auth && auth.clientId && clients.get(auth.clientId) === auth.clientKey) {
+        return true;
+    }
+    return false;
+}
+
+const initIpCheck = () => {
+    setInterval(async () => {
+        const ip = await getPublicIp();
+        if (ip && ip !== currentIp) {
+            currentIp = ip;
+            initServer(ip);
+        }
+    }, 60000);
+}
+
+const initServer = (ip: string) => {
+    if (server) {
+        server.close((err) => {
+            if (err) {
+                console.log('On closing https server', err);
+            }
+        });
+    }
+    if (registerTimeout) {
+        clearTimeout(registerTimeout);
+        registerTimeout = undefined;
+    }
+    register();
+    const app = express();
+    app.use(cookieParser());
+    app.use(bodyParser.json());
+    app.post('/connect', cors({origin: apiUrl}), connect);
+    app.get('/login', login);
+    app.use('/ui', (req, res, next) => {
+        try{
+            if (req.cookies?.stargate_client && authenticate(JSON.parse(req.cookies.stargate_client))) {
+                next();
+            } else {
+                res.status(403).end();
+            }
+        } catch(err) {
+            console.log('On static content authentication', err);
+            res.status(403).end();
+        }
+    });
+    app.use('/ui', express.static(__dirname + '/../out'));
+    server = https.createServer(getCertificates(ip), app).listen(config.authenticatedPort);
+    initConnectionService(server, true);
+}
+
+const getPublicIp = async () => {
+    try {
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        if (ipResponse.ok) {
+            const ip = await ipResponse.json();
+            return ip.ip;
+        }
+    } catch {}
+    return undefined;
+}
+
+const getCertificates = (ip: string) => {
+    const generated = selfsigned.generate([{name: 'commonName', value: ip}], {keySize: 2048, days: 365});
     return {key: generated.private, cert: generated.cert};
 }
 
-export const connect = async (req: any, res: any) => {
+const register = async () => {
+    if (registerTimeout) {
+        clearTimeout(registerTimeout);
+        registerTimeout = undefined;
+    }
+    if (serverId && serverKey) {
+        let registerResponse;
+        try {
+            registerResponse = await fetch(`${apiUrl}/api/register`,
+                {
+                    method: 'POST',
+                    body: JSON.stringify({id: serverId, key: serverKey, port: config.authenticatedPort})
+                }
+            )
+        } catch {}
+        if (registerResponse && registerResponse.ok) {
+            console.log('Registered in central service');
+        } else {
+            if (!registerResponse || registerResponse.status !== 403) {
+                registerTimeout = setTimeout(register, 10000);
+                console.log('Failed to register in central service', registerResponse?.status ?? 'fetch failed');
+            } else {
+                console.log('Failed to register in central service: wrong server credentials');
+            }
+        }
+    }
+}
+
+const connect = async (req: any, res: any) => {
     const {connectionId} = req.body;
-    const response = await fetch(`${apiUrl}/api/connect`, {method: 'POST', body: JSON.stringify({connectionId, serverId, serverKey})});
-    if (response.ok) {
+    let response;
+    try {
+        response = await fetch(`${apiUrl}/api/connect`, {method: 'POST', body: JSON.stringify({connectionId, serverId, serverKey})});
+    } catch {}
+    if (response && response.ok) {
         const keys = await response.json();
         connections.set(connectionId, keys.connectionKey);
         setTimeout(() => connections.delete(connectionId), 20000);
@@ -54,7 +153,7 @@ export const connect = async (req: any, res: any) => {
     }
 }
 
-export const login = (req: any, res: any) => {
+const login = (req: any, res: any) => {
     const id = req.query.id;
     const key = req.query.key;
     if (typeof id !== 'string' || typeof key !== 'string' || connections.get(id) !== key) {
@@ -69,13 +168,9 @@ export const login = (req: any, res: any) => {
     });
     clients.set(clientId, clientKey);
 
-    res.cookie('stargate_client', JSON.stringify({clientId, clientKey}));
+    // 1 hour
+    const maxAge = 3600000
+    setTimeout(() => clients.delete(clientId), maxAge);
+    res.cookie('stargate_client', JSON.stringify({clientId, clientKey}), {maxAge});
     res.redirect('/ui/index.html');
-}
-
-export const authenticate = (auth?: any) => {
-    if (auth && auth.clientId && clients.get(auth.clientId) === auth.clientKey) {
-        return true;
-    }
-    return false;
 }
