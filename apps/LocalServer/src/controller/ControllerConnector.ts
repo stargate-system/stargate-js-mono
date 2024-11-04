@@ -9,6 +9,7 @@ export interface ControllerConnector extends ValueMessageConsumer{
     onDisconnect: () => void,
     sendDeviceEvent: (event: string, data: string[]) => void,
     sendPipeEvent: (event: string, data: string[]) => void,
+    sendServerEvent: (event: string, data: string[]) => void,
     onDeviceEvent: (event: string, data: string[]) => void,
     onPipeEvent: (event: string, data: string[]) => void,
     sendJoinData: (systemImage: SystemImage, connectedDevices: string[]) => void,

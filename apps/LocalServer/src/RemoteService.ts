@@ -9,35 +9,67 @@ import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import {initConnectionService} from "./ConnectionService";
+import ControllerContext from './controller/ControllerContext';
 
 const apiUrl = 'https://stargate-user-frontend.onrender.com';
 const connections = new Map<string, string>();
 const clients = new Map<string, string>();
+const states = {
+    on: 'on',
+    off: 'off',
+    init: 'init',
+    registered: 'ready',
+    error: 'error'
+}
+let state = states.off;
 let serverId: string | undefined;
 let serverKey: string | undefined;
 let server: https.Server | undefined;
 let currentIp: string | undefined;
 let registerTimeout: NodeJS.Timeout | undefined;
+let ipCheckInterval: NodeJS.Timeout | undefined;
+let initTimeout: NodeJS.Timeout | undefined;
+let stateTimeout: NodeJS.Timeout | undefined;
+
+export const getRemoteAccessState = () => state;
+
+export const setRemoteCredentials = (key: string, pass: string) => {
+    stopRemote();
+    try {
+        fs.writeFileSync('remote/id.txt', `${key}, ${pass}`);
+    } catch(err) {
+        console.log('On saving remote credentials', err);
+    }
+    initRemote();
+}
 
 export const initRemote = async () => {
-    try {
-        const idFile = fs.readFileSync('remote/id.txt').toString();
-        const [id, key] = idFile.split(',').map((word) => word.trim());
-        serverId = id;
-        serverKey = key;
-        if (!id || !key) {
-            throw new Error('Id or key missing');
+    if (!initTimeout && (state === states.off || state === states.error)) {
+        config.enableExternalAccess = true;
+        try {
+            const idFile = fs.readFileSync('remote/id.txt').toString();
+            const [id, key] = idFile.split(',').map((word) => word.trim());
+            serverId = id;
+            serverKey = key;
+            if (!id || !key) {
+                throw new Error('Id or key missing');
+            }
+            currentIp = await getPublicIp();
+            if (currentIp) {
+                initServer(currentIp);
+                initIpCheck();
+                changeState(states.on);
+            } else {
+                changeState(states.init);
+                initTimeout = setTimeout(() => {
+                    initTimeout = undefined;
+                    initRemote()
+                }, 5000);
+            }
+        } catch(err) {
+            changeState(states.error);
+            console.log('Unable to initialize remote service:', err);
         }
-        currentIp = await getPublicIp();
-        if (currentIp) {
-            initServer(currentIp);
-            initIpCheck();
-        } else {
-            setTimeout(initRemote, 5000);
-        }
-        
-    } catch(err) {
-        console.log('Unable to initialize remote service:', err);
     }
 }
 
@@ -48,8 +80,49 @@ export const authenticate = (auth?: any) => {
     return false;
 }
 
+export const stopRemote = (error = false) => {
+    config.enableExternalAccess = false;
+    if (registerTimeout) {
+        clearTimeout(registerTimeout);
+        registerTimeout = undefined;
+    }
+    if (ipCheckInterval) {
+        clearInterval(ipCheckInterval);
+        ipCheckInterval = undefined;
+    }
+    if (initTimeout) {
+        clearTimeout(initTimeout);
+        initTimeout = undefined;
+    }
+    connections.clear();
+    clients.clear();
+    if (server) {
+        server.close((err) => {
+            if (err) {
+                console.log('On closing https server', err);
+            }
+        });
+        server = undefined;
+    }
+    changeState(error ? states.error : states.off);
+}
+
+const changeState = (newState: string) => {
+    state = newState;
+    if (!stateTimeout) {
+        stateTimeout = setTimeout(() => {
+            stateTimeout = undefined;
+            // TODO move remoteAccess to EventNames
+            ControllerContext.forwardServerEvent('remoteAccess', [state]);
+        }, 100);
+    }
+}
+
 const initIpCheck = () => {
-    setInterval(async () => {
+    if (ipCheckInterval) {
+        clearInterval(ipCheckInterval);
+    }
+    ipCheckInterval = setInterval(async () => {
         const ip = await getPublicIp();
         if (ip && ip !== currentIp) {
             currentIp = ip;
@@ -126,12 +199,14 @@ const register = async () => {
         } catch {}
         if (registerResponse && registerResponse.ok) {
             console.log('Registered in central service');
+            changeState(states.registered);
         } else {
             if (!registerResponse || registerResponse.status !== 403) {
                 registerTimeout = setTimeout(register, 10000);
                 console.log('Failed to register in central service', registerResponse?.status ?? 'fetch failed');
             } else {
                 console.log('Failed to register in central service: wrong server credentials');
+                stopRemote(true);
             }
         }
     }

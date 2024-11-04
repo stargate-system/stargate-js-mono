@@ -5,15 +5,21 @@ import {WebSocketServer} from "ws";
 import Router from "./Router";
 import { Server } from "http";
 import { authenticate } from "./RemoteService";
+import { RemoteControllerConnector } from "./controller/RemoteControllerConnector";
 
 
 export const initConnectionService = (server: Server, authenticated: boolean) => {
     const wsServer = new WebSocketServer({server});
-    server.on('close', () => wsServer.close((err) => {
-        if (err) {
-            console.log('On closing WS Server', err)
-        }
-    }));
+    server.on('close', () => {
+        wsServer.clients.forEach((client) => {
+            client.close();
+        });
+        wsServer.close((err) => {
+            if (err) {
+                console.log('On closing WS Server', err)
+            }
+        });
+    });
     wsServer.on('connection', (socket, request) => {
         if (authenticated) {
             if (!request.headers.cookie) {
@@ -63,7 +69,10 @@ export const initConnectionService = (server: Server, authenticated: boolean) =>
                     new LocalDeviceConnector(connection);
                     break;
                 case ConnectionType.controller:
-                    const controllerConnector = new LocalControllerConnector(connection);
+                    const controllerConnector = authenticated
+                        ? new RemoteControllerConnector(connection)
+                        : new LocalControllerConnector(connection);
+                        
                     Router.addController(controllerConnector);
                     break;
                 default:

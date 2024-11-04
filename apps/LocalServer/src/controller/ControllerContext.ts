@@ -2,6 +2,8 @@ import {EventName, Registry, ValidManifest, ValueMessage} from "@stargate-system
 import {ControllerConnector} from "./ControllerConnector";
 import Router from "../Router";
 import DeviceContext from "../device/DeviceContext";
+import { LocalControllerConnector } from "./LocalControllerConnector";
+import { getRemoteAccessState } from "../RemoteService";
 
 const controllerRegistry = new Registry<ControllerConnector>();
 
@@ -111,6 +113,12 @@ const forwardPipeEvent = (eventName: EventName, data: string[]) => {
         .forEach((controller) => controller.sendPipeEvent(eventName, data));
 }
 
+// TODO change string type to EventName
+const forwardServerEvent = (eventName: string, data: string[]) => {
+    controllerRegistry.getValues()
+        .forEach((controller) => controller.sendServerEvent(eventName, data));
+}
+
 const forwardValueMessage = (valueMessage: ValueMessage) => {
     controllerRegistry.getValues().forEach((controller) => {
         controller.sendValueMessage(valueMessage);
@@ -122,6 +130,7 @@ const ControllerContext = {
     addController,
     forwardDeviceEvent,
     forwardPipeEvent,
+    forwardServerEvent,
     forwardValueMessage
 }
 

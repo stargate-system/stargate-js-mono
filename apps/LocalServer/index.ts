@@ -59,10 +59,10 @@ initDeviceContext().then(() => {
     if (config.enableDiscovery) {
         initDiscovery();
     }
-    if (config.connectionPort) {
+    if (config.enableInternalAccess && config.connectionPort) {
         initServer();
     }
-    if (config.authenticatedPort) {
+    if (config.enableExternalAccess && config.authenticatedPort) {
         initRemote();
     }
 })

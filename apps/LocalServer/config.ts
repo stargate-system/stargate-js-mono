@@ -7,7 +7,9 @@ const config = {
     discoveryPort: CoreConfig.discoveryPort,
     discoveryInterval: CoreConfig.discoveryInterval,
     broadcastingPort: 11000,
-    enableDiscovery: true
+    enableDiscovery: true,
+    enableInternalAccess: true,
+    enableExternalAccess: true
 }
 
 export default config;
