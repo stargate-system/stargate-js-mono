@@ -168,7 +168,7 @@ const initServer = (ip: string) => {
             res.status(403).end();
         }
     });
-    app.use('/ui', express.static(__dirname + '/../out'));
+    app.use('/ui', express.static(__dirname + '/../../out'));
     server = https.createServer(getCertificates(ip), app).listen(config.authenticatedPort);
     initConnectionService(server, true);
 }
