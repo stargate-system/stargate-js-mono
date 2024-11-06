@@ -36,6 +36,9 @@ export const getRemoteAccessState = () => state;
 export const setRemoteCredentials = (key: string, pass: string) => {
     stopRemote();
     try {
+        if (!fs.existsSync('remote')) {
+            fs.mkdirSync('remote');
+        }
         fs.writeFileSync('remote/id.txt', `${key}, ${pass}`);
     } catch(err) {
         console.log('On saving remote credentials', err);
@@ -54,21 +57,25 @@ export const initRemote = async () => {
             if (!id || !key) {
                 throw new Error('Id or key missing');
             }
+            changeState(states.init);
             currentIp = await getPublicIp();
             if (currentIp) {
                 initServer(currentIp);
                 initIpCheck();
                 changeState(states.on);
             } else {
-                changeState(states.init);
                 initTimeout = setTimeout(() => {
+                    changeState(states.off);
                     initTimeout = undefined;
                     initRemote()
                 }, 5000);
             }
         } catch(err) {
             changeState(states.error);
-            console.log('Unable to initialize remote service:', err);
+            console.log(
+                'Unable to initialize remote service:',
+                (err instanceof Error && err.message.match(/no such file or directory/i)) ? 'No remote credentials available' : err
+            );
         }
     }
 }
