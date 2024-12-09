@@ -1,24 +1,34 @@
 import {ServerStorage} from "./ServerStorage";
 import fs from 'fs';
+import path from "path";
 
-const ROOT_DIR = './ServerStorage';
+const ROOT_DIR = 'ServerStorage';
 
 const get = (directory: string, key: string) => {
     return new Promise<string | undefined>((resolve) => {
-        const path = ROOT_DIR + '/' + directory + '/' + key;
-        fs.readFile(path, (err, data) => {
-            if (err) {
-                console.log('On getting from ServerStorage', err);
-                resolve(undefined);
-            } else {
-                resolve(data.toString());
-            }
-        });
+        if (validatePath(directory, key)) {
+            const path = ROOT_DIR + '/' + directory + '/' + key;
+            fs.readFile(path, (err, data) => {
+                if (err) {
+                    console.log('On getting from ServerStorage', err);
+                    resolve(undefined);
+                } else {
+                    resolve(data.toString());
+                }
+            });
+        } else {
+            console.log('ServerStorage access denied for ' + directory + '/' + key);
+            resolve(undefined);
+        }
     });
 };
 
 const set = (directory: string, key: string, value: string) => {
     if (directory.length && key.length && value.length) {
+        if (!validatePath(directory, key)) {
+            console.log('ServerStorage access denied for ' + directory + '/' + key);
+            return;
+        }
         const path = ROOT_DIR + '/' + directory;
         fs.promises.mkdir(path, {recursive: true}).then(() => {
             fs.writeFile(path + '/' + key, value, (err) => {
@@ -32,6 +42,10 @@ const set = (directory: string, key: string, value: string) => {
 
 const append = (directory: string, key: string, value: string) => {
     if (directory.length && key.length && value.length) {
+        if (!validatePath(directory, key)) {
+            console.log('ServerStorage access denied for ' + directory + '/' + key);
+            return;
+        }
         const path = ROOT_DIR + '/' + directory + '/' + key;
         const file = fs.createWriteStream(path, {flags: 'a'});
         file.on('error', (err) => {
@@ -51,6 +65,10 @@ const append = (directory: string, key: string, value: string) => {
 }
 
 const remove = (directory: string, key?: string, logError?: boolean) => {
+    if (!validatePath(directory, key)) {
+        console.log('ServerStorage access denied for ' + directory + '/' + (key ?? ''));
+        return;
+    }
     if (key === undefined) {
         fs.rm(ROOT_DIR + '/' + directory, {recursive: true}, (err) => {
             if (err && logError) {
@@ -65,6 +83,11 @@ const remove = (directory: string, key?: string, logError?: boolean) => {
         });
     }
 };
+
+const validatePath = (directory: string, key?: string) => {
+    const requestedPath = path.normalize(ROOT_DIR + '/' + directory + '/' + (key ?? ''));
+    return requestedPath.startsWith(ROOT_DIR);
+}
 
 const BasicServerStorage: ServerStorage = {
     get,
