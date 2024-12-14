@@ -5,7 +5,7 @@ import HeaderButton from "@/components/SystemPage/CardDisplay/components/HeaderB
 import {useContext, useEffect, useRef, useState} from "react";
 import useClickOutsideDetector from "@/helper/useClickOutsideDetector";
 import DropdownMenu from '../DropdownMenu/DropdownMenu';
-import {faKey, faPowerOff} from "@fortawesome/free-solid-svg-icons";
+import {faKey, faPowerOff, faCircleInfo, faEarthAmerica} from "@fortawesome/free-solid-svg-icons";
 import SystemModelContext from '@/components/ReactGateViewModel/SystemModelContext';
 import ModalContext from '@/components/SystemPage/ModalContext';
 import CredentialsModal from './components/CredentialsModal';
@@ -33,6 +33,16 @@ const AccountOptions = (props: AccountOptionsProps) => {
     const menuOpenRef = useRef(false);
 
     const options = [
+        {
+            id: 'info',
+            label: 'About',
+            icon: faCircleInfo
+        },
+        {
+            id: 'service',
+            label: 'Remote service',
+            icon: faEarthAmerica
+        },
         {
             id: 'credentials',
             label: 'Set credentials',
@@ -79,9 +89,15 @@ const AccountOptions = (props: AccountOptionsProps) => {
     const onItemSelect = (id: string) => {
         switch(id) {
             case options[0].id:
-                onSetCredentials();
+                window.open('https://stargate-system.com/reference/remote-access/', '_blank', 'noopener,noreferrer');
                 break;
             case options[1].id:
+                window.open('https://remote.stargate-system.com/', '_blank', 'noopener,noreferrer')
+                break;
+            case options[2].id:
+                onSetCredentials();
+                break;
+            case options[3].id:
                 onSwitch();
                 break;
         }

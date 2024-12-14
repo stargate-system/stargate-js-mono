@@ -11,7 +11,7 @@ import cors from 'cors';
 import {initConnectionService} from "./ConnectionService";
 import ControllerContext from './controller/ControllerContext';
 
-const apiUrl = 'https://stargate-user-frontend.onrender.com';
+const apiUrl = 'https://remote.stargate-system.com';
 const connections = new Map<string, string>();
 const clients = new Map<string, string>();
 const states = {
