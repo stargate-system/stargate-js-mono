@@ -1,6 +1,6 @@
 {
   "name": "local-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Stargate local server",
   "main": "dist/index.js",
@@ -29,7 +29,14 @@
   },
   "dependencies": {
     "@stargate-system/core": "^1.0.0",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "generate-password": "^1.7.1",
+    "i": "^0.3.7",
     "ip": "^1.1.8",
+    "selfsigned": "^2.4.1",
     "ws": "^8.14.2"
   }
 }

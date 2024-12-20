@@ -81,8 +81,9 @@ export class LocalServerConnector implements SystemConnector {
             if (this._config.useFixedUrl) {
                 serverAddress = this._config.fixedUrl;
             } else {
-                const urlParams = new URLSearchParams(window.location.search);
-                serverAddress = window.location.hostname + ':' + (urlParams.get('connectionPort') ?? CoreConfig.connectionPort);
+                serverAddress = window.location.host === 'localhost:3000'
+                    ? `localhost:${CoreConfig.connectionPort}`
+                    : window.location.host;
             }
             this.connectBrowser(serverAddress);
         } else {
@@ -129,8 +130,9 @@ export class LocalServerConnector implements SystemConnector {
         });
     }
 
-    private connectBrowser = (serverAddress: string) => {
-        const socket = new WebSocket('ws://' + serverAddress);
+    private connectBrowser = (serverAddress: string) => { 
+        const protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+        const socket = new WebSocket(protocol + serverAddress);
         socket.onclose = this.handleConnectionClosed;
         socket.onopen = () => {
             const socketWrapper: SocketWrapper = {

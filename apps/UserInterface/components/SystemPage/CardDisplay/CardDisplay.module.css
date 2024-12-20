@@ -29,3 +29,23 @@
 .content {
     padding-top: 4rem;
 }
+
+.remoteOff {
+    --header-button-highlight: black;
+}
+
+.remoteInit {
+    --header-button-highlight: yellow;
+}
+
+.remoteOn {
+    --header-button-highlight: cyan;
+}
+
+.remoteRegistered {
+    --header-button-highlight: #50ff00;
+}
+
+.remoteError {
+    --header-button-highlight: red;
+}

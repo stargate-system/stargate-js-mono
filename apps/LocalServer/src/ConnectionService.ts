@@ -3,11 +3,47 @@ import {LocalDeviceConnector} from "./device/LocalDeviceConnector";
 import {LocalControllerConnector} from "./controller/LocalControllerConnector";
 import {WebSocketServer} from "ws";
 import Router from "./Router";
-import config from "../config";
+import { Server } from "http";
+import { authenticate } from "./RemoteService";
+import { RemoteControllerConnector } from "./controller/RemoteControllerConnector";
 
-export const initConnectionService = () => {
-    const server = new WebSocketServer({port: config.connectionPort});
-    server.on('connection', (socket, request) => {
+
+export const initConnectionService = (server: Server, authenticated: boolean) => {
+    const wsServer = new WebSocketServer({server});
+    server.on('close', () => {
+        wsServer.clients.forEach((client) => {
+            client.close();
+        });
+        wsServer.close((err) => {
+            if (err) {
+                console.log('On closing WS Server', err)
+            }
+        });
+    });
+    wsServer.on('connection', (socket, request) => {
+        if (authenticated) {
+            if (!request.headers.cookie) {
+                socket.close();
+                return;
+            }
+            const cookies = request.headers.cookie.split(';')
+            .map((cookie) => {
+                return cookie.trim().split('=');
+            })
+            .filter((cookie) => cookie[0] === 'stargate_client')
+            .map((cookie) => decodeURIComponent(cookie[1]));
+            
+            try {
+                if (cookies.length === 0 || !authenticate(JSON.parse(cookies[0]))) {
+                    socket.close();
+                    return;
+                };
+            } catch(err) {
+                console.log('On WebSocket authentication', err);
+                socket.close();
+                return;
+            }
+        }
         console.log("New connection from " + request.socket.remoteAddress);
         socket.on('error', console.log);
         const socketWrapper: SocketWrapper = {
@@ -33,7 +69,10 @@ export const initConnectionService = () => {
                     new LocalDeviceConnector(connection);
                     break;
                 case ConnectionType.controller:
-                    const controllerConnector = new LocalControllerConnector(connection);
+                    const controllerConnector = authenticated
+                        ? new RemoteControllerConnector(connection)
+                        : new LocalControllerConnector(connection);
+                        
                     Router.addController(controllerConnector);
                     break;
                 default:

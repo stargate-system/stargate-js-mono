@@ -9,5 +9,5 @@
     "declaration": true
   },
   "include": ["**/*.ts"],
-  "exclude": ["node_modules", "./clean.js"]
+  "exclude": ["node_modules", "./clean.js", "./dist/**/*"]
 }

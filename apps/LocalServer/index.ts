@@ -7,10 +7,8 @@ import {initDeviceContext} from "./src/device/DeviceContext";
 import config from "./config";
 import ip from 'ip';
 import fs from 'fs';
+import { initRemote } from './src/RemoteService';
 
-if (process.env.HTTP_PORT) {
-    config.httpPort = Number.parseInt(process.env.HTTP_PORT);
-}
 if (process.env.DISCOVERY_KEYWORD) {
     config.discoveryKeyword = process.env.DISCOVERY_KEYWORD;
 }
@@ -23,6 +21,9 @@ if (process.env.DISCOVERY_PORT) {
 if (process.env.CONNECTION_PORT) {
     config.connectionPort = Number.parseInt(process.env.CONNECTION_PORT);
 }
+if (process.env.AUTHENTICATED_PORT) {
+    config.authenticatedPort = Number.parseInt(process.env.AUTHENTICATED_PORT);
+}
 if (process.env.BROADCASTING_PORT) {
     config.broadcastingPort = Number.parseInt(process.env.BROADCASTING_PORT);
 }
@@ -30,9 +31,19 @@ if (process.env.ENABLE_DISCOVERY) {
     config.enableDiscovery = process.env.ENABLE_DISCOVERY.toLowerCase() === 'true';
 }
 
+const initServer = () => {
+    const app = express();
+    app.get('/', (req, res) => {
+        res.redirect('/ui/index.html');
+    });
+    app.use('/ui', express.static(__dirname + '/../out'));
+    const server = app.listen(config.connectionPort);
+    initConnectionService(server, false);
+}
+
 const serverIp = ip.address();
 if (serverIp) {
-    const serverAddress = 'http://' + serverIp + ':' + config.httpPort;
+    const serverAddress = 'http://' + serverIp + ':' + (config.connectionPort ?? config.authenticatedPort);
     fs.writeFile('ServerLink.txt',
         serverAddress,
         (err) => {
@@ -43,18 +54,15 @@ if (serverIp) {
     console.log('Server running on ' + serverAddress);
 }
 
-const app = express();
-app.use('/ui', express.static(__dirname + '/../out'));
-
-app.get('/', (req, res) => {
-    res.redirect('/ui/index.html?connectionPort=' + config.connectionPort);
-});
-
-app.listen(config.httpPort);
 Router.systemRepository = getBasicRepository();
 initDeviceContext().then(() => {
     if (config.enableDiscovery) {
         initDiscovery();
     }
-    initConnectionService();
+    if (config.enableInternalAccess && config.connectionPort) {
+        initServer();
+    }
+    if (config.enableExternalAccess && config.authenticatedPort) {
+        initRemote();
+    }
 })
