@@ -1,0 +1,49 @@
+.mainContainer {
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+    color: white;
+    font-size: 3rem;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    overflow: auto;
+
+    @media only screen and (max-device-width: 480px) and (orientation: portrait) {
+        flex-direction: column-reverse;
+    }
+
+    .leftPanel {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: black;
+        padding: 1rem;
+
+        @media only screen and (max-device-width: 480px) and (orientation: portrait) {
+            flex-direction: row;
+            min-height: 25%;
+        }
+
+        @media only screen and (max-device-width: 1000px) and (orientation: landscape) {
+            min-width: 25%;
+        }
+    }
+
+    .cameraPanel {
+        flex-grow: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -o-user-select: none;
+        user-select: none;
+    }
+}

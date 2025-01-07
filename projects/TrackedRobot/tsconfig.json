@@ -5,9 +5,8 @@
     "strict": true,
     "esModuleInterop": true,
     "module": "commonjs",
-    "outDir": "./dist",
-    "declaration": true
+    "outDir": "./dist"
   },
   "include": ["**/*.ts"],
-  "exclude": ["node_modules", "./clean.js", "./dist/**/*"]
+  "exclude": ["node_modules", "./clean.js"]
 }

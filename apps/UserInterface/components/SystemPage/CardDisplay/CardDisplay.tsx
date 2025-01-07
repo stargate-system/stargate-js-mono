@@ -6,6 +6,7 @@ import PipesDashboard from "@/components/SystemPage/CardDisplay/cards/PipesDashb
 import CardSelect from "@/components/SystemPage/CardDisplay/components/CardSelect/CardSelect";
 import AccountOptions, { remoteStates } from "@/components/SystemPage/CardDisplay/components/AccountOptions/AccountOptions";
 import SystemModelContext from '@/components/ReactGateViewModel/SystemModelContext';
+import ProjectsDashboard from './cards/ProjectsDashboard/ProjectsDashboard';
 
 export const cards = {
     devices: {
@@ -17,6 +18,10 @@ export const cards = {
         id: 'pipes',
         label: 'Pipes',
         icon: faLink
+    },
+    projects: {
+        id: 'projects',
+        label: 'Projects'
     }
 }
 
@@ -24,6 +29,17 @@ const CardDisplay = () => {
     const model = useContext(SystemModelContext);
     const [currentCard, setCurrentCard] = useState(Object.values(cards)[0].id);
     const [remoteState, setRemoteState] = useState<string | undefined>();
+
+    const card = useMemo(() => {
+        switch (currentCard) {
+            case cards.devices.id:
+                return <DevicesDashboard/>
+            case cards.pipes.id:
+                return <PipesDashboard/>
+            case cards.projects.id:
+                return <ProjectsDashboard/>
+        }
+    }, [currentCard]);
 
     const getAccountClass = () => {
         let stateClass;
@@ -46,15 +62,6 @@ const CardDisplay = () => {
         }
         return `${styles.rightHeader} ${stateClass}`;
     }
-
-    const card = useMemo(() => {
-        switch (currentCard) {
-            case cards.devices.id:
-                return <DevicesDashboard/>
-            case cards.pipes.id:
-                return <PipesDashboard/>
-        }
-    }, [currentCard]);
     
     useEffect(() => {
         model.systemConnector?.connection.functionalHandler.addCommandListener('serverEvent', (params) => {
