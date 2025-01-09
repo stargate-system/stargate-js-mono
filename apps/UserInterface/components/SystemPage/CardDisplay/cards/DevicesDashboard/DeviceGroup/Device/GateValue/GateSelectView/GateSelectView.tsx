@@ -51,9 +51,9 @@ const GateSelectView = (props: GateValueProps) => {
             <Select
                 className={styles.selectInput}
                 classNames={{
-                        control: (state) => `${state.isDisabled ? styles.selectControlDisabled : styles.selectControl}`,
+                        control: (state: any) => `${state.isDisabled ? styles.selectControlDisabled : styles.selectControl}`,
                         singleValue: () => `${styles.selectValue}`,
-                        indicatorSeparator: (state) => `${state.isDisabled ? styles.selectIndicatorDisabled : styles.selectIndicator}`
+                        indicatorSeparator: (state: any) => `${state.isDisabled ? styles.selectIndicatorDisabled : styles.selectIndicator}`
                     }}
                 options={options}
                 value={selectedOption}

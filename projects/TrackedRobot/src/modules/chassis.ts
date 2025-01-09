@@ -1,96 +1,59 @@
-import events from '../utils/eventHandler';
-// @ts-ignore
-import {Gpio} from 'pigpio';
+import { Directions, GateDevice } from '@stargate-system/device';
+import { GateString, ValueVisibility } from '@stargate-system/core';
+import { Motor } from '../utils/motor';
 
-const increment = 10;
-const minimum = 100;
+const leftMotor = new Motor(20, 16);
+const rightMotor = new Motor(26, 19);
 
-const rightReverse = new Gpio(19, {mode: Gpio.OUTPUT});
-const rightForward = new Gpio(26, {mode: Gpio.OUTPUT});
-const leftReverse = new Gpio(16, {mode: Gpio.OUTPUT});
-const leftForward = new Gpio(20, {mode: Gpio.OUTPUT});
-
-const command = [0, 0];
-let keyPressed = false;
+let chassisCommand: GateString;
+let inputTimeout: NodeJS.Timeout;
 
 const init = () => {
-    setInterval(handleMotors, 20);
+    chassisCommand = GateDevice.factory.createString(Directions.input);
+    chassisCommand.valueName = 'Chassis command';
+    chassisCommand.visibility = ValueVisibility.hidden;
+    chassisCommand.onRemoteUpdate = handleMotors;
 }
 
-const handleMotors = () => {
-    keyPressed = false;
-    handleKeys();
-    if (!keyPressed) {
-        decrementMotors();
+const resetTimeout = () => {
+    if (inputTimeout) {
+        clearTimeout(inputTimeout);
     }
-    applyConstraints();
-    setMotors();
+    inputTimeout = setTimeout(() => stop(), 500);
 }
 
-const handleKeys = () => {
-    if (events.getKeysDown().includes('w')) {
-        command[0] = command[0] === 0 ? minimum : (command[0] + increment);
-        command[1] = command[1] === 0 ? minimum : (command[1] + increment);
-        keyPressed = true;
-    }
-    if (events.getKeysDown().includes('s')) {
-        command[0] = command[0] === 0 ? -minimum : (command[0] - increment);
-        command[1] = command[1] === 0 ? -minimum : (command[1] - increment);
-        keyPressed = true;
-    }
-    if (events.getKeysDown().includes('a')) {
-        command[0] = command[0] === 0 ? -minimum : (command[0] - 2 * increment);
-        command[1] = command[1] === 0 ? minimum : (command[1] + 2 * increment);
-        keyPressed = true;
-    }
-    if (events.getKeysDown().includes('d')) {
-        command[0] = command[0] === 0 ? minimum : (command[0] + 2 * increment);
-        command[1] = command[1] === 0 ? -minimum : (command[1] - 2 * increment);
-        keyPressed = true;
-    }
-}
-
-const decrementMotors = () => {
-    if (command[0] !== 0) {
-        command[0] = (command[0]/Math.abs(command[0])) * (Math.abs(command[0]) - increment);
-    }
-    if (command[1] !== 0) {
-        command[1] = (command[1]/Math.abs(command[1])) * (Math.abs(command[1]) - increment);
-    }
-}
-
-const applyConstraints = () => {
-    if (command[0] !== 0) {
-        if (Math.abs(command[0]) > 255) {
-            command[0] = (command[0]/Math.abs(command[0])) * 255;
-        } else if (Math.abs(command[0]) < minimum) {
-            command[0] = 0;
-        }
-    }
-    if (command[1] !== 0) {
-        if (Math.abs(command[1]) > 255) {
-            command[1] = (command[1]/Math.abs(command[1])) * 255;
-        } else if (Math.abs(command[1]) < minimum) {
-            command[1] = 0;
+const handleMotors = (wasChanged: boolean) => {
+    resetTimeout();
+    if (wasChanged) {
+        const command = chassisCommand.value?.split(':').map((value) => Number.parseFloat(value));
+        if (command) {
+            setMotors(command);
         }
     }
 }
 
-const setMotors = () => {
-    if (command[0] >= 0) {
-        leftForward.pwmWrite(command[0]);
-        leftReverse.pwmWrite(0);
-    } else {
-        leftForward.pwmWrite(0);
-        leftReverse.pwmWrite(-command[0]);
+const setMotors = (command: number[]) => {
+    const [forwardReverse, leftRight] = command;
+    const motorCommand = [forwardReverse + leftRight, forwardReverse - leftRight];
+    motorCommand[0] = normalize(motorCommand[0]);
+    motorCommand[1] = normalize(motorCommand[1]);
+    leftMotor.run(motorCommand[0]);
+    rightMotor.run(motorCommand[1]);
+}
+
+const stop = () => {
+    leftMotor.stop();
+    rightMotor.stop();
+}
+
+const normalize = (input: number) => {
+    if (input > 1) {
+        return 1;
     }
-    if (command[1] >= 0) {
-        rightForward.pwmWrite(command[1]);
-        rightReverse.pwmWrite(0);
-    } else {
-        rightForward.pwmWrite(0);
-        rightReverse.pwmWrite(-command[1]);
+    if (input < -1) {
+        return -1;
     }
+    return input;
 }
 
 const chassisApi = {

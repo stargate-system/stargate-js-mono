@@ -1,6 +1,6 @@
 import {RefObject, useEffect} from "react";
 
-const useClickOutsideDetector = (elementRef: RefObject<HTMLElement>, onClickOutside: () => void) => {
+const useClickOutsideDetector = (elementRef: RefObject<HTMLElement | null>, onClickOutside: () => void) => {
     useEffect(() => {
         const handleClick = (ev: any) => {
             if (!elementRef?.current?.contains(ev.target)) {
