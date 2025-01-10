@@ -41,7 +41,7 @@ const Camera = (props: CameraProps) => {
                 />
             }
             {!imageAvailable &&
-                <div>Waiting for camera...</div>
+                <div className={styles.waitingForCamera}>Waiting for camera...</div>
             }
         </div>
     )

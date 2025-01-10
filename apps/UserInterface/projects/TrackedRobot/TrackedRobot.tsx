@@ -4,8 +4,12 @@ import { useRef, useContext, useState, useEffect } from "react";
 import styles from './TrackedRobot.module.css';
 import Camera from "../common/Camera/Camera";
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
-import { GateString } from "@stargate-system/core";
+import { GateBoolean, GateString } from "@stargate-system/core";
 import DivWithPointer from "./components/DivWithPointer/DivWithPointer";
+import GateButton from "@/components/common/controls/GateButton/GateButton";
+import { faEllipsis, faExpand, faTableColumns } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLightbulb } from "@fortawesome/free-regular-svg-icons";
 
 const baseCameraSensitivity = 1;
 const baseChassisSensitivity = 3;
@@ -28,6 +32,8 @@ const TrackedRobot = () => {
     const [chassisCommand, setChassisCommand] = useState<GateString | undefined>();
     const [chassisX, setChassisX] = useState(0);
     const [chassisY, setChassisY] = useState(0);
+    const [panelVisible, setPanelVisible] = useState(false);
+    const [flashlight, setFlashlight] = useState<GateBoolean | undefined>();
 
     const setCameraSize = () => {
         if (cameraRef.current) {
@@ -88,6 +94,8 @@ const TrackedRobot = () => {
                 chassis.keys = chassis.keys + key;
                 applyKeys();
             }
+        } else if (key === 'f') {
+            onFlashlightClick();
         }
     }
 
@@ -127,6 +135,23 @@ const TrackedRobot = () => {
         chassisCommand?.setValue(command);
     }
 
+    const onPanelButtonClick = () => {
+        setPanelVisible(!panelVisible);
+    }
+    const onFullscreenClick = () => {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        } else {
+            document.body.requestFullscreen();
+        }
+    }
+
+    const onFlashlightClick = () => {
+        if (flashlight) {
+            flashlight.setValue(!flashlight.value);
+        }
+    }
+
     useEffect(() => {
         if (chassisCommand) {
             document.addEventListener('keydown', onKeyDown);
@@ -149,6 +174,7 @@ const TrackedRobot = () => {
         setCameraX(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Camera X'));
         setCameraY(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Camera Y'));
         setChassisCommand(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Chassis command')?.gateValue);
+        setFlashlight(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Light')?.gateValue as GateBoolean);
     }, [deviceModel]);
 
     useEffect(() => {
@@ -156,10 +182,6 @@ const TrackedRobot = () => {
         const subscription = new DeviceSubscription(systemModel, matcher);
         setDeviceModel(subscription.deviceModel);
         subscription.onModelUpdate = (newModel) => setDeviceModel(newModel);
-        // document.body.requestFullscreen();
-        // setTimeout(() => {
-        //     document.exitFullscreen();
-        // }, 5000);
 
         return () => {
             subscription.close();
@@ -176,15 +198,17 @@ const TrackedRobot = () => {
         <div className={styles.mainContainer}>
             {deviceModel &&
                 <>
-                    <div ref={sidePanelRef} className={styles.leftPanel}>
-                        <DivWithPointer
-                            className={styles.fullSize}
-                            onPointerReleased={onChassisReleased}
-                            onPointerMove={onChassisMove}
-                        >
-                            Test
-                        </DivWithPointer>
-                    </div>
+                    {panelVisible &&
+                        <div ref={sidePanelRef} className={styles.leftPanel}>
+                            <DivWithPointer
+                                className={styles.fullSize}
+                                onPointerReleased={onChassisReleased}
+                                onPointerMove={onChassisMove}
+                            >
+                                Test
+                            </DivWithPointer>
+                        </div>
+                    }
                     <div ref={cameraRef} className={styles.cameraPanel}>
                         <DivWithPointer
                             className={styles.fullSize}
@@ -193,6 +217,23 @@ const TrackedRobot = () => {
                         >
                             <Camera input={camera} width={cameraWidth} height={cameraHeight}/>
                         </DivWithPointer>
+                    </div>
+                    <div className={styles.buttonPanel}>
+                        <button onClick={onPanelButtonClick} className={styles.button}>
+                            <FontAwesomeIcon icon={faTableColumns} />
+                        </button>
+                        {panelVisible &&
+                            <>
+                                <button onClick={onFullscreenClick} className={styles.button}>
+                                    <FontAwesomeIcon icon={faExpand} />
+                                </button>
+                                {flashlight &&
+                                    <button onClick={onFlashlightClick} className={styles.button}>
+                                        <FontAwesomeIcon icon={faLightbulb} />
+                                    </button>
+                                }
+                            </>
+                        }
                     </div>
                 </>
             }

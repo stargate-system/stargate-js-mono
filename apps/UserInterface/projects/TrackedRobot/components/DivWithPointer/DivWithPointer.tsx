@@ -1,4 +1,4 @@
-import { MutableRefObject, PropsWithChildren, useState } from "react";
+import { PropsWithChildren, useState } from "react";
 import styles from './DivWithPointer.module.css';
 
 interface DivWithPointerProps extends PropsWithChildren {
