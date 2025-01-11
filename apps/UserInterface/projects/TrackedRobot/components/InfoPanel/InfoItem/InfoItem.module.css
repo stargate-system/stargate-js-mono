@@ -1,0 +1,28 @@
+.mainContainer {
+    font-size: 2rem;
+    color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    .icon {
+        color: #e0d3c9;
+        width: 4rem;
+        font-size: 1.5rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .normal {
+        filter: drop-shadow(0 0 3px #00ff37);
+    }
+
+    .lowWarning {
+        filter: drop-shadow(0 0 3px #fbff00) drop-shadow(0 0 3px #fbff00);
+    }
+
+    .highWarning {
+        filter: drop-shadow(0 0 3px #ff0000) drop-shadow(0 0 3px #ff0000);
+    }
+}

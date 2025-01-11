@@ -1,0 +1,25 @@
+{
+    "head": {
+        "horizontalServoPin": 21,
+        "verticalServoPin": 14,
+        "horizontalCenter": 0.5,
+        "verticalCenter": 0.5
+    },
+    "camera": {
+        "useGain": false,
+        "gain": 15
+    },
+    "chassis": {
+        "leftMotorPins": [
+            20,
+            16
+        ],
+        "rightMotorPins": [
+            26,
+            19
+        ]
+    },
+    "flashlight": {
+        "pin": 4
+    }
+}

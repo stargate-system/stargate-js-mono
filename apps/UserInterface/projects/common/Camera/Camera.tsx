@@ -7,11 +7,14 @@ import styles from './Camera.module.css';
 interface CameraProps {
     input: ModelValue<string> | undefined,
     width: string | undefined,
-    height: string | undefined
+    height: string | undefined,
+    onFpsChange?: (fps: number) => void
 }
 
+const counter = {current: 0}
+
 const Camera = (props: CameraProps) => {
-    const {input, width, height} = props;
+    const {input, width, height, onFpsChange} = props;
     const currentFrame = useModelValue(input);
 
     const imageRef = useRef<HTMLImageElement>(null);
@@ -25,10 +28,21 @@ const Camera = (props: CameraProps) => {
                 const url = URL.createObjectURL(new Blob([frame], {type: "image/jpeg"}))
                 imageRef.current.src = url;
             }
+            counter.current += 1;
         } else {
             setImageAvailable(false);
         }
     }, [currentFrame]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (onFpsChange) {
+                onFpsChange(counter.current);
+            }
+            counter.current = 0;
+        }, 1000);
+        return () => clearInterval(interval);
+    }, []);
 
     return (
         <div className={styles.mainContainer}>

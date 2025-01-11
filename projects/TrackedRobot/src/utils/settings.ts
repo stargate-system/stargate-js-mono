@@ -29,7 +29,7 @@ const save = () => {
             saveTimeout = undefined;
             fs.writeFile('settings.json', JSON.stringify(settings), (err) => {
                 if (err) {
-                    console.log('On saving settings', err);
+                    console.log('Failed to save settings', err);
                 }
             });
         }, 1000);
@@ -40,8 +40,8 @@ const init = () => {
     try {
         const settingsFile = fs.readFileSync('settings.json');
         settings = JSON.parse(settingsFile.toString());
-    } catch (err) {
-        console.log('On loading settings', err);
+    } catch {
+        console.log('Settings file not found - using default settings');
     }
 }
 

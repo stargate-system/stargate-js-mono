@@ -9,6 +9,7 @@ import DivWithPointer from "./components/DivWithPointer/DivWithPointer";
 import { faExpand, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb } from "@fortawesome/free-regular-svg-icons";
+import InfoPanel from "./components/InfoPanel/InfoPanel";
 
 const baseHeadSensitivity = 1;
 const baseChassisSensitivity = 3;
@@ -37,6 +38,7 @@ const TrackedRobot = () => {
     const currentHeadCenterX = useModelValue(headCenterX);
     const [headCenterY, setHeadCenterY] = useState<ModelValue<number> | undefined>();
     const currentHeadCenterY = useModelValue(headCenterY);
+    const [fps, setFps] = useState(0);
 
     const setCameraSize = () => {
         if (cameraRef.current) {
@@ -210,7 +212,7 @@ const TrackedRobot = () => {
                                 onPointerReleased={onChassisReleased}
                                 onPointerMove={onChassisMove}
                             >
-                                Test
+                                <InfoPanel device={deviceModel} fps={fps}/>
                             </DivWithPointer>
                         </div>
                     }
@@ -220,7 +222,12 @@ const TrackedRobot = () => {
                             onPointerMove={onCameraMove}
                             onDoubleClick={onCameraDoubleClick}
                         >
-                            <Camera input={camera} width={cameraWidth} height={cameraHeight}/>
+                            <Camera
+                                input={camera}
+                                width={cameraWidth}
+                                height={cameraHeight}
+                                onFpsChange={setFps}
+                            />
                         </DivWithPointer>
                     </div>
                     <div className={styles.buttonPanel}>
