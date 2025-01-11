@@ -6,12 +6,11 @@ import Camera from "../common/Camera/Camera";
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
 import { GateBoolean, GateString } from "@stargate-system/core";
 import DivWithPointer from "./components/DivWithPointer/DivWithPointer";
-import GateButton from "@/components/common/controls/GateButton/GateButton";
-import { faEllipsis, faExpand, faTableColumns } from "@fortawesome/free-solid-svg-icons";
+import { faExpand, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLightbulb } from "@fortawesome/free-regular-svg-icons";
 
-const baseCameraSensitivity = 1;
+const baseHeadSensitivity = 1;
 const baseChassisSensitivity = 3;
 let chassis = {keys: ''};
 
@@ -19,21 +18,25 @@ const TrackedRobot = () => {
     const systemModel = useContext(SystemModelContext);
     const [deviceModel, setDeviceModel] = useState<DeviceModel | undefined>();
     const [camera, setCamera] = useState<ModelValue<string> | undefined>();
-    const [cameraX, setCameraX] = useState<GateValueModel | undefined>();
-    const [cameraY, setCameraY] = useState<GateValueModel | undefined>();
+    const [headX, setHeadX] = useState<GateValueModel | undefined>();
+    const [headY, setHeadY] = useState<GateValueModel | undefined>();
     const [cameraWidth, setCameraWidth] = useState<string | undefined>();
     const [cameraHeight, setCameraHeight] = useState<string | undefined>();
     const cameraRef = useRef<HTMLDivElement | null>(null);
     const sidePanelRef = useRef<HTMLDivElement | null>(null);
-    const currentCameraX = useModelValue(cameraX?.modelValue as ModelValue<number>);
-    const currentCameraY = useModelValue(cameraY?.modelValue as ModelValue<number>);
-    const [cameraSensitivity, setCameraSensitivity] = useState(0.001);
+    const currentHeadX = useModelValue(headX?.modelValue as ModelValue<number>);
+    const currentHeadY = useModelValue(headY?.modelValue as ModelValue<number>);
+    const [headSensitivity, setCameraSensitivity] = useState(0.001);
     const [chassisSensitivity, setChassisSensitivity] = useState(0.001);
     const [chassisCommand, setChassisCommand] = useState<GateString | undefined>();
     const [chassisX, setChassisX] = useState(0);
     const [chassisY, setChassisY] = useState(0);
     const [panelVisible, setPanelVisible] = useState(false);
     const [flashlight, setFlashlight] = useState<GateBoolean | undefined>();
+    const [headCenterX, setHeadCenterX] = useState<ModelValue<number> | undefined>();
+    const currentHeadCenterX = useModelValue(headCenterX);
+    const [headCenterY, setHeadCenterY] = useState<ModelValue<number> | undefined>();
+    const currentHeadCenterY = useModelValue(headCenterY);
 
     const setCameraSize = () => {
         if (cameraRef.current) {
@@ -41,11 +44,11 @@ const TrackedRobot = () => {
             if (ratio >= (4/3)) {
                 setCameraHeight((cameraRef.current.clientHeight > 800 ? 800 : cameraRef.current.clientHeight).toString());
                 setCameraWidth(undefined);
-                setCameraSensitivity(baseCameraSensitivity / cameraRef.current.clientHeight);
+                setCameraSensitivity(baseHeadSensitivity / cameraRef.current.clientHeight);
             } else {
                 setCameraWidth(cameraRef.current.clientWidth.toString());
                 setCameraHeight(undefined);
-                setCameraSensitivity(baseCameraSensitivity / cameraRef.current.clientWidth);
+                setCameraSensitivity(baseHeadSensitivity / cameraRef.current.clientWidth);
             }
         }
         if (sidePanelRef.current) {
@@ -54,13 +57,13 @@ const TrackedRobot = () => {
     }
 
     const onCameraMove = (x: number, y: number) => {
-        cameraX?.gateValue.setValue((currentCameraX ?? 0) - x * cameraSensitivity);
-        cameraY?.gateValue.setValue((currentCameraY ?? 0) + y * cameraSensitivity);
+        headX?.gateValue.setValue((currentHeadX ?? 0) - x * headSensitivity);
+        headY?.gateValue.setValue((currentHeadY ?? 0) + y * headSensitivity);
     }
 
     const onCameraDoubleClick = () => {
-        cameraX?.gateValue.setValue(0.5);
-        cameraY?.gateValue.setValue(0.53);
+        headX?.gateValue.setValue(currentHeadCenterX);
+        headY?.gateValue.setValue(currentHeadCenterY);
     }
 
     const onChassisMove = (x: number, y: number) => {
@@ -170,11 +173,13 @@ const TrackedRobot = () => {
     }, [chassisCommand]);
 
     useEffect(() => {
-        setCamera(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Video')?.modelValue);
-        setCameraX(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Camera X'));
-        setCameraY(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Camera Y'));
+        setCamera(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Camera')?.modelValue);
+        setHeadX(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Head X'));
+        setHeadY(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Head Y'));
         setChassisCommand(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Chassis command')?.gateValue);
         setFlashlight(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Light')?.gateValue as GateBoolean);
+        setHeadCenterX(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Head center X')?.modelValue);
+        setHeadCenterY(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Head center Y')?.modelValue);
     }, [deviceModel]);
 
     useEffect(() => {

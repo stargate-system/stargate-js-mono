@@ -1,14 +1,42 @@
 import { ChildProcessWithoutNullStreams, spawn } from "child_process";
 import { GateDevice, Directions, ValueVisibility } from "@stargate-system/device";
-import { GateString } from "@stargate-system/core";
+import { GateBoolean, GateNumber, GateString } from "@stargate-system/core";
+import settings from "../utils/settings";
 
 let camera: ChildProcessWithoutNullStreams | undefined;
 let buffer: Buffer | undefined;
 let video: GateString;
+let useGain: GateBoolean;
+let gain: GateNumber;
 
 const init = () => {
+    const {camera} = settings.getSettings();
+
+    useGain = GateDevice.factory.createBoolean(Directions.input);
+    useGain.valueName = 'Use gain';
+    useGain.visibility = ValueVisibility.settings;
+    useGain.setValue(camera.useGain);
+    useGain.onRemoteUpdate = () => {
+        if (useGain.value !== undefined) {
+            camera.useGain = useGain.value;
+            settings.save();
+        }
+    }
+
+    gain = GateDevice.factory.createFloat(Directions.input);
+    gain.valueName = 'Gain';
+    gain.visibility = ValueVisibility.settings;
+    gain.setRange([0.1, 20]);
+    gain.setValue(camera.gain);
+    gain.onRemoteUpdate = () => {
+        if (gain.value !== undefined) {
+            camera.gain = gain.value;
+            settings.save();
+        }
+    }
+
     video = GateDevice.factory.createString(Directions.output);
-    video.valueName = "Video";
+    video.valueName = "Camera";
     video.visibility = ValueVisibility.hidden;
     video.onSubscriptionChange = (subscribed) => {
         if (subscribed) {
@@ -19,20 +47,28 @@ const init = () => {
     }
 }
 
+const basicSettings = [
+    '-t', '0',
+    '-o', '-',
+    '--width', '640',
+    '--height', '480',
+    '--framerate', '30',
+    '--codec', 'mjpeg',
+    '-n'
+];
+
+const getSettings = () => {
+    const settings = [...basicSettings];
+    if (useGain.value) {
+        settings.push('--gain');
+        settings.push(gain.value?.toString() ?? '1');
+    }
+    return settings;
+}
+
 const startCamera = () => {
     if (!camera) {
-        camera = spawn('rpicam-vid',
-            [
-                '-t', '0',
-                '-o', '-',
-                '--width', '640',
-                '--height', '480',
-                '--framerate', '30',
-                '--codec', 'mjpeg',
-                '-n',
-                '--gain', '13'
-            ]
-        );
+        camera = spawn('rpicam-vid', getSettings());
         camera.stdout.on('data', handleData);
     }
 }

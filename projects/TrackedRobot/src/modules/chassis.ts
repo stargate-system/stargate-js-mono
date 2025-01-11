@@ -1,14 +1,18 @@
 import { Directions, GateDevice } from '@stargate-system/device';
 import { GateString, ValueVisibility } from '@stargate-system/core';
 import { Motor } from '../utils/motor';
+import settings from '../utils/settings';
 
-const leftMotor = new Motor(20, 16);
-const rightMotor = new Motor(26, 19);
+let leftMotor: Motor;
+let rightMotor: Motor;
 
 let chassisCommand: GateString;
 let inputTimeout: NodeJS.Timeout;
 
 const init = () => {
+    const {chassis} = settings.getSettings();
+    leftMotor = new Motor(chassis.leftMotorPins[0], chassis.leftMotorPins[1]);
+    rightMotor = new Motor(chassis.rightMotorPins[0], chassis.rightMotorPins[1]);
     chassisCommand = GateDevice.factory.createString(Directions.input);
     chassisCommand.valueName = 'Chassis command';
     chassisCommand.visibility = ValueVisibility.hidden;

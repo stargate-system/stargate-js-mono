@@ -1,9 +1,11 @@
 import { Directions, GateDevice } from "@stargate-system/device";
 // @ts-ignore
 import {Gpio} from 'pigpio';
+import settings from "../utils/settings";
 
 const init = () => {
-    const led = new Gpio(4, {mode: Gpio.OUTPUT});
+    const {flashlight} = settings.getSettings();
+    const led = new Gpio(flashlight.pin, {mode: Gpio.OUTPUT});
     led.digitalWrite(0);
     const light = GateDevice.factory.createBoolean(Directions.input);
     light.valueName = 'Light';

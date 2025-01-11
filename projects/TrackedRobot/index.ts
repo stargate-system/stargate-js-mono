@@ -4,10 +4,12 @@ import head from './src/modules/head';
 import chassis from './src/modules/chassis';
 import flashlight from './src/modules/flashlight';
 import info from './src/modules/info';
+import settings from "./src/utils/settings";
 
 GateDevice.setName('Tracked Robot');
 GateDevice.setInfo('SGTrackedRobot');
 
+settings.init();
 camera.init();
 head.init();
 chassis.init();
