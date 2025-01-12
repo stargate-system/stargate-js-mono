@@ -4,12 +4,13 @@ import styles from './DivWithPointer.module.css';
 interface DivWithPointerProps extends PropsWithChildren {
     onDoubleClick?: () => void,
     onPointerMove?: (x: number, y: number) => void,
+    onPointerActive?: () => void,
     onPointerReleased?: () => void
     className?: string
 }
 
 const DivWithPointer = (props: DivWithPointerProps) => {
-    const {onDoubleClick, onPointerMove, onPointerReleased, className, children} = props;
+    const {onDoubleClick, onPointerMove, onPointerActive, onPointerReleased, className, children} = props;
     const [isActive, setIsActive] = useState(false);
     const [lastMove, setLastMove] = useState([0, 0]);
     const [click, setClick] = useState(false);
@@ -29,6 +30,9 @@ const DivWithPointer = (props: DivWithPointerProps) => {
                 onDoubleClick();
             }
         } else {
+            if (onPointerActive) {
+                onPointerActive();
+            }
             setLastMove([getX(ev), getY(ev)]);
             setIsActive(true);
             setClick(true);

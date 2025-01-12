@@ -2,9 +2,9 @@ import SystemModelContext from "@/components/ReactGateViewModel/SystemModelConte
 import { DeviceModel, DeviceSubscription, GateValueModel, ModelValue } from "@stargate-system/model";
 import { useRef, useContext, useState, useEffect } from "react";
 import styles from './TrackedRobot.module.css';
-import Camera from "../common/Camera/Camera";
+import Camera from "./components/Camera/Camera";
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
-import { GateBoolean, GateString } from "@stargate-system/core";
+import { GateString } from "@stargate-system/core";
 import DivWithPointer from "./components/DivWithPointer/DivWithPointer";
 import { faExpand, faTableColumns } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,12 +21,13 @@ const TrackedRobot = () => {
     const [camera, setCamera] = useState<ModelValue<string> | undefined>();
     const [headX, setHeadX] = useState<GateValueModel | undefined>();
     const [headY, setHeadY] = useState<GateValueModel | undefined>();
+    const currentHeadX = useModelValue(headX?.modelValue as ModelValue<number>);
+    const currentHeadY = useModelValue(headY?.modelValue as ModelValue<number>);
+    const [headCommand, setHeadCommand] = useState([0, 0]);
     const [cameraWidth, setCameraWidth] = useState<string | undefined>();
     const [cameraHeight, setCameraHeight] = useState<string | undefined>();
     const cameraRef = useRef<HTMLDivElement | null>(null);
     const sidePanelRef = useRef<HTMLDivElement | null>(null);
-    const currentHeadX = useModelValue(headX?.modelValue as ModelValue<number>);
-    const currentHeadY = useModelValue(headY?.modelValue as ModelValue<number>);
     const [headSensitivity, setCameraSensitivity] = useState(0.001);
     const [chassisSensitivity, setChassisSensitivity] = useState(0.001);
     const [chassisCommand, setChassisCommand] = useState<GateString | undefined>();
@@ -59,9 +60,15 @@ const TrackedRobot = () => {
         }
     }
 
+    const onCameraClick = () => {
+        setHeadCommand([currentHeadX ?? 0, currentHeadY ?? 0]);
+    }
+
     const onCameraMove = (x: number, y: number) => {
-        headX?.gateValue.setValue((currentHeadX ?? 0) - x * headSensitivity);
-        headY?.gateValue.setValue((currentHeadY ?? 0) + y * headSensitivity);
+        const command = [headCommand[0] - x * headSensitivity, headCommand[1] + y * headSensitivity];
+        headX?.gateValue.setValue(command[0]);
+        headY?.gateValue.setValue(command[1]);
+        setHeadCommand(command);
     }
 
     const onCameraDoubleClick = () => {
@@ -220,6 +227,7 @@ const TrackedRobot = () => {
                     <div ref={cameraRef} className={styles.cameraPanel}>
                         <DivWithPointer
                             className={styles.fullSize}
+                            onPointerActive={onCameraClick}
                             onPointerMove={onCameraMove}
                             onDoubleClick={onCameraDoubleClick}
                         >
