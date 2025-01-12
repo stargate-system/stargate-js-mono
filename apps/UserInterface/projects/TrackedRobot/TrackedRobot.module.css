@@ -21,12 +21,14 @@
         align-items: center;
         justify-content: center;
         background-color: black;
-        min-width: 30%;
+        width: 30%;
+        max-width: 20rem;
 
         @media only screen and (max-device-width: 480px) and (orientation: portrait) {
             flex-direction: row;
-            min-height: 40%;
-            min-width: auto;
+            height: 40%;
+            width: auto;
+            max-width: none;
         }
     }
 
@@ -65,14 +67,18 @@
             justify-content: center;
             color: white;
             border-radius: 0.5rem;
-            background-color: #363535;
             border: 1px solid #9d6e47;
             cursor: pointer;
             box-shadow: -1px -1px #e0d3c9, 1px 1px #603b0e;
+            background-color: #363535;
         }
 
         .button:hover {
             background-color: #4d4d4d;
+        }
+
+        .buttonActive {
+            filter: drop-shadow(0 0 3px #2bff00);
         }
     }
 }

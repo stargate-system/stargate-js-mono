@@ -1,8 +1,9 @@
 import useModelValue from "@/components/ReactGateViewModel/hooks/useModelValue";
-import { DeviceModel } from "@stargate-system/model";
+import { DeviceModel, DeviceState } from "@stargate-system/model";
 import InfoItem from "./InfoItem/InfoItem";
 import { faFilm, faTemperatureThreeQuarters, faWifi } from "@fortawesome/free-solid-svg-icons";
 import { useEffect, useState } from "react";
+import styles from './InfoPanel.module.css';
 
 interface InfoPanelProps {
     device: DeviceModel,
@@ -17,6 +18,7 @@ const InfoPanel = (props: InfoPanelProps) => {
     const [signalWarning, setSignalWarning] = useState(0);
     const [signalQuality, setSignalQuality] = useState('');
     const [fpsWarning, setFpsWarning] = useState(0);
+    const deviceState = useModelValue(device.state);
 
     useEffect(() => {
         const value = Number.parseFloat(temperature);
@@ -59,6 +61,11 @@ const InfoPanel = (props: InfoPanelProps) => {
             <InfoItem icon={faTemperatureThreeQuarters} warningLevel={temperatureWarning}>{temperature + '°C'}</InfoItem>
             <InfoItem icon={faWifi} warningLevel={signalWarning}>{signalQuality}</InfoItem>
             <InfoItem icon={faFilm} warningLevel={fpsWarning}>{fps + ' fps'}</InfoItem>
+            {deviceState === DeviceState.down &&
+                <div className={styles.offline}>
+                    Offline
+                </div>
+            }
         </div>
     )
 }

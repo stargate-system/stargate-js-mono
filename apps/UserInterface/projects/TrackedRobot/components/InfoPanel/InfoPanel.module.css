@@ -1,0 +1,7 @@
+.offline {
+    color: red;
+    text-shadow: 0 0 3px red, 0 0 3px red;
+    font-size: 2rem;
+    text-align: center;
+    padding: 1.5rem 0 0.5rem;
+}

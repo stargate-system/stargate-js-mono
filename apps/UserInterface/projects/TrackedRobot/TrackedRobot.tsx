@@ -32,8 +32,9 @@ const TrackedRobot = () => {
     const [chassisCommand, setChassisCommand] = useState<GateString | undefined>();
     const [chassisX, setChassisX] = useState(0);
     const [chassisY, setChassisY] = useState(0);
-    const [panelVisible, setPanelVisible] = useState(false);
-    const [flashlight, setFlashlight] = useState<GateBoolean | undefined>();
+    const [panelVisible, setPanelVisible] = useState(true);
+    const [flashlight, setFlashlight] = useState<GateValueModel | undefined>();
+    const flashlightState = useModelValue(flashlight?.modelValue);
     const [headCenterX, setHeadCenterX] = useState<ModelValue<number> | undefined>();
     const currentHeadCenterX = useModelValue(headCenterX);
     const [headCenterY, setHeadCenterY] = useState<ModelValue<number> | undefined>();
@@ -153,7 +154,7 @@ const TrackedRobot = () => {
 
     const onFlashlightClick = () => {
         if (flashlight) {
-            flashlight.setValue(!flashlight.value);
+            flashlight.gateValue.setValue(!flashlight.gateValue.value);
         }
     }
 
@@ -179,10 +180,16 @@ const TrackedRobot = () => {
         setHeadX(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Head X'));
         setHeadY(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Head Y'));
         setChassisCommand(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Chassis command')?.gateValue);
-        setFlashlight(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Light')?.gateValue as GateBoolean);
+        setFlashlight(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Light'));
         setHeadCenterX(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Head center X')?.modelValue);
         setHeadCenterY(deviceModel?.gateValues.find((value) => value.gateValue.valueName === 'Head center Y')?.modelValue);
     }, [deviceModel]);
+
+    useEffect(() => {
+        setCameraSize();
+        window.addEventListener("resize", setCameraSize);
+        return () => window.removeEventListener("resize", setCameraSize);
+    }, [cameraRef.current]);
 
     useEffect(() => {
         const matcher = (model: DeviceModel) => model.info.value === 'SGTrackedRobot';
@@ -194,12 +201,6 @@ const TrackedRobot = () => {
             subscription.close();
         };
     }, []);
-
-    useEffect(() => {
-        setCameraSize();
-        window.addEventListener("resize", setCameraSize);
-        return () => window.removeEventListener("resize", setCameraSize);
-    }, [cameraRef.current]);
 
     return (
         <div className={styles.mainContainer}>
@@ -232,16 +233,16 @@ const TrackedRobot = () => {
                     </div>
                     <div className={styles.buttonPanel}>
                         <button onClick={onPanelButtonClick} className={styles.button}>
-                            <FontAwesomeIcon icon={faTableColumns} />
+                            <FontAwesomeIcon icon={faTableColumns} className={`${panelVisible ? styles.buttonActive : styles.buttonInactive}`}/>
                         </button>
                         {panelVisible &&
                             <>
                                 <button onClick={onFullscreenClick} className={styles.button}>
-                                    <FontAwesomeIcon icon={faExpand} />
+                                    <FontAwesomeIcon icon={faExpand} className={`${document.fullscreenElement ? styles.buttonActive : styles.buttonInactive}`}/>
                                 </button>
                                 {flashlight &&
                                     <button onClick={onFlashlightClick} className={styles.button}>
-                                        <FontAwesomeIcon icon={faLightbulb} />
+                                        <FontAwesomeIcon icon={faLightbulb} className={`${flashlightState ? styles.buttonActive : styles.buttonInactive}`}/>
                                     </button>
                                 }
                             </>
