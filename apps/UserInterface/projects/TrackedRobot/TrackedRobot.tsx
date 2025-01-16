@@ -259,7 +259,7 @@ const TrackedRobot = () => {
                 </>
             }
             {!deviceModel &&
-                <div>Device unavailable</div>
+                <div className={styles.deviceUnavailable}>Device unavailable</div>
             }
         </div>
     )

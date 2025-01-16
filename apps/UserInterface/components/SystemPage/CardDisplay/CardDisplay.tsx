@@ -1,6 +1,6 @@
 import styles from './CardDisplay.module.css';
 import DevicesDashboard from "@/components/SystemPage/CardDisplay/cards/DevicesDashboard/DevicesDashboard";
-import {faGears, faLink} from "@fortawesome/free-solid-svg-icons";
+import {faGears, faLink, faRobot} from "@fortawesome/free-solid-svg-icons";
 import {useContext, useEffect, useMemo, useState} from "react";
 import PipesDashboard from "@/components/SystemPage/CardDisplay/cards/PipesDashboard/PipesDashboard";
 import CardSelect from "@/components/SystemPage/CardDisplay/components/CardSelect/CardSelect";
@@ -21,7 +21,8 @@ export const cards = {
     },
     projects: {
         id: 'projects',
-        label: 'Projects'
+        label: 'Projects',
+        icon: faRobot
     }
 }
 
