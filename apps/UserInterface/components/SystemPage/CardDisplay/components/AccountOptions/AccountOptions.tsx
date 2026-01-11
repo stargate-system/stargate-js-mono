@@ -5,7 +5,7 @@ import HeaderButton from "@/components/SystemPage/CardDisplay/components/HeaderB
 import {useContext, useEffect, useRef, useState} from "react";
 import useClickOutsideDetector from "@/helper/useClickOutsideDetector";
 import DropdownMenu from '../DropdownMenu/DropdownMenu';
-import {faKey, faPowerOff, faCircleInfo, faEarthAmerica} from "@fortawesome/free-solid-svg-icons";
+import {faKey, faPowerOff, faCircleInfo, faEarthAmerica, faArrowDownUpAcrossLine} from "@fortawesome/free-solid-svg-icons";
 import SystemModelContext from '@/components/ReactGateViewModel/SystemModelContext';
 import ModalContext from '@/components/SystemPage/ModalContext';
 import CredentialsModal from './components/CredentialsModal';
@@ -49,6 +49,11 @@ const AccountOptions = (props: AccountOptionsProps) => {
             icon: faKey
         },
         {
+            id: 'remote',
+            label: 'Add remote',
+            icon: faArrowDownUpAcrossLine
+        },
+        {
             id: 'switch',
             label: `Switch ${remoteState === remoteStates.off ? 'on' : 'off'}`,
             icon: faPowerOff
@@ -82,6 +87,11 @@ const AccountOptions = (props: AccountOptionsProps) => {
         modal?.openModal(<CredentialsModal onClose={() => setMenuOpen(true)}/>);
     }
 
+    const onCreateRemote = () => {
+        model.systemConnector?.connection.functionalHandler.sendCommand('addRemote');
+        setMenuOpen(false);
+    }
+
     const onSwitch = () => {
         model.systemConnector?.connection.functionalHandler.sendCommand('remoteAccess', [remoteState === remoteStates.off ? 'on' : 'off']);
     }
@@ -98,6 +108,9 @@ const AccountOptions = (props: AccountOptionsProps) => {
                 onSetCredentials();
                 break;
             case options[3].id:
+                onCreateRemote();
+                break;
+            case options[4].id:
                 onSwitch();
                 break;
         }

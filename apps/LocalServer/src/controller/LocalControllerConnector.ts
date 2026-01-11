@@ -4,7 +4,8 @@ import {
     initRemote,
     setRemoteCredentials,
     stopRemote,
-    getRemoteAccessState
+    getRemoteAccessState,
+    createRemoteAccessPoint
 } from "../RemoteService";
 
 export class LocalControllerConnector extends BaseControllerConnector {
@@ -21,6 +22,11 @@ export class LocalControllerConnector extends BaseControllerConnector {
                     stopRemote();
                 }
             }
+        });
+        // TODO move addRemote to EventNames
+        this._connection.functionalHandler.addCommandListener('addRemote', () => {
+            const remote = createRemoteAccessPoint();
+            console.log(remote ? `${remote.name} - id: ${remote.id} pass: ${remote.password}` : 'Failed to create remote');
         });
         // TODO move remoteAccess to EventNames
         this.sendServerEvent('remoteAccess', [getRemoteAccessState()]);

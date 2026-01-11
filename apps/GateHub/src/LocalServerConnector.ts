@@ -24,6 +24,7 @@ export class LocalServerConnector {
 
     constructor(serialPort: SerialPort) {
         this.serialPort = serialPort;
+        // TODO check if shouldn't be new DefaultConnection(false)
         this.connection = new DefaultConnection(true);
         this.connection.addStateChangeListener((state) => {
             if (state !== ConnectionState.ready) {

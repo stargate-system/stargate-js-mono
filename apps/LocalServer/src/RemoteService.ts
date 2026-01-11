@@ -31,6 +31,25 @@ let ipCheckInterval: NodeJS.Timeout | undefined;
 let initTimeout: NodeJS.Timeout | undefined;
 let stateTimeout: NodeJS.Timeout | undefined;
 
+interface RemoteAccessPoint {
+    name: string,
+    id: string,
+    password: string
+}
+
+const loadRemoteAccessPoints = (): RemoteAccessPoint[] => {
+    try {
+        const remotesFile = fs.readFileSync('remote/remotes.json').toString();
+        return JSON.parse(remotesFile);
+    } catch(err) {
+        if (!(err instanceof Error && err.message.match(/no such file or directory/i))) {
+            console.log('On reading remotes', err);
+        }
+    }
+    return [];
+}
+let remoteAccessPoints: RemoteAccessPoint[] = loadRemoteAccessPoints();
+
 export const getRemoteAccessState = () => state;
 
 export const setRemoteCredentials = (key: string, pass: string) => {
@@ -44,6 +63,30 @@ export const setRemoteCredentials = (key: string, pass: string) => {
         console.log('On saving remote credentials', err);
     }
     initRemote();
+}
+
+export const createRemoteAccessPoint = () => {
+    const newRemote: RemoteAccessPoint = {
+        name: `Remote ${remoteAccessPoints.length + 1}`,
+        id: crypto.randomUUID(),
+        password: generator.generate({length: 32, numbers: true})
+    }
+    remoteAccessPoints.push(newRemote);
+    try {
+        if (!fs.existsSync('remote')) {
+            fs.mkdirSync('remote');
+        }
+        fs.writeFileSync('remote/remotes.json', JSON.stringify(remoteAccessPoints));
+        return newRemote;
+    } catch(err) {
+        console.log('On adding remote', err);
+        remoteAccessPoints.pop();
+    }
+    return undefined;
+}
+
+export const getRemoteAccessPointById = (id: string) => {
+    return remoteAccessPoints.filter((remote) => remote.id === id)[0];
 }
 
 export const initRemote = async () => {
@@ -154,6 +197,7 @@ const initServer = (ip: string) => {
     const app = express();
     app.use(cookieParser());
     app.use(bodyParser.json());
+    app.post('/discover', cors({origin: apiUrl}), discover);
     app.post('/connect', cors({origin: apiUrl}), connect);
     app.get('/login', login);
     app.use('/ui', (req, res, next) => {
@@ -255,4 +299,36 @@ const login = (req: any, res: any) => {
     setTimeout(() => clients.delete(clientId), maxAge);
     res.cookie('stargate_client', JSON.stringify({clientId, clientKey}), {maxAge});
     res.redirect('/ui/index.html');
+}
+
+const discover = async (req: any, res: any) => {
+    const {discoveryKey} = req.body;
+    console.log("Discovery request " + discoveryKey);
+    if (discoveryKey) {
+        const authenticated = await authenticateDiscoveryRequest(discoveryKey);
+        if (authenticated) {
+            res.json({discoveryKey, approve: true}).end();
+            return;
+        }
+    }
+    res.status(403).end();
+}
+
+const authenticateDiscoveryRequest = async (discoveryKey: string) => {
+    let response;
+    try {
+        response = await fetch(`${apiUrl}/api/discover`, {method: 'POST', body: JSON.stringify({discoveryKey, serverKey})});
+        if (response && response.ok) {
+            const remote = await response.json();
+            if (remote.id && remote.key) {
+                const stored = getRemoteAccessPointById(remote.id);
+                if (stored && stored.password === remote.key) {
+                    return true;
+                } else {
+                    console.log(`Discovery request ${discoveryKey} failed`, remote);
+                }
+            }
+        }
+    } catch {}
+    return false;
 }
