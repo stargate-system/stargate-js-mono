@@ -62,6 +62,7 @@ export class RemoteServerConnector {
         }
         socket.on('error', console.log);
         socket.on('close', () => {
+            console.log('Remote connection closed');
             this.onClose();
             this.stopLocal();
         });
@@ -98,12 +99,14 @@ export class RemoteServerConnector {
                 }
             });
         });
-        wsServer.on('connection', (socket) => {
+        wsServer.on('connection', (socket, request) => {
+            console.log(`Client on ${request.socket.remoteAddress} connected`);
             socket.on('error', console.log);
             const id = this.generateId();
             this.connections.set(id, socket);
             this.connection.functionalHandler.sendCommand('connUp', [id]);
             socket.onclose = () => {
+                console.log(`Client on ${request.socket.remoteAddress} disconnected`);
                 this.connections.delete(id);
                 this.connection.functionalHandler.sendCommand('connDown', [id]);
             }

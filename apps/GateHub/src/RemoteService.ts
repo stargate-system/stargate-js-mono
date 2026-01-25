@@ -75,7 +75,13 @@ const discoverTarget = async () => {
                 }
             }
         } catch(err) {
-            console.log('On remote discovery', err);
+            if (err instanceof TypeError) {
+                console.log('On remote discovery', err.name, err.message);
+                setTimeout(discoverTarget, 60000);
+            } else {
+                console.log('On remote discovery', err);
+                setTimeout(discoverTarget, 3600000);
+            }   
         }
     }
 }
